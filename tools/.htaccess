@@ -1,0 +1,27 @@
+# Password-protects everything in this folder (tools/full-refresh.php and
+# anything else added here later) via a plain browser login prompt - this
+# folder is for the site operator's own manual/diagnostic use, not visitors.
+#
+# AuthUserFile below MUST be the ABSOLUTE server filesystem path to
+# tools/.htpasswd (a relative path won't work reliably) - Apache can't use
+# a path relative to the URL for this. Find yours via cPanel > File Manager
+# (right-click tools/.htpasswd > Details/Permissions usually shows the full
+# path), or SSH/File Manager's address bar, then replace the placeholder
+# below. It'll look something like:
+#   /home/yourcpaneluser/public_html/tools/.htpasswd
+# or, if this site isn't at your account's webroot:
+#   /home/yourcpaneluser/public_html/uk-grid-live-plus/tools/.htpasswd
+#
+# The username/password shipped in tools/.htpasswd is a randomly generated
+# one - see the message this was delivered with for the actual password.
+# To change it later, generate a new line with:
+#   htpasswd -c tools/.htpasswd admin
+# (via SSH if you have it) or any online "Apache htpasswd generator" using
+# the apr1/MD5 format, and replace the single line in tools/.htpasswd.
+# "Require valid-user" works the same way on both Apache 2.2 and 2.4 (unlike
+# includes/.htaccess's "deny everything" rule, this one doesn't need a
+# version-specific IfModule split).
+AuthType Basic
+AuthName "UK Grid: Live+ - internal tools"
+AuthUserFile /REPLACE-WITH-ABSOLUTE-SERVER-PATH-TO/tools/.htpasswd
+Require valid-user
