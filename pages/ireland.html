@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ireland: Live - the live status of the all-island electricity system</title>
+<meta name="description" content="A live dashboard for the island of Ireland's Single Electricity Market, with generation mix, history and records.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Ireland: the all-island electricity system, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group>
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group data-active="true">
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html" aria-current="page">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Ireland: the live status of the all-island electricity system</h1>
+      <p>The island of Ireland runs a single, synchronous grid spanning both jurisdictions - the Republic of Ireland and Northern Ireland - balanced together as the Single Electricity Market (SEM) by EirGrid and SONI. It's one of the windiest grids in Europe and has to manage that without the cushioning of a large synchronous neighbour.</p>
+    </section>
+
+    <dl class="status-grid" aria-label="Current Ireland grid status">
+      <div class="stat stat--live"><dt>Data as of</dt><dd id="stat-time" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat"><dt>SEM price</dt><dd>€<span id="stat-price">92.30</span><small>/MWh</small></dd><div class="stat__spark chart-wrap"><canvas id="spark-price" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Emissions</dt><dd><span id="stat-emissions">178</span><small>g/kWh</small></dd><div class="stat__spark chart-wrap"><canvas id="spark-emissions" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Demand</dt><dd><span id="stat-demand">4.83</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-demand-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-demand" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Generation</dt><dd><span id="stat-generation">4.61</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-generation-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-generation" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>GB interconnect</dt><dd><span id="stat-transfers">0.22</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-transfers-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-transfers" aria-hidden="true"></canvas></div></div>
+    </dl>
+    <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Each figure shows its trend over the last 3 hours. SEM price and the generation-mix breakdown below stay on illustrative figures for now - see <a href="#ie-sources">data sources</a>.</p>
+
+    <section class="panel" aria-labelledby="mix-heading">
+      <h2 id="mix-heading">Generation mix right now</h2>
+      <p class="chart-caption" id="mix-status-caption" style="margin-top:-.25rem;">Illustrative figures - see <a href="#ie-sources">data sources</a>.</p>
+      <div class="panel-grid panel-grid--2">
+        <table class="mix">
+          <caption class="visually-hidden">Current Ireland generation by source</caption>
+          <thead>
+            <tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr>
+          </thead>
+          <tbody id="mix-tbody">
+            <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--renewable)"></span>Renewables</th><td class="num">2.48</td><td class="num">53.8</td></tr>
+            <tr><td>Wind</td><td class="num">2.11</td><td class="num">45.8</td></tr>
+            <tr><td>Solar</td><td class="num">0.28</td><td class="num">6.1</td></tr>
+            <tr><td>Hydro</td><td class="num">0.09</td><td class="num">2.0</td></tr>
+            <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--fossil)"></span>Fossil fuels</th><td class="num">1.84</td><td class="num">39.9</td></tr>
+            <tr><td>Gas</td><td class="num">1.78</td><td class="num">38.6</td></tr>
+            <tr><td>Oil / distillate peakers</td><td class="num">0.06</td><td class="num">1.3</td></tr>
+            <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--other)"></span>Other &amp; storage</th><td class="num">0.07</td><td class="num">1.5</td></tr>
+            <tr><td>Battery storage</td><td class="num">0.07</td><td class="num">1.5</td></tr>
+            <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--interconnector)"></span>GB interconnect</th><td class="num">0.22</td><td class="num">4.8</td></tr>
+            <tr><td>Moyle (to Scotland)</td><td class="num">0.05</td><td class="num">1.1</td></tr>
+            <tr><td>EWIC (to Wales)</td><td class="num">0.17</td><td class="num">3.7</td></tr>
+          </tbody>
+        </table>
+        <div>
+          <div class="chart-wrap"><canvas id="mix-donut" role="img" aria-label="Donut chart of current Ireland generation mix by source"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-legend"></ul>
+          <p class="chart-caption" id="mix-donut-caption">Generation 4.61GW plus 0.22GW imported, meeting 4.83GW of demand. Peat-fired stations closed in 2020, and Moneypoint's coal units now run only as an emergency backup.</p>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:220px;margin-top:1.5rem;">
+        <canvas id="mix-bar" role="img" aria-label="Bar chart comparing Ireland generation by source"></canvas>
+      </div>
+      <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
+      <div class="chart-wrap is-loading" style="height:300px;">
+        <canvas id="mix-stack" role="img" aria-label="Stacked area chart of renewable and fossil fuel generation over the last 24 hours"></canvas>
+      </div>
+      <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
+      <p class="chart-caption">Wind so often dominates Ireland's mix that gas output usually moves in the opposite direction, hour by hour. From the ENTSO-E Transparency Platform.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <p class="chart-caption">Choose a time range to see how demand, generation, price, emissions and interconnection have changed - every measure, side by side.</p>
+
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="range-panel chart-grid">
+          <div class="chart-card"><h3>Demand</h3><div class="chart-wrap is-loading"><canvas data-metric="demand"></canvas></div></div>
+          <div class="chart-card"><h3>Generation</h3><div class="chart-wrap is-loading"><canvas data-metric="generation"></canvas></div></div>
+          <div class="chart-card"><h3>SEM price per MWh</h3><div class="chart-wrap is-loading"><canvas data-metric="price"></canvas></div></div>
+          <div class="chart-card"><h3>Emissions per kWh</h3><div class="chart-wrap is-loading"><canvas data-metric="emissions"></canvas></div></div>
+          <div class="chart-card"><h3>GB interconnect</h3><div class="chart-wrap is-loading"><canvas data-metric="transfers"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About the all-island system</h2>
+      <p>Ireland and Northern Ireland share a single synchronous electricity system, kept in step at 50Hz across the border since before partition. Since 2018 the two jurisdictions have traded through the Integrated Single Electricity Market (I-SEM), aligned with EU-wide market coupling.</p>
+      <p>Because the island is a relatively small, isolated synchronous area with no large neighbouring grid to lean on, EirGrid manages a constraint unique among Europe's major systems: System Non-Synchronous Penetration (SNSP), the instantaneous share of demand that can be met by wind, solar and interconnectors (all "non-synchronous" sources) without risking system stability. That limit has been raised in stages from 50% a decade ago to 75%, then 80%, as grid operators have added synchronous condensers and faster reserves to keep the system stable at high wind penetration.</p>
+      <p>Ireland closed its last peat-fired power stations in 2020, well ahead of most of Europe's coal phase-out, and Moneypoint - once the country's largest fossil fuel plant - has been retained only for emergency winter backup while it's redeveloped as a green energy hub.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Records</h2>
+      <div class="panel-grid panel-grid--2">
+        <ul class="records-list">
+          <li><span>Highest wind generation (Republic of Ireland)</span><strong>3,898MW - 14 February 2026</strong></li>
+          <li><span>Current SNSP operating limit</span><strong>75% - rising toward a 95% target</strong></li>
+          <li><span>Last peat-fired generation</span><strong>2020</strong></li>
+          <li><span>Republic of Ireland peak demand record</span><strong>6,024MW - 8 January 2025</strong></li>
+        </ul>
+        <div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="records-bar" role="img" aria-label="Bar chart of the SNSP operating limit rising from 50 percent to 75 percent"></canvas></div>
+          <p class="chart-caption">The SNSP limit - the ceiling on wind, solar and interconnector share at any instant - raised in stages as the grid has been reinforced, with a 95% target still ahead.</p>
+        </div>
+      </div>
+      <p class="chart-caption">Source: <a href="https://www.eirgridgroup.com/how-the-grid-works/renewables/">EirGrid Group</a>, <a href="https://www.irishtimes.com/sponsored/2026/04/30/new-records-set-for-solar-and-wind-generation-in-ireland/">EirGrid/Irish Times, April 2026</a> and <a href="https://www.sem-o.com/">SEMO</a>. Last checked: 23 August 2026.</p>
+    </section>
+
+    <section class="panel" id="ie-sources" aria-labelledby="ie-sources-heading">
+      <h2 id="ie-sources-heading">Data sources for Ireland</h2>
+      <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages only cover the GB transmission system, so they can't be reused here. This page instead draws on:</p>
+      <ul>
+        <li><strong><a href="https://www.smartgriddashboard.com/">EirGrid Group's Smart Grid Dashboard</a></strong> - live and wired up above for demand, total generation, wind generation, GB interconnection and carbon intensity across the island of Ireland.</li>
+        <li><strong>SONI</strong> - EirGrid's Northern Ireland transmission system operator counterpart, covered within the same all-island figures.</li>
+        <li><strong><a href="https://www.sem-o.com/">SEMO</a></strong> (Single Electricity Market Operator) - publishes wholesale day-ahead and intraday market pricing for the island of Ireland. SEMO itself isn't wired up here, but the same day-ahead price is also published via ENTSO-E below, so the SEM price stat above is now live through that route instead.</li>
+        <li><strong><a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a></strong> - the pan-European grid data hub. Powers the SEM price stat, the generation-mix table/donut/bar (by fuel type, not by individual power station), the 24-hour mix chart and the History section's price panel above, via its Ireland (SEM) bidding zone. Requires the site operator's own free API token - shows "not available"/"not enough recorded history yet" rather than a placeholder figure if one isn't set or ingestion hasn't run yet.</li>
+      </ul>
+      <p>ENTSO-E's generation-per-type figures don't break interconnector flows down individually (Moyle vs. EWIC vs. Greenlink) the way EirGrid's own dashboard would - the mix table below shows GB interconnection as one combined figure, from EirGrid's net interconnection reading rather than ENTSO-E. The 24-hour generation-mix stack further up and the History section's per-range charts aren't wired to ENTSO-E yet and stay illustrative.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p style="margin-top:.5rem;">Supported by EirGrid Group Data.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with EirGrid, SONI or SEMO</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  // demand/generation/emissions/transfers come from EirGrid via
+  // api/ireland_series.php; price has no EirGrid equivalent (see
+  // api/ireland_current.php's docblock) so it's fetched separately from
+  // ENTSO-E via api/country_series.php - same split the top-of-page stats
+  // already use.
+  const METRICS = {
+    demand:     { label: "Demand",     unit: "GW", color: "#1d6fe0", source: "eirgrid" },
+    generation: { label: "Generation", unit: "GW", color: "#0a6e5c", source: "eirgrid" },
+    price:      { label: "Price",      unit: "€/MWh", color: "#d98e04", source: "entsoe" },
+    emissions:  { label: "Emissions",  unit: "g/kWh", color: "#8a5a3c", source: "eirgrid" },
+    transfers:  { label: "GB interconnect", unit: "GW", color: "#d98e04", source: "eirgrid" },
+  };
+
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  function fetchMetricSeries(metric, range) {
+    const cfg = METRICS[metric];
+    return cfg.source === "entsoe"
+      ? window.GridData.fetchCountrySeries("IE", metric, range)
+      : window.GridData.fetchIrelandSeries(metric, range);
+  }
+
+  async function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const canvases = Array.from(host.querySelectorAll("canvas[data-metric]"));
+    const seriesList = await Promise.all(canvases.map((c) => fetchMetricSeries(c.dataset.metric, range)));
+    canvases.forEach((canvas, i) => {
+      const cfg = METRICS[canvas.dataset.metric];
+      const series = seriesList[i];
+      if (series && series.values.length) {
+        GridPreview.renderLineChart(canvas, series, { label: cfg.label, color: cfg.color, unit: series.unit || cfg.unit });
+      } else {
+        GridPreview.showChartError(canvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+
+  const SOURCE_LABELS = ["Wind", "Gas", "Solar", "GB interconnect", "Hydro", "Battery", "Oil peakers"];
+  const SOURCE_VALUES = [2.11, 1.78, 0.28, 0.22, 0.09, 0.07, 0.06];
+  // From GridData's canonical label->colour map (assets/data.js) - this
+  // array used to hardcode Hydro and Battery to the exact same blue,
+  // making the two indistinguishable in this donut. See that map's comment.
+  const SOURCE_COLORS = window.GridData.colorsFor(SOURCE_LABELS);
+
+  GridPreview.renderDonutChart(
+    document.getElementById("mix-donut"), SOURCE_LABELS, SOURCE_VALUES, SOURCE_COLORS,
+    { legendTarget: "mix-donut-legend", unit: "GW", centerLabel: "4.61GW", centerSub: "generated" }
+  );
+
+  (function () {
+    const paired = SOURCE_LABELS.map((l, i) => ({ l, v: SOURCE_VALUES[i], c: SOURCE_COLORS[i] })).sort((a, b) => b.v - a.v);
+    GridPreview.renderBarChart(document.getElementById("mix-bar"), paired.map((p) => p.l), paired.map((p) => p.v), paired.map((p) => p.c), { unit: "GW" });
+  })();
+
+  const SPARK_METRICS = {
+    price:      { base: 88, amp: 55, color: "#d98e04", min: -20, max: 220 },
+    emissions:  { base: 190, amp: 100, color: "#8a5a3c", min: 40, max: 420 },
+    demand:     { base: 4.8, amp: 1.4, color: "#1d6fe0", min: 2.8, max: 7.2 },
+    generation: { base: 4.6, amp: 1.4, color: "#0a6e5c", min: 2.5, max: 7.0 },
+    transfers:  { base: 0.15, amp: 0.5, color: "#d98e04", min: -0.9, max: 0.9 },
+  };
+  const SPARK_KEYS = Object.keys(SPARK_METRICS);
+
+  function drawMockSparkline(key) {
+    const canvas = document.getElementById("spark-" + key);
+    if (!canvas) return;
+    const cfg = SPARK_METRICS[key];
+    const series = GridPreview.buildSeries("3hour", cfg.base, cfg.amp, SPARK_KEYS.indexOf(key) * 37 + 9, { min: cfg.min, max: cfg.max, cycles: 1 });
+    GridPreview.renderSparkline(canvas, series.values, cfg.color);
+  }
+
+  async function initIeStatusStrip() {
+    const caption = document.getElementById("stat-caption");
+    // Same "Data as of" treatment as index.html: the status grid's first
+    // tile shows the fetched data's own timestamp rather than a locally-
+    // ticking clock, starting from a pulsing "Loading live data…"
+    // placeholder until the first fetch resolves either way.
+    const asOfEl = document.getElementById("stat-time");
+    const liveKeys = ["emissions", "demand", "generation", "transfers"];
+
+    // Renders the EirGrid ("current") and ENTSO-E ("entsoe") snapshots
+    // together - the donut/mix table needs both at once (ENTSO-E's mix
+    // plus EirGrid's own GB-interconnection reading folded in as an extra
+    // wedge, see the comment on extraLine below), so unlike index.html's
+    // single-source page this can't cleanly use GridPreview.
+    // withCachedFallback's one-source-in, one-source-out shape - it reads/
+    // writes each source's cache entry directly via cacheGet/cacheSet
+    // instead. Called once immediately with whatever's cached (either
+    // source may be missing or stale independently) and again once each
+    // fetch resolves.
+    function renderIeSnapshot(current, entsoe, isCached) {
+      if (entsoe && entsoe.price_eur_mwh != null) {
+        const priceEl = document.getElementById("stat-price");
+        if (priceEl) priceEl.textContent = entsoe.price_eur_mwh.toFixed(2);
+      }
+      if (entsoe) {
+        GridPreview.renderPsrMixSection(entsoe.mix_mw, {
+          tbodyId: "mix-tbody", donutId: "mix-donut", legendId: "mix-donut-legend", barId: "mix-bar",
+          donutCaptionId: "mix-donut-caption", statusCaptionId: "mix-status-caption",
+          statusCaptionHtml: isCached
+            ? "Showing the last successfully loaded generation mix while this page fetches the latest data."
+            : 'Live from the <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a> - see <a href="#ie-sources">data sources</a>.',
+          sourceLabel: "ENTSO-E Transparency Platform (Ireland/SEM bidding zone)",
+          // ENTSO-E's generation-per-type data doesn't split interconnector
+          // flow out by individual cable - EirGrid's own interconnection_mw
+          // reading is folded in as one combined line instead (see the
+          // ie-sources section's copy for why).
+          extraLine: current && current.interconnection_mw != null
+            // A literal hex, not var(--interconnector) - this colour also
+            // feeds the donut chart's canvas gradient below (see
+            // renderPsrMixSection in app.js), and canvas fillStyle/gradient
+            // stops don't resolve CSS custom properties the way an inline
+            // element style does, so a var() reference here would throw
+            // partway through drawing the donut every time GB interconnection
+            // data is present. #d98e04 is this site's --interconnector value.
+            ? { label: "GB interconnect", mw: current.interconnection_mw, color: "#d98e04" }
+            : null,
+        });
+      }
+      // If entsoe is null (no cache, no live data yet), the illustrative
+      // table/donut/bar already in the markup stays exactly as-is.
+
+      if (!current) return;
+      const setStat = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+      setStat("stat-emissions", current.emissions_gco2 != null ? String(Math.round(current.emissions_gco2)) : "-");
+      setStat("stat-demand", current.demand_mw != null ? (current.demand_mw / 1000).toFixed(2) : "-");
+      setStat("stat-generation", current.generation_mw != null ? (current.generation_mw / 1000).toFixed(2) : "-");
+      setStat("stat-transfers", current.interconnection_mw != null ? (current.interconnection_mw / 1000).toFixed(2) : "-");
+      // Reference range: a rough all-island summer-overnight low (~3GW) up
+      // to a rough recent winter-evening peak (~6.8GW) - round,
+      // disclosed-as-not-official numbers, not an EirGrid-published
+      // threshold. See GridPreview.bandFromRange's own docblock.
+      GridPreview.setStatBand("stat-demand-band", GridPreview.bandFromRange(current.demand_mw != null ? current.demand_mw / 1000 : null, 3, 6.8), " relative to Ireland's typical demand range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-generation-band", GridPreview.bandFromRange(current.generation_mw != null ? current.generation_mw / 1000 : null, 3, 6.8), " relative to Ireland's typical generation range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-transfers-band", GridPreview.transfersBand(current.interconnection_mw), " (positive = importing, negative = exporting - rough guide, not an official banding)");
+      if (asOfEl) {
+        asOfEl.innerHTML = isCached ? GridPreview.formatShowingHtml(current.ts) : GridPreview.formatAsOfHtml(current.ts);
+        asOfEl.classList.remove("is-loading-text");
+      }
+      if (caption) {
+        caption.textContent = isCached
+          ? "Showing the last successfully loaded figures while this page fetches the latest data."
+          : "Live demand, generation, emissions and GB interconnection from EirGrid's Smart Grid Dashboard" +
+            (current.stale ? ". This may be a few updates behind; check the site's cron jobs." : ".") +
+            (entsoe ? " SEM price and the generation-mix breakdown below are live from ENTSO-E too." : " SEM price and the generation-mix breakdown below stay on illustrative figures for now - see data sources below.");
+      }
+    }
+
+    const cachedCurrent = GridPreview.cacheGet("ireland-current");
+    const cachedEntsoe = GridPreview.cacheGet("ireland-entsoe");
+    if (cachedCurrent || cachedEntsoe) renderIeSnapshot(cachedCurrent, cachedEntsoe, true);
+
+    // EirGrid (demand/generation/wind/interconnection/emissions) and
+    // ENTSO-E (SEM price + generation mix) are two independent sources -
+    // fetched in parallel so a slow/failed one never blocks the other's
+    // figures from appearing.
+    const [current, entsoe] = await Promise.all([
+      window.GridData ? window.GridData.fetchIrelandCurrent() : Promise.resolve(null),
+      window.GridData ? window.GridData.fetchCountryCurrent("IE") : Promise.resolve(null),
+    ]);
+    if (current) GridPreview.cacheSet("ireland-current", current);
+    if (entsoe) GridPreview.cacheSet("ireland-entsoe", entsoe);
+    renderIeSnapshot(current, entsoe, false);
+
+    // SEM price sparkline and price-mock fallback still need their own
+    // handling below - renderIeSnapshot only sets the price figure itself.
+    if (entsoe && entsoe.price_eur_mwh != null) {
+      const priceSeries = await window.GridData.fetchCountrySeries("IE", "price", "3hour");
+      if (priceSeries && priceSeries.values.length) {
+        GridPreview.renderSparkline(document.getElementById("spark-price"), priceSeries.values, SPARK_METRICS.price.color);
+      } else {
+        drawMockSparkline("price");
+      }
+    } else {
+      drawMockSparkline("price");
+    }
+
+    if (!current) {
+      if (cachedCurrent) {
+        GridPreview.showLiveDataBanner(
+          "EirGrid data is currently unavailable - the demand, generation, wind and GB interconnection figures shown are from the last successful update, not right now." +
+          (entsoe ? " SEM price and the generation-mix breakdown below are still live from ENTSO-E." : "")
+        );
+      } else {
+        GridPreview.showLiveDataBanner(
+          "EirGrid data is currently unavailable - demand, generation, wind and GB interconnection figures below could not be loaded." +
+          (entsoe ? " SEM price and the generation-mix breakdown below are still live from ENTSO-E." : " SEM price and the generation-mix breakdown below stay on illustrative figures too.") +
+          " See the footer for the data pipeline's status."
+        );
+        if (asOfEl) { asOfEl.textContent = "-"; asOfEl.classList.remove("is-loading-text"); }
+        liveKeys.forEach((key) => GridPreview.showStatError("stat-" + key));
+        ["demand", "generation", "transfers"].forEach((key) => GridPreview.setStatBand("stat-" + key + "-band", null));
+        liveKeys.forEach((key) => {
+          const canvas = document.getElementById("spark-" + key);
+          if (canvas) GridPreview.showChartError(canvas, null);
+        });
+        if (caption) caption.textContent = "Live data is currently unavailable." + (entsoe ? " SEM price and the generation-mix breakdown below are still live from ENTSO-E." : " SEM price and the generation-mix breakdown below stay on illustrative figures too.") + " See data sources below.";
+      }
+      return;
+    }
+
+    // EirGrid and ENTSO-E are two independent sources - EirGrid's fetch just
+    // succeeded above, but its (or ENTSO-E's) most recent ingest attempt
+    // could still be erroring even while stale-but-present data is what's
+    // actually being shown. Surface that distinctly rather than silently
+    // saying nothing, same reasoning as index.html's GB status strip.
+    const issueBanner = await GridPreview.buildApiIssueBanner({
+      EIRGRID: "demand, generation, wind & GB interconnection (EirGrid)",
+      ENTSOE: "SEM price & generation mix (ENTSO-E)",
+    });
+    if (issueBanner) {
+      GridPreview.showLiveDataBanner(issueBanner);
+    } else {
+      GridPreview.hideLiveDataBanner();
+    }
+
+    // Fetch all four sparklines' series in parallel rather than one at a
+    // time - each is a separate api/ireland_series.php round trip, and
+    // awaiting them sequentially in a loop meant the page waited for four
+    // full network round trips back-to-back instead of the slowest one.
+    const ieSeriesList = await Promise.all(
+      liveKeys.map((key) => window.GridData.fetchIrelandSeries(key, "3hour"))
+    );
+    liveKeys.forEach((key, i) => {
+      const canvas = document.getElementById("spark-" + key);
+      const series = ieSeriesList[i];
+      if (!canvas) return;
+      if (series && series.values.length) {
+        canvas.closest(".chart-wrap").classList.remove("has-error");
+        GridPreview.renderSparkline(canvas, series.values, SPARK_METRICS[key].color);
+      } else {
+        GridPreview.showChartError(canvas, null);
+      }
+    });
+  }
+
+  initIeStatusStrip();
+
+  (async function () {
+    // Same renderStackedAreaChart component (per-band gradient fade +
+    // hover tooltip) used everywhere else on the site. Real data from the
+    // ENTSO-E Transparency Platform's psr_type breakdown for the Ireland
+    // (SEM) bidding zone - the same feed the "Generation mix right now"
+    // table/donut above uses, just bucketed over the last 24 hours instead
+    // of a single snapshot.
+    const canvas = document.getElementById("mix-stack");
+    if (!canvas || !window.GridData) return;
+    const mix = await window.GridData.fetchCountryMixSeries("IE", "day");
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+    if (!mix) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for the last 24 hours.");
+      return;
+    }
+    GridPreview.renderStackedAreaChart(canvas, mix.times, mix.labels, [
+      { name: "Renewables", color: "#1f9d5a", values: mix.renewable },
+      { name: "Fossil fuels", color: "#8a5a3c", values: mix.fossil },
+      { name: "Other", color: "#6b5847", values: mix.other },
+    ], { unit: "GW", legendTarget: "mix-stack-legend" });
+  })();
+
+  GridPreview.renderBarChart(
+    document.getElementById("records-bar"),
+    ["~2016", "2018", "2021", "2026"],
+    [50, 65, 75, 75],
+    "#2fa876",
+    { unit: "%", horizontal: false, thickness: 40 }
+  );
+})();
+</script>
+</body>
+</html>

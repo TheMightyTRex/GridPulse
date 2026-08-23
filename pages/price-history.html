@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Historic prices - UK Grid: Live+</title>
+<meta name="description" content="Wholesale electricity price history for Great Britain, from the past day back to all available data, with the exact calendar period each chart covers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html" aria-current="page">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="type-hero">
+        <span class="type-hero__swatch" style="background:var(--accent)"></span>
+        <h1>Historic prices</h1>
+      </div>
+      <p>The GB wholesale electricity price, from the past day back to the full run of available history. Every chart below is labelled with the exact calendar period it covers - not just a range name - so you always know what you're looking at. New to the price figure itself? Read <a href="electricity-prices.html">what it means and how it's set</a> first.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">Price history</h2>
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+        <button role="tab" id="tab-all" aria-controls="panel-all" aria-selected="false" tabindex="-1" data-range="all">All time</button>
+      </div>
+
+      <template id="range-panel-template">
+        <p class="period-caption"><strong>Period shown:</strong> <span data-period-label></span></p>
+        <div class="chart-card" style="margin-bottom:0;">
+          <div class="chart-wrap is-loading" style="height:320px;"><canvas data-metric="price"></canvas></div>
+        </div>
+        <dl class="status-grid" aria-label="Summary for this period" style="grid-template-columns:repeat(3,1fr);margin-top:1rem;">
+          <div class="stat"><dt>Average</dt><dd data-stat="avg">–</dd></div>
+          <div class="stat"><dt>Lowest</dt><dd data-stat="min">–</dd></div>
+          <div class="stat"><dt>Highest</dt><dd data-stat="max">–</dd></div>
+        </dl>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+      <div id="panel-all" role="tabpanel" aria-labelledby="tab-all" tabindex="0" hidden></div>
+      <p class="chart-caption">GB day-ahead wholesale price (£/MWh), sourced from the Elexon Insights Solution at up to 30-minute resolution, aggregated to the granularity shown at longer ranges. Longer ranges will fill in as more history is collected.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="periods-heading">
+      <h2 id="periods-heading">What each range actually covers</h2>
+      <p>"Week", "year" and so on are convenient labels, but the underlying data is always a specific run of calendar time ending now. This table shows the resolution and span behind each tab above.</p>
+      <div style="overflow-x:auto;">
+      <table class="mix" style="min-width:520px;">
+        <caption class="visually-hidden">Resolution and span of each historic price range</caption>
+        <thead><tr><th scope="col">Range</th><th scope="col" class="num">Data points</th><th scope="col" class="num">Resolution</th><th scope="col">Span</th></tr></thead>
+        <tbody id="periods-table-body"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About this data</h2>
+      <p>Kate Morley's original National Grid: Live has tracked GB system data since the site launched, and its "All time" view is the closest precedent for the range above - here, "All time" runs back as far as Elexon's BMRS history goes, with older data aggregated into coarser (e.g. monthly or seasonal) points to keep charts readable.</p>
+      <p>Wholesale prices are volatile day to day and were exceptionally high during the 2021–2023 global gas price crisis, so long-range charts are usually shown on their own scale rather than forced to match the short-range ones.</p>
+      <h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
+      <ul style="font-size:.85rem;color:var(--text-muted);">
+        <li><a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a> - GB wholesale/system prices, the primary planned source for this page.</li>
+        <li><a href="https://grid.iamkate.com/">Kate Morley's National Grid: Live</a> - precedent for the "All time" range concept.</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script>
+(function () {
+  const ranges = ["day", "week", "month", "season", "year", "5year", "10year", "all"];
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  const RESOLUTION_LABEL = {
+    day: "30 minutes", week: "3 hours", month: "1 day", season: "7 days",
+    year: "7 days", "5year": "30 days", "10year": "91 days", all: "1 year",
+  };
+
+  function drawRange(range, idx) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    host.querySelector("[data-period-label]").textContent = GridPreview.getRangePeriodLabel(range);
+
+    const priceCanvas = host.querySelector('canvas[data-metric="price"]');
+    const series = GridPreview.buildSeries(range, 64, 26, idx * 71 + 11, { min: 5, max: 220, cycles: range === "day" ? 2 : 3 });
+    GridPreview.renderLineChart(priceCanvas, series, { label: "Price", color: "#0a6e5c", unit: "£" });
+    priceCanvas.closest(".chart-wrap").classList.remove("is-loading");
+
+    const avg = series.values.reduce((a, b) => a + b, 0) / series.values.length;
+    const min = Math.min(...series.values);
+    const max = Math.max(...series.values);
+    host.querySelector('[data-stat="avg"]').textContent = `£${avg.toFixed(1)}/MWh`;
+    host.querySelector('[data-stat="min"]').textContent = `£${min.toFixed(1)}/MWh`;
+    host.querySelector('[data-stat="max"]').textContent = `£${max.toFixed(1)}/MWh`;
+  }
+
+  drawRange("day", 0);
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range, ranges.indexOf(e.detail.range)));
+
+  const tbody = document.getElementById("periods-table-body");
+  tbody.innerHTML = ranges.map((r) => {
+    const cfg = GridPreview.RANGE_CONFIG[r];
+    const label = { day: "Day", week: "Week", month: "Month", season: "Season", year: "Year", "5year": "5 years", "10year": "10 years", all: "All time" }[r];
+    return `<tr><td>${label}</td><td class="num">${cfg.points}</td><td class="num">${RESOLUTION_LABEL[r]}</td><td>${GridPreview.getRangePeriodLabel(r)}</td></tr>`;
+  }).join("");
+})();
+</script>
+</body>
+</html>

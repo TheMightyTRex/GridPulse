@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparisons - UK Grid: Live+</title>
+<meta name="description" content="Compare tracked countries side by side, GB's own history against a prior period, or two of GB's generation categories against each other.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group>
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html" aria-current="page">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Comparisons</h1>
+      <p>Three ways to compare: two of the grids this site tracks side by side, GB's own current season against a prior year's, or two of GB's own generation categories against each other over time.</p>
+    </section>
+
+    <div class="range-tabs" role="tablist" data-tablist id="top-tablist" aria-label="Comparison type">
+      <button role="tab" id="tab-countries" aria-controls="panel-countries" aria-selected="true" tabindex="0" data-range="countries">Countries</button>
+      <button role="tab" id="tab-periods" aria-controls="panel-periods" aria-selected="false" tabindex="-1" data-range="periods">Time periods</button>
+      <button role="tab" id="tab-energy" aria-controls="panel-energy" aria-selected="false" tabindex="-1" data-range="energy">Energy types</button>
+    </div>
+
+    <div id="panel-countries" role="tabpanel" aria-labelledby="tab-countries" tabindex="0">
+      <section class="panel">
+        <h2>Countries, right now</h2>
+        <p class="chart-caption">Compares live snapshots from two of the grids this site tracks. Each source publishes on its own schedule and in its own currency, so the two figures won't share an exact timestamp, and price isn't converted between currencies.</p>
+
+        <div class="compare-picker">
+          <label>Country A
+            <select id="country-a">
+              <option value="GB" selected>Great Britain</option>
+              <option value="IE">Ireland</option>
+              <option value="FR">France</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="NO">Norway (NO2)</option>
+              <option value="DK">Denmark (DK1)</option>
+              <option value="DE">Germany</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="SE">Sweden (SE3)</option>
+              <option value="PT">Portugal</option>
+              <option value="US">USA</option>
+              <option value="CA">Canada (Ontario)</option>
+            </select>
+          </label>
+          <label>Country B
+            <select id="country-b">
+              <option value="GB">Great Britain</option>
+              <option value="IE" selected>Ireland</option>
+              <option value="FR">France</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="NO">Norway (NO2)</option>
+              <option value="DK">Denmark (DK1)</option>
+              <option value="DE">Germany</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="SE">Sweden (SE3)</option>
+              <option value="PT">Portugal</option>
+              <option value="US">USA</option>
+              <option value="CA">Canada (Ontario)</option>
+            </select>
+          </label>
+        </div>
+
+        <table class="mix">
+          <caption class="visually-hidden">Side-by-side comparison of two countries' current grid snapshot</caption>
+          <thead>
+            <tr><th scope="col">Metric</th><th scope="col" class="num" id="countries-col-a">Great Britain</th><th scope="col" class="num" id="countries-col-b">Ireland</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Data as of</td><td class="num" id="ca-ts">-</td><td class="num" id="cb-ts">-</td></tr>
+            <tr><td>Demand</td><td class="num" id="ca-demand">-</td><td class="num" id="cb-demand">-</td></tr>
+            <tr><td>Generation</td><td class="num" id="ca-generation">-</td><td class="num" id="cb-generation">-</td></tr>
+            <tr><td>Day-ahead price</td><td class="num" id="ca-price">-</td><td class="num" id="cb-price">-</td></tr>
+            <tr><td>Carbon intensity</td><td class="num" id="ca-emissions">-</td><td class="num" id="cb-emissions">-</td></tr>
+          </tbody>
+        </table>
+        <p class="chart-caption" id="countries-caption">Loading…</p>
+      </section>
+    </div>
+
+    <div id="panel-periods" role="tabpanel" aria-labelledby="tab-periods" tabindex="0" hidden>
+      <section class="panel">
+        <h2>GB: this period vs. a prior one</h2>
+        <p class="chart-caption">Compares GB's own current UK meteorological season so far against the same season in an earlier year, for one metric at a time. <span data-season-label>This season</span> is still in progress, so it's matched against the same elapsed portion of the earlier season, aligned by position within the season rather than by calendar date.</p>
+
+        <div class="compare-picker">
+          <label>Metric
+            <select id="period-metric">
+              <option value="demand" selected>Demand</option>
+              <option value="generation">Generation</option>
+              <option value="price">Price</option>
+              <option value="emissions">Emissions</option>
+            </select>
+          </label>
+          <label>Compare against
+            <select id="period-offset">
+              <option value="-1" selected>Same season last year</option>
+              <option value="-2">2 years ago</option>
+              <option value="-3">3 years ago</option>
+              <option value="-4">4 years ago</option>
+              <option value="-5">5 years ago</option>
+              <option value="-6">6 years ago</option>
+              <option value="-7">7 years ago</option>
+              <option value="-8">8 years ago</option>
+              <option value="-9">9 years ago</option>
+              <option value="-10">10 years ago</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="chart-wrap is-loading" style="height:320px;"><canvas id="periods-chart"></canvas></div>
+
+        <dl class="status-grid status-grid--4" style="margin-top:1.25rem;">
+          <div class="stat"><dt id="periods-stat-a-label">This season - average</dt><dd id="periods-stat-a-avg">-</dd></div>
+          <div class="stat"><dt id="periods-stat-a-peak-label">This season - peak</dt><dd id="periods-stat-a-peak">-</dd></div>
+          <div class="stat"><dt id="periods-stat-b-label">Comparison - average</dt><dd id="periods-stat-b-avg">-</dd></div>
+          <div class="stat"><dt id="periods-stat-b-peak-label">Comparison - peak</dt><dd id="periods-stat-b-peak">-</dd></div>
+        </dl>
+        <p class="chart-caption" id="periods-caption" style="margin-top:.75rem;">Loading…</p>
+      </section>
+    </div>
+
+    <div id="panel-energy" role="tabpanel" aria-labelledby="tab-energy" tabindex="0" hidden>
+      <section class="panel">
+        <h2>Energy sources, any country vs. any country</h2>
+        <p class="chart-caption">Compares one energy source or category from one tracked grid against another - the same country, or two different ones, e.g. USA wind against Great Britain wind. Uses each country's own real stored history over a chosen time range.</p>
+
+        <div class="compare-picker" style="flex-wrap:wrap;">
+          <label>Country A
+            <select id="energy-country-a">
+              <option value="GB">Great Britain</option>
+              <option value="IE">Ireland</option>
+              <option value="FR">France</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="NO">Norway (NO2)</option>
+              <option value="DK">Denmark (DK1)</option>
+              <option value="DE">Germany</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="SE">Sweden (SE3)</option>
+              <option value="PT">Portugal</option>
+              <option value="US" selected>USA</option>
+              <option value="CA">Canada (Ontario)</option>
+            </select>
+          </label>
+          <label>Source A
+            <select id="energy-source-a">
+              <optgroup label="Groups">
+                <option value="demand">Demand</option>
+                <option value="generation">Total generation</option>
+                <option value="renewable">Renewables</option>
+                <option value="non_renewable">Non-renewable</option>
+                <option value="fossil">Fossil fuels</option>
+              </optgroup>
+              <optgroup label="Individual sources">
+                <option value="wind" selected>Wind</option>
+                <option value="solar">Solar</option>
+                <option value="hydro">Hydro</option>
+                <option value="gas">Gas</option>
+                <option value="coal">Coal</option>
+                <option value="oil">Oil</option>
+                <option value="nuclear">Nuclear</option>
+                <option value="biomass">Biomass</option>
+              </optgroup>
+            </select>
+          </label>
+          <label>Country B
+            <select id="energy-country-b">
+              <option value="GB" selected>Great Britain</option>
+              <option value="IE">Ireland</option>
+              <option value="FR">France</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="NO">Norway (NO2)</option>
+              <option value="DK">Denmark (DK1)</option>
+              <option value="DE">Germany</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="SE">Sweden (SE3)</option>
+              <option value="PT">Portugal</option>
+              <option value="US">USA</option>
+              <option value="CA">Canada (Ontario)</option>
+            </select>
+          </label>
+          <label>Source B
+            <select id="energy-source-b">
+              <optgroup label="Groups">
+                <option value="demand">Demand</option>
+                <option value="generation">Total generation</option>
+                <option value="renewable">Renewables</option>
+                <option value="non_renewable">Non-renewable</option>
+                <option value="fossil">Fossil fuels</option>
+              </optgroup>
+              <optgroup label="Individual sources">
+                <option value="wind" selected>Wind</option>
+                <option value="solar">Solar</option>
+                <option value="hydro">Hydro</option>
+                <option value="gas">Gas</option>
+                <option value="coal">Coal</option>
+                <option value="oil">Oil</option>
+                <option value="nuclear">Nuclear</option>
+                <option value="biomass">Biomass</option>
+              </optgroup>
+            </select>
+          </label>
+        </div>
+        <p class="chart-caption" style="margin-top:-.5rem;" id="energy-scope-caption">Defaults to USA wind vs. Great Britain wind. Not every country tracks every source (e.g. the USA doesn't report biomass separately) - if a combination isn't available, the chart says so rather than showing a placeholder.</p>
+
+        <div class="range-tabs" role="tablist" data-tablist id="energy-tablist" aria-label="Time range">
+          <button role="tab" id="etab-day" aria-controls="epanel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+          <button role="tab" id="etab-week" aria-controls="epanel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+          <button role="tab" id="etab-month" aria-controls="epanel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+          <button role="tab" id="etab-season" aria-controls="epanel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+          <button role="tab" id="etab-year" aria-controls="epanel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+          <button role="tab" id="etab-5year" aria-controls="epanel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+          <button role="tab" id="etab-10year" aria-controls="epanel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+        </div>
+        <div id="epanel-day" role="tabpanel" aria-labelledby="etab-day" tabindex="0"></div>
+        <div id="epanel-week" role="tabpanel" aria-labelledby="etab-week" tabindex="0" hidden></div>
+        <div id="epanel-month" role="tabpanel" aria-labelledby="etab-month" tabindex="0" hidden></div>
+        <div id="epanel-season" role="tabpanel" aria-labelledby="etab-season" tabindex="0" hidden></div>
+        <div id="epanel-year" role="tabpanel" aria-labelledby="etab-year" tabindex="0" hidden></div>
+        <div id="epanel-5year" role="tabpanel" aria-labelledby="etab-5year" tabindex="0" hidden></div>
+        <div id="epanel-10year" role="tabpanel" aria-labelledby="etab-10year" tabindex="0" hidden></div>
+
+        <div class="chart-wrap is-loading" style="height:320px;margin-top:1rem;"><canvas id="energy-chart"></canvas></div>
+        <p class="chart-caption" id="energy-caption">Loading…</p>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The GB data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a>. Ireland's demand/generation come from <a href="https://www.smartgriddashboard.com/">EirGrid's Smart Grid Dashboard</a>, and every other country's figures come from the <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a> or (for the USA) the <a href="https://www.eia.gov/opendata/">EIA API</a> - see <a href="data-sources.html">data sources</a> for details on each.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  const COUNTRY_LABELS = { GB: "Great Britain", IE: "Ireland", FR: "France", NL: "Netherlands", BE: "Belgium", NO: "Norway (NO2)", DK: "Denmark (DK1)", DE: "Germany", ES: "Spain", IT: "Italy", SE: "Sweden (SE3)", PT: "Portugal", US: "USA", CA: "Canada (Ontario)" };
+
+  /** Normalizes each source's own current-snapshot shape into one common
+      {label, ts, demandMw, generationMw, price, priceUnit, emissionsGco2}
+      shape the comparison table can render identically regardless of
+      which country was picked. Returns null only if NONE of that
+      country's sources have any live data yet - if some fields are
+      available and others aren't, returns what it has with the rest null,
+      same "partial is still useful" convention used elsewhere on this site. */
+  async function loadCountrySnapshot(code) {
+    if (!window.GridData) return null;
+    if (code === "GB") {
+      const cur = await window.GridData.fetchCurrent();
+      if (!cur) return null;
+      const gen = window.GridData.summarizeGeneration(cur.generation);
+      return {
+        label: "Great Britain", ts: cur.ts,
+        demandMw: cur.demand_mw, generationMw: gen.totalGenMw,
+        price: cur.price_gbp_mwh, priceUnit: "GBP/MWh",
+        emissionsGco2: cur.emissions_gco2,
+      };
+    }
+    if (code === "IE") {
+      // Ireland's demand/generation come from EirGrid; its day-ahead price
+      // comes from the separate ENTSO-E feed instead (EirGrid doesn't
+      // publish SEM price via a keyless API) - see pages/ireland.html's
+      // own data-sources section for the full explanation. Fetched in
+      // parallel and merged here, same as ireland.html itself does.
+      const [ie, ieEntsoe] = await Promise.all([
+        window.GridData.fetchIrelandCurrent(),
+        window.GridData.fetchCountryCurrent("IE"),
+      ]);
+      if (!ie && !ieEntsoe) return null;
+      return {
+        label: "Ireland",
+        ts: (ie && ie.ts) || (ieEntsoe && ieEntsoe.ts) || null,
+        demandMw: ie ? ie.demand_mw : null,
+        generationMw: ie ? ie.generation_mw : null,
+        price: ieEntsoe ? ieEntsoe.price_eur_mwh : null, priceUnit: "EUR/MWh",
+        emissionsGco2: ie ? ie.emissions_gco2 : null,
+      };
+    }
+    if (code === "US") {
+      const us = await window.GridData.fetchUsaCurrent();
+      if (!us) return null;
+      return {
+        label: "USA", ts: us.ts,
+        demandMw: us.demand_mw, generationMw: us.generation_mw,
+        price: null, priceUnit: null, emissionsGco2: null,
+      };
+    }
+    if (code === "CA") {
+      // Ontario only, via IESO - see pages/canada.html's own data-sources
+      // section for why price/emissions aren't available here at all.
+      const ca = await window.GridData.fetchCanadaCurrent();
+      if (!ca) return null;
+      return {
+        label: "Canada (Ontario)", ts: ca.ts,
+        demandMw: ca.demand_mw, generationMw: ca.generation_mw,
+        price: null, priceUnit: null, emissionsGco2: null,
+      };
+    }
+    // FR/NL/BE/NO/DK/DE/ES/IT/SE/PT - all the same ENTSO-E-sourced shape. None of these
+    // publish an emissions figure via ENTSO-E (see pages/france.html's
+    // own data-sources section for why), hence emissionsGco2: null.
+    const cc = await window.GridData.fetchCountryCurrent(code);
+    if (!cc) return null;
+    return {
+      label: COUNTRY_LABELS[code], ts: cc.ts,
+      demandMw: cc.demand_mw, generationMw: cc.generation_mw,
+      price: cc.price_eur_mwh, priceUnit: "EUR/MWh",
+      emissionsGco2: null,
+    };
+  }
+
+  function fmtTs(ts) {
+    if (!ts) return "-";
+    const d = new Date(ts);
+    return d.toLocaleDateString([], { day: "numeric", month: "short" }) + ", " + d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
+  function fmtGw(mw) { return mw != null ? (mw / 1000).toFixed(1) + "GW" : "-"; }
+  function fmtPrice(price, unit) {
+    if (price == null) return "-";
+    const symbol = unit === "GBP/MWh" ? "£" : unit === "EUR/MWh" ? "€" : "";
+    return symbol + price.toFixed(2) + "/MWh";
+  }
+  function fmtEmissions(v) { return v != null ? Math.round(v) + "g/kWh" : "-"; }
+
+  async function renderCountriesTab() {
+    const selA = document.getElementById("country-a");
+    const selB = document.getElementById("country-b");
+    const captionEl = document.getElementById("countries-caption");
+    const colA = document.getElementById("countries-col-a");
+    const colB = document.getElementById("countries-col-b");
+    if (!selA || !selB) return;
+
+    captionEl.textContent = "Loading…";
+    colA.textContent = COUNTRY_LABELS[selA.value];
+    colB.textContent = COUNTRY_LABELS[selB.value];
+
+    const [a, b] = await Promise.all([loadCountrySnapshot(selA.value), loadCountrySnapshot(selB.value)]);
+
+    const set = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    set("ca-ts", a ? fmtTs(a.ts) : "Not available");
+    set("cb-ts", b ? fmtTs(b.ts) : "Not available");
+    set("ca-demand", a ? fmtGw(a.demandMw) : "-");
+    set("cb-demand", b ? fmtGw(b.demandMw) : "-");
+    set("ca-generation", a ? fmtGw(a.generationMw) : "-");
+    set("cb-generation", b ? fmtGw(b.generationMw) : "-");
+    set("ca-price", a ? fmtPrice(a.price, a.priceUnit) : "-");
+    set("cb-price", b ? fmtPrice(b.price, b.priceUnit) : "-");
+    set("ca-emissions", a ? fmtEmissions(a.emissionsGco2) : "-");
+    set("cb-emissions", b ? fmtEmissions(b.emissionsGco2) : "-");
+
+    if (!a && !b) {
+      captionEl.textContent = "Live data isn't available yet for either selection.";
+    } else if (!a || !b) {
+      captionEl.textContent = `Live data isn't available yet for ${!a ? COUNTRY_LABELS[selA.value] : COUNTRY_LABELS[selB.value]}.`;
+    } else {
+      let msg = "Each side shows the latest figure that source has published - they won't share an exact timestamp, since every source updates on its own schedule.";
+      if (a.price != null && b.price != null && a.priceUnit !== b.priceUnit) {
+        msg += ` Price is shown in each grid's own currency (not converted) - ${COUNTRY_LABELS[selA.value]} in ${a.priceUnit.split("/")[0]}, ${COUNTRY_LABELS[selB.value]} in ${b.priceUnit.split("/")[0]} - the two aren't directly comparable.`;
+      }
+      captionEl.textContent = msg;
+    }
+  }
+
+  document.getElementById("country-a").addEventListener("change", renderCountriesTab);
+  document.getElementById("country-b").addEventListener("change", renderCountriesTab);
+  renderCountriesTab();
+
+  // ---------------------------------------------------------------------
+  // Time periods tab
+  // ---------------------------------------------------------------------
+  const PERIOD_METRICS = {
+    demand:     { label: "Demand",     unit: "GW",    color: "#1d6fe0" },
+    generation: { label: "Generation", unit: "GW",    color: "#0a6e5c" },
+    price:      { label: "Price",      unit: "£/MWh", color: "#d98e04" },
+    emissions:  { label: "Emissions",  unit: "g/kWh", color: "#8a5a3c" },
+  };
+
+  function avgOf(values) {
+    const nums = (values || []).filter((v) => typeof v === "number");
+    if (!nums.length) return null;
+    return nums.reduce((a, b) => a + b, 0) / nums.length;
+  }
+  function peakOf(values) {
+    const nums = (values || []).filter((v) => typeof v === "number");
+    if (!nums.length) return null;
+    return Math.max(...nums);
+  }
+  function fmtMetricValue(v, unit) {
+    if (v == null) return "-";
+    return (unit === "g/kWh" ? Math.round(v) : v.toFixed(1)) + unit;
+  }
+
+  const seasonLabelEl = document.querySelector("[data-season-label]");
+  if (seasonLabelEl && window.GridPreview) seasonLabelEl.textContent = GridPreview.getCurrentUkSeason().label;
+
+  async function renderPeriodsTab() {
+    const metricSel = document.getElementById("period-metric");
+    const offsetSel = document.getElementById("period-offset");
+    const canvas = document.getElementById("periods-chart");
+    const captionEl = document.getElementById("periods-caption");
+    if (!metricSel || !offsetSel || !canvas || !window.GridData) return;
+
+    const metric = metricSel.value;
+    const offset = parseInt(offsetSel.value, 10);
+    const cfg = PERIOD_METRICS[metric];
+
+    canvas.closest(".chart-wrap").classList.add("is-loading");
+    captionEl.textContent = "Loading…";
+
+    const [primary, compare] = await Promise.all([
+      window.GridData.fetchSeries(metric, "season"),
+      window.GridData.fetchSeries(metric, "season", null, offset),
+    ]);
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+
+    const thisLabel = GridPreview.getCurrentUkSeason().label;
+    const compareLabel = GridPreview.getUkSeasonBounds(offset).label;
+
+    document.getElementById("periods-stat-a-label").textContent = thisLabel + " - average";
+    document.getElementById("periods-stat-a-peak-label").textContent = thisLabel + " - peak";
+    document.getElementById("periods-stat-b-label").textContent = compareLabel + " - average";
+    document.getElementById("periods-stat-b-peak-label").textContent = compareLabel + " - peak";
+
+    if (!primary) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for this metric.");
+      ["periods-stat-a-avg", "periods-stat-a-peak", "periods-stat-b-avg", "periods-stat-b-peak"].forEach((id) => { document.getElementById(id).textContent = "-"; });
+      captionEl.textContent = "Not enough recorded history yet for this metric.";
+      return;
+    }
+
+    GridPreview.renderLineChart(canvas, primary, {
+      label: cfg.label, color: cfg.color, unit: primary.unit || cfg.unit,
+      compareSeries: compare || undefined,
+      compareLabel: compare ? compareLabel : undefined,
+    });
+
+    document.getElementById("periods-stat-a-avg").textContent = fmtMetricValue(avgOf(primary.values), cfg.unit);
+    document.getElementById("periods-stat-a-peak").textContent = fmtMetricValue(peakOf(primary.values), cfg.unit);
+    document.getElementById("periods-stat-b-avg").textContent = compare ? fmtMetricValue(avgOf(compare.values), cfg.unit) : "-";
+    document.getElementById("periods-stat-b-peak").textContent = compare ? fmtMetricValue(peakOf(compare.values), cfg.unit) : "-";
+
+    captionEl.textContent = compare
+      ? `Aligned by position within the season, not calendar date - so the same point through each season lines up even though the actual dates differ. ${thisLabel} is still in progress, so only the portion elapsed so far is compared.`
+      : `No recorded data yet for ${compareLabel} on this install - showing ${thisLabel} on its own. A fresh install won't have multi-year history yet.`;
+  }
+
+  document.getElementById("period-metric").addEventListener("change", renderPeriodsTab);
+  document.getElementById("period-offset").addEventListener("change", renderPeriodsTab);
+
+  // ---------------------------------------------------------------------
+  // Energy types tab - any tracked country's energy source vs. any other's
+  // (or the same country against itself, e.g. two of GB's own categories,
+  // which is all this tab used to offer before this was generalised).
+  // ---------------------------------------------------------------------
+  const ENERGY_SOURCE_META = {
+    demand:          { label: "Demand",            color: "#1d6fe0" },
+    generation:      { label: "Total generation",  color: "#0a6e5c" },
+    renewable:       { label: "Renewables",        color: "#1f9d5a" },
+    non_renewable:   { label: "Non-renewable",     color: "#6b5847" },
+    fossil:          { label: "Fossil fuels",      color: "#8a5a3c" },
+    wind:            { label: "Wind",              color: "#2fa876" },
+    solar:           { label: "Solar",             color: "#e0a800" },
+    hydro:           { label: "Hydro",             color: "#2a8fbd" },
+    gas:             { label: "Gas",               color: "#8a5a3c" },
+    coal:            { label: "Coal",              color: "#4a4a4a" },
+    oil:             { label: "Oil",               color: "#5c4b3c" },
+    nuclear:         { label: "Nuclear",           color: "#6a5acd" },
+    biomass:         { label: "Biomass",           color: "#7a8f3f" },
+  };
+  const ENERGY_COUNTRY_LABELS = { GB: "Great Britain", IE: "Ireland", FR: "France", NL: "Netherlands", BE: "Belgium", NO: "Norway (NO2)", DK: "Denmark (DK1)", DE: "Germany", ES: "Spain", IT: "Italy", SE: "Sweden (SE3)", PT: "Portugal", US: "USA", CA: "Canada (Ontario)" };
+
+  // Routes a (country, metric) pair to whichever backend endpoint actually
+  // covers it. GB and USA each have one endpoint that covers every metric
+  // in ENERGY_SOURCE_META. The five ENTSO-E-only countries (FR/NL/BE/NO/DK)
+  // route everything through country_series.php, which covers demand too
+  // for all five (see entsoe_countries in includes/config.php.example).
+  // Ireland is the one exception: demand/generation/wind are EirGrid's own
+  // figures (matching the numbers shown elsewhere on pages/ireland.html),
+  // everything else comes from ENTSO-E's psr_type breakdown via
+  // country_series.php, same split as that page's own History section.
+  function fetchEnergySourceSeries(country, metric, range) {
+    if (!window.GridData) return Promise.resolve(null);
+    if (country === "GB") return window.GridData.fetchSeries(metric, range);
+    if (country === "US") return window.GridData.fetchUsaSeries(metric, range);
+    if (country === "IE" && (metric === "demand" || metric === "generation" || metric === "wind")) {
+      return window.GridData.fetchIrelandSeries(metric, range);
+    }
+    if (country === "CA") return window.GridData.fetchCanadaSeries(metric, range);
+    return window.GridData.fetchCountrySeries(country, metric, range);
+  }
+
+  let currentEnergyRange = "day";
+
+  async function renderEnergyTab(range) {
+    if (range) currentEnergyRange = range;
+    const canvas = document.getElementById("energy-chart");
+    const captionEl = document.getElementById("energy-caption");
+    const countryASel = document.getElementById("energy-country-a");
+    const sourceASel = document.getElementById("energy-source-a");
+    const countryBSel = document.getElementById("energy-country-b");
+    const sourceBSel = document.getElementById("energy-source-b");
+    if (!canvas || !window.GridData) return;
+
+    const countryA = countryASel.value, metricA = sourceASel.value;
+    const countryB = countryBSel.value, metricB = sourceBSel.value;
+    const cfgA = ENERGY_SOURCE_META[metricA], cfgB = ENERGY_SOURCE_META[metricB];
+    const labelA = `${ENERGY_COUNTRY_LABELS[countryA]} - ${cfgA.label}`;
+    const labelB = `${ENERGY_COUNTRY_LABELS[countryB]} - ${cfgB.label}`;
+
+    canvas.closest(".chart-wrap").classList.add("is-loading");
+    captionEl.textContent = "Loading…";
+
+    const [seriesA, seriesB] = await Promise.all([
+      fetchEnergySourceSeries(countryA, metricA, currentEnergyRange),
+      fetchEnergySourceSeries(countryB, metricB, currentEnergyRange),
+    ]);
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+
+    if (!seriesA && !seriesB) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for this range, for either selection.");
+      captionEl.textContent = "Not enough recorded history yet for this range, for either selection - some countries don't track every source (e.g. the USA doesn't report biomass separately).";
+      return;
+    }
+
+    const primary = seriesA || seriesB;
+    const labelPrimary = seriesA ? labelA : labelB;
+    const colorPrimary = seriesA ? cfgA.color : cfgB.color;
+    const secondary = seriesA ? seriesB : null;
+    const labelSecondary = seriesA ? labelB : labelA;
+
+    GridPreview.renderLineChart(canvas, primary, {
+      label: labelPrimary, color: colorPrimary, unit: primary.unit || "GW",
+      compareSeries: secondary || undefined,
+      compareLabel: secondary ? labelSecondary : undefined,
+    });
+
+    captionEl.textContent = (seriesA && seriesB)
+      ? `${labelA} and ${labelB} over the selected range. Both in GW - directly comparable regardless of country.`
+      : `Only ${seriesA ? labelA : labelB} has enough recorded history for this range - ${seriesA ? labelB : labelA} isn't available (this country may not track that source, or ingestion hasn't run yet).`;
+  }
+
+  document.getElementById("energy-tablist").addEventListener("rangechange", (e) => renderEnergyTab(e.detail.range));
+  ["energy-country-a", "energy-source-a", "energy-country-b", "energy-source-b"].forEach((id) => {
+    document.getElementById(id).addEventListener("change", () => renderEnergyTab());
+  });
+
+  // ---------------------------------------------------------------------
+  // Lazy-init the two non-default tabs the first time each is switched to,
+  // same "don't fetch what nobody's looking at yet" reasoning as every
+  // other range-tabs/lazy-panel pattern on this site.
+  // ---------------------------------------------------------------------
+  let periodsInitialized = false;
+  let energyInitialized = false;
+  document.getElementById("top-tablist").addEventListener("rangechange", (e) => {
+    if (e.detail.range === "periods" && !periodsInitialized) {
+      periodsInitialized = true;
+      renderPeriodsTab();
+    }
+    if (e.detail.range === "energy" && !energyInitialized) {
+      energyInitialized = true;
+      renderEnergyTab("day");
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canada: Live+ - the live status of Ontario's electricity grid</title>
+<meta name="description" content="A live dashboard for Ontario's electricity grid - demand and generation mix, live from IESO. Covers Ontario only, not all of Canada. Wholesale price, emissions and transfers aren't available and are shown as not available rather than a placeholder.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Canada: Ontario's electricity grid, live via IESO</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group>
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group data-active="true">
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html" aria-current="page">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Canada: the live status of Ontario's electricity grid</h1>
+      <p>Canada doesn't run one national grid - each province operates its own system, several synchronised with the US Eastern or Western Interconnections rather than with each other. This page covers Ontario only, run by the IESO (Independent Electricity System Operator), which publishes a fully public, keyless real-time feed - the only Canadian jurisdiction found to do so during research for this page. Demand and generation mix below are live from IESO. Wholesale price, emissions and interchange/transfers aren't available from this source and are shown as not available rather than a placeholder. See <a href="#ca-sources">data sources</a> for the full picture.</p>
+    </section>
+
+    <p class="data-status-banner is-illustrative" id="ca-status-banner"><span class="dot" aria-hidden="true"></span>Connecting to live data…</p>
+
+    <dl class="status-grid" aria-label="Ontario grid snapshot">
+      <div class="stat stat--live"><dt>Data as of</dt><dd id="stat-time" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat stat--unavailable"><dt>Wholesale price</dt><dd id="stat-price">Not available</dd><p class="chart-caption" style="margin:.35rem 0 0;">Not published via IESO's public reports</p></div>
+      <div class="stat stat--unavailable"><dt>Emissions</dt><dd id="stat-emissions">Not available</dd><p class="chart-caption" style="margin:.35rem 0 0;">Not published via IESO's public reports</p></div>
+      <div class="stat"><dt>Demand</dt><dd><span id="stat-demand">-</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-demand-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-demand" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Generation</dt><dd><span id="stat-generation">-</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-generation-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-generation" aria-hidden="true"></canvas></div></div>
+      <div class="stat stat--unavailable"><dt>Transfers</dt><dd id="stat-transfers">Not available</dd><p class="chart-caption" style="margin:.35rem 0 0;">Not wired up on this install yet</p></div>
+    </dl>
+    <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Loading live data from IESO…</p>
+
+    <section class="panel" aria-labelledby="mix-heading">
+      <h2 id="mix-heading">Generation mix</h2>
+      <p class="chart-caption" id="mix-status-caption" style="margin-top:-.25rem;">Loading live data…</p>
+      <div class="panel-grid panel-grid--2">
+        <table class="mix">
+          <caption class="visually-hidden">Ontario generation by source</caption>
+          <thead>
+            <tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr>
+          </thead>
+          <tbody id="mix-tbody">
+          </tbody>
+        </table>
+        <div>
+          <div class="chart-wrap is-loading"><canvas id="mix-donut" role="img" aria-label="Donut chart of Ontario generation mix by source"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-legend"></ul>
+          <p class="chart-caption" id="mix-donut-caption">Ontario's mix is unusual for North America - dominated by nuclear and hydro, with very little fossil generation left.</p>
+        </div>
+      </div>
+      <div class="chart-wrap is-loading" style="height:220px;margin-top:1.5rem;">
+        <canvas id="mix-bar" role="img" aria-label="Bar chart comparing Ontario generation by source"></canvas>
+      </div>
+      <p class="chart-caption">Generation by source, ranked highest to lowest.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
+      <div class="chart-wrap is-loading" style="height:300px;">
+        <canvas id="mix-stack" role="img" aria-label="Stacked area chart of renewable and non-renewable generation over the last 24 hours"></canvas>
+      </div>
+      <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
+      <p class="chart-caption" id="mix-stack-caption">Renewable (hydro, wind, solar) and non-renewable (nuclear, gas, biofuel, other), from IESO's per-fuel-type feed.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <p class="chart-caption">Choose a time range to see demand and generation over time. Wholesale price, emissions and transfers aren't available from IESO's public reports, so those panels show "not available" rather than a chart. Because this install only started polling IESO recently, longer ranges may show little or no data yet - see <a href="#ca-sources">data sources</a>.</p>
+
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="range-panel chart-grid">
+          <div class="chart-card"><h3>Demand</h3><div class="chart-wrap is-loading"><canvas data-metric="demand"></canvas></div></div>
+          <div class="chart-card"><h3>Generation</h3><div class="chart-wrap is-loading"><canvas data-metric="generation"></canvas></div></div>
+          <div class="chart-card"><h3>Wholesale price</h3><div class="chart-wrap is-loading"><canvas data-metric="price"></canvas></div></div>
+          <div class="chart-card"><h3>Emissions per kWh</h3><div class="chart-wrap is-loading"><canvas data-metric="emissions"></canvas></div></div>
+          <div class="chart-card"><h3>Transfers</h3><div class="chart-wrap is-loading"><canvas data-metric="transfers"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About Ontario's grid, and why this page isn't "Canada"</h2>
+      <p>Canada has no single national grid or national system operator - power is a provincial responsibility, and each province runs its own system. Several are synchronised with neighbouring US interconnections (Ontario and most of the rest of Canada sit inside the Eastern Interconnection, British Columbia inside the Western Interconnection, and Quebec runs its own separate asynchronous grid tied to the rest of North America only via HVDC links) rather than with each other directly.</p>
+      <p>Ontario's system operator, the IESO, publishes a genuinely public, keyless, machine-readable set of real-time and historical reports - covering demand and generation by fuel type - which is what powers this page. Ontario's own generation mix is unusual for North America: nuclear typically supplies the largest single share, complemented by hydro, with a small and shrinking role for gas and very little coal (phased out entirely in 2014) or oil.</p>
+      <p>Other provinces - Quebec (heavily hydro), British Columbia (heavily hydro), Alberta (gas and a fast-growing wind/solar fleet, with its own competitive market and a free-but-registered API) and the rest - aren't covered here. Adding them would need separate research and ingestion work per operator, since Canada has no equivalent of the EIA or ENTSO-E to query once for the whole country.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Context</h2>
+      <div class="panel-grid panel-grid--2">
+        <ul class="records-list">
+          <li><span>Nuclear share of generation</span><strong>Typically around half - dipped in the low 50s during 2022-2024 refurbishment outages</strong></li>
+          <li><span>Hydro share of generation</span><strong>~23-25% in a typical year</strong></li>
+          <li><span>Last coal-fired power station closed</span><strong>April 2014 (Thunder Bay) - first jurisdiction in North America to eliminate coal power entirely</strong></li>
+          <li><span>All-time peak demand record</span><strong>27,005MW - 1 August 2006, during a summer heatwave</strong></li>
+        </ul>
+        <div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="records-bar" role="img" aria-label="Bar chart of Ontario's approximate nuclear generation share, 2020 to 2024"></canvas></div>
+          <p class="chart-caption">Approximate nuclear share of Ontario generation by year - dipped during a multi-year Bruce/Darlington refurbishment programme, recovering as units return to service.</p>
+        </div>
+      </div>
+      <p class="chart-caption">Figures are approximate, gathered from public IESO year-end reporting rather than a long-run historical feed. Last checked: 23 August 2026.</p>
+    </section>
+
+    <section class="panel" id="ca-sources" aria-labelledby="ca-sources-heading">
+      <h2 id="ca-sources-heading">Data sources for Canada</h2>
+      <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are GB-specific and don't cover Canada at all - and unlike GB, Ireland or the EU, there's no single Canadian source to point a live feed at either. This page uses one source only: <a href="https://www.ieso.ca/power-data/data-directory">IESO's public report repository</a>, which powers demand, generation and the generation mix (including the 24-hour stack and this page's History section) above and below - Ontario only.</p>
+      <p>Why it's limited, and why this page deliberately sticks to that one source:</p>
+      <ul>
+        <li><strong>Ontario only, not all of Canada.</strong> IESO is Ontario's system operator; it has no visibility into, and doesn't publish data for, any other province. See the "About" section above for why the rest of Canada isn't covered yet.</li>
+        <li><strong>No wholesale price shown.</strong> IESO does publish Ontario market prices, but in a more complex shape (multiple pricing mechanisms following recent market reforms) that this install doesn't currently parse - rather than show a number that might be measuring the wrong thing, the price stat and its History panel are marked "not available".</li>
+        <li><strong>No emissions figure.</strong> IESO doesn't publish a carbon-intensity number in its public reports, so emissions is also marked "not available" rather than estimated.</li>
+        <li><strong>No transfers figure yet.</strong> IESO does publish an interchange/intertie schedule report, but it isn't wired into this install yet - marked "not available" rather than guessed at.</li>
+        <li><strong>History depth builds up over time.</strong> IESO's "most recent" report aliases only ever contain a rolling recent window, not a deep archive - unlike GB's decade-plus of stored history, Canada's History section here only covers however long this install has actually been polling IESO for.</li>
+      </ul>
+      <p>See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the other pages.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p style="margin-top:.5rem;">Demand and generation mix are live from <a href="https://www.ieso.ca/power-data/data-directory">IESO</a>, Ontario's system operator. Wholesale price, emissions and transfers aren't available and are shown as not available.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with the IESO or the Government of Ontario</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  // demand/generation have real bucketed history via api/canada_series.php
+  // - price/emissions/transfers don't exist as a metric there at all, so
+  // those three panels always render as a chart error rather than any kind
+  // of line, mock or otherwise.
+  const METRICS = {
+    demand:     { label: "Demand",     unit: "GW", color: "#1d6fe0" },
+    generation: { label: "Generation", unit: "GW", color: "#0a6e5c" },
+  };
+  const UNAVAILABLE_METRICS = {
+    price: "Not available - not currently parsed from IESO's public reports.",
+    emissions: "Not available - not published in IESO's public reports.",
+    transfers: "Not available - not wired up on this install yet.",
+  };
+
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  async function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const canvases = Array.from(host.querySelectorAll("canvas[data-metric]"));
+    const liveCanvases = canvases.filter((c) => METRICS[c.dataset.metric]);
+    const seriesList = await Promise.all(liveCanvases.map((c) => window.GridData.fetchCanadaSeries(c.dataset.metric, range)));
+
+    canvases.forEach((canvas) => {
+      const metric = canvas.dataset.metric;
+      if (UNAVAILABLE_METRICS[metric]) {
+        GridPreview.showChartError(canvas, UNAVAILABLE_METRICS[metric]);
+        return;
+      }
+      const cfg = METRICS[metric];
+      const series = seriesList[liveCanvases.indexOf(canvas)];
+      if (series && series.values.length) {
+        GridPreview.renderLineChart(canvas, series, { label: cfg.label, color: cfg.color, unit: series.unit || cfg.unit });
+      } else {
+        GridPreview.showChartError(canvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+
+  // Generation mix grouping - mirrors api/canada_series.php's metric=mix SQL:
+  // renewable = hydro+wind+solar, non-renewable = nuclear+gas+biofuel+other
+  // (biofuel counted as non-renewable, matching GB's own convention).
+  const CANADA_MIX_GROUPS = [
+    { key: "renewable", label: "Renewables", color: "var(--renewable)", codes: ["HYDRO", "WIND", "SOLAR"] },
+    { key: "non_renewable", label: "Non-renewable", color: "var(--fossil)", codes: ["NUCLEAR", "GAS", "BIOFUEL", "OTHER"] },
+  ];
+  const CANADA_FUEL_COLORS = { NUCLEAR: "#6a5acd", GAS: "#8a5a3c", HYDRO: "#2a8fbd", WIND: "#2fa876", SOLAR: "#e0a800", BIOFUEL: "#7a8f3f", OTHER: "#6b5847" };
+
+  function renderCanadaMix(mixMw, isLive) {
+    const codes = Object.keys(mixMw || {}).filter((c) => mixMw[c] != null).sort((a, b) => mixMw[b] - mixMw[a]);
+    const tbody = document.getElementById("mix-tbody");
+    const statusCaption = document.getElementById("mix-status-caption");
+    const donutCaption = document.getElementById("mix-donut-caption");
+
+    if (!codes.length) {
+      if (tbody) tbody.innerHTML = "";
+      GridPreview.showChartError(document.getElementById("mix-donut"), "Not available yet.");
+      GridPreview.showChartError(document.getElementById("mix-bar"), "Not available yet.");
+      if (statusCaption) statusCaption.textContent = "Not available yet - no live IESO fuel-type reading has been recorded on this install.";
+      if (donutCaption) donutCaption.textContent = "";
+      return;
+    }
+
+    const totalMw = codes.reduce((sum, c) => sum + mixMw[c], 0);
+    const gw = (mw) => (mw / 1000).toFixed(1);
+    const pct = (mw) => totalMw > 0 ? (mw / totalMw * 100).toFixed(1) : "0.0";
+    const labelFor = (c) => (window.GridData.CANADA_FUEL_LABELS && window.GridData.CANADA_FUEL_LABELS[c]) || c;
+
+    if (tbody) {
+      tbody.innerHTML = "";
+      CANADA_MIX_GROUPS.forEach((group) => {
+        const groupCodes = codes.filter((c) => group.codes.includes(c));
+        const groupMw = groupCodes.reduce((sum, c) => sum + mixMw[c], 0);
+        if (groupMw <= 0) return;
+        const groupRow = document.createElement("tr");
+        groupRow.className = "group-row";
+        groupRow.innerHTML = `<th scope="row"><span class="swatch" style="background:${group.color}"></span>${group.label}</th><td class="num">${gw(groupMw)}</td><td class="num">${pct(groupMw)}</td>`;
+        tbody.appendChild(groupRow);
+        groupCodes.forEach((c) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${labelFor(c)}</td><td class="num">${gw(mixMw[c])}</td><td class="num">${pct(mixMw[c])}</td>`;
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    const donutCanvas = document.getElementById("mix-donut");
+    if (donutCanvas) {
+      donutCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      const labels = codes.map(labelFor);
+      const values = codes.map((c) => mixMw[c] / 1000);
+      const colors = codes.map((c) => CANADA_FUEL_COLORS[c] || "#7a7a7a");
+      GridPreview.renderDonutChart(donutCanvas, labels, values, colors, {
+        legendTarget: "mix-donut-legend", unit: "GW", centerLabel: gw(totalMw) + "GW", centerSub: "generated",
+      });
+      const barCanvas = document.getElementById("mix-bar");
+      if (barCanvas) {
+        barCanvas.closest(".chart-wrap").classList.remove("is-loading");
+        GridPreview.renderBarChart(barCanvas, labels, values, colors, { unit: "GW" });
+      }
+    }
+    if (donutCaption) donutCaption.textContent = `Generation ${gw(totalMw)}GW, live from IESO's per-fuel-type feed.`;
+    if (statusCaption) statusCaption.textContent = isLive ? "Live from IESO's per-fuel-type feed." : "Showing the last recorded reading.";
+  }
+
+  async function initCanadaStatusStrip() {
+    const caption = document.getElementById("stat-caption");
+    const banner = document.getElementById("ca-status-banner");
+    const asOfEl = document.getElementById("stat-time");
+    const liveKeys = ["demand", "generation"];
+    const sparkColors = { demand: "#1d6fe0", generation: "#0a6e5c" };
+
+    function renderCanada(current, isCached) {
+      const setStat = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      setStat("stat-demand", current.demand_mw != null ? (current.demand_mw / 1000).toFixed(1) : "-");
+      setStat("stat-generation", current.generation_mw != null ? (current.generation_mw / 1000).toFixed(1) : "-");
+      // Reference range: a rough typical Ontario low-to-peak demand window
+      // (not an official IESO threshold - see GridPreview.bandFromRange's
+      // own docblock). 12-27GW here.
+      GridPreview.setStatBand("stat-demand-band", GridPreview.bandFromRange(current.demand_mw != null ? current.demand_mw / 1000 : null, 12, 27), " relative to Ontario's typical demand range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-generation-band", GridPreview.bandFromRange(current.generation_mw != null ? current.generation_mw / 1000 : null, 12, 27), " relative to Ontario's typical generation range (rough guide, not an official banding)");
+
+      if (asOfEl) {
+        asOfEl.innerHTML = isCached
+          ? GridPreview.formatShowingHtml(current.ts)
+          : GridPreview.formatAsOfHtml(current.ts);
+        asOfEl.classList.remove("is-loading-text");
+      }
+      if (banner) {
+        banner.className = "data-status-banner";
+        banner.innerHTML = isCached
+          ? '<span class="dot" aria-hidden="true"></span>Showing the last successfully loaded figures - refreshing…'
+          : '<span class="dot" aria-hidden="true"></span>Demand &amp; mix are live from IESO (Ontario only) - price, emissions &amp; transfers aren\'t available';
+      }
+      if (caption) {
+        caption.textContent = isCached
+          ? "Showing the last successfully loaded figures while this page fetches the latest data."
+          : "Live demand from IESO (Ontario only)" + (current.stale ? ". This may be a few updates behind; check the site's cron jobs." : ".");
+      }
+      renderCanadaMix(current.mix_mw, !isCached);
+    }
+
+    const { usedCache, promise } = GridPreview.withCachedFallback(
+      "canada-current",
+      () => (window.GridData ? window.GridData.fetchCanadaCurrent() : Promise.resolve(null)),
+      renderCanada
+    );
+    const current = await promise;
+
+    if (!current) {
+      if (!usedCache) {
+        if (asOfEl) { asOfEl.textContent = "Not available"; asOfEl.classList.remove("is-loading-text"); }
+        if (banner) {
+          banner.className = "data-status-banner";
+          banner.innerHTML = '<span class="dot" aria-hidden="true"></span>No live IESO data yet on this install';
+        }
+        if (caption) caption.textContent = "No live IESO data has been recorded on this install yet - see data sources for details.";
+        liveKeys.forEach((key) => GridPreview.showChartError(document.getElementById("spark-" + key), "Not available"));
+        renderCanadaMix({}, false);
+      }
+      return;
+    }
+
+    const caSeriesList = await Promise.all(liveKeys.map((key) => window.GridData.fetchCanadaSeries(key, "3hour")));
+    liveKeys.forEach((key, i) => {
+      const canvas = document.getElementById("spark-" + key);
+      if (!canvas) return;
+      const series = caSeriesList[i];
+      if (series && series.values.length) {
+        GridPreview.renderSparkline(canvas, series.values, sparkColors[key]);
+      }
+    });
+  }
+
+  initCanadaStatusStrip();
+
+  (async function () {
+    const canvas = document.getElementById("mix-stack");
+    if (!canvas || !window.GridData) return;
+    const mix = await window.GridData.fetchCanadaMixSeries("day");
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+    if (!mix) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for the last 24 hours.");
+      return;
+    }
+    GridPreview.renderStackedAreaChart(canvas, mix.times, mix.labels, [
+      { name: "Renewables", color: "#1f9d5a", values: mix.renewable },
+      { name: "Non-renewable", color: "#8a5a3c", values: mix.non_renewable },
+    ], { unit: "GW", legendTarget: "mix-stack-legend" });
+  })();
+
+  GridPreview.renderBarChart(
+    document.getElementById("records-bar"),
+    ["2020", "2021", "2022", "2023", "2024"],
+    [60, 56, 51, 51, 49],
+    "#a6192e",
+    { unit: "%", horizontal: false, thickness: 32 }
+  );
+})();
+</script>
+</body>
+</html>

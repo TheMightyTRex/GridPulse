@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interconnectors - UK Grid: Live+</title>
+<meta name="description" content="Detailed live and historical data for interconnectors generation on Great Britain's electricity grid.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html" aria-current="page">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="type-hero">
+        <span class="type-hero__swatch" style="background:var(--interconnector)"></span>
+        <h1>Interconnectors</h1>
+      </div>
+      <p>Interconnectors are high-voltage cables that let Great Britain import and export electricity with neighbouring countries. A positive figure means Great Britain is importing; a negative figure means it is exporting.</p>
+    </section>
+
+    <dl class="status-grid" aria-label="Current interconnectors status" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat"><dt>Current output</dt><dd>−0.59GW</dd></div>
+      <div class="stat"><dt>Share of generation</dt><dd>−2.0%</dd></div>
+    </dl>
+
+    <section class="panel">
+      <h2>Breakdown</h2>
+      <table class="mix">
+        <caption class="visually-hidden">Interconnectors generation by source</caption>
+        <thead><tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr></thead>
+        <tbody>
+            <tr><td>Belgium</td><td class="num">−0.38</td><td class="num">−1.3</td></tr>
+            <tr><td>Denmark</td><td class="num">−1.29</td><td class="num">−4.5</td></tr>
+            <tr><td>France</td><td class="num">2.41</td><td class="num">8.3</td></tr>
+            <tr><td>Ireland</td><td class="num">−0.91</td><td class="num">−3.1</td></tr>
+            <tr><td>Netherlands</td><td class="num">−0.94</td><td class="num">−3.3</td></tr>
+            <tr><td>Norway</td><td class="num">0.52</td><td class="num">1.8</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel" aria-labelledby="cables-heading">
+      <h2 id="cables-heading">The cables</h2>
+      <p class="chart-caption">Great Britain has nine subsea (and one sub-Channel-Tunnel) interconnector cables in service, totalling around 9.3GW of capacity. Three more link to Ireland alone.</p>
+      <div style="overflow-x:auto;">
+      <table class="mix" style="min-width:640px;">
+        <caption class="visually-hidden">Individual GB interconnector cables: capacity, route and commissioning date</caption>
+        <thead>
+          <tr>
+            <th scope="col">Cable</th>
+            <th scope="col">Connects to</th>
+            <th scope="col" class="num">Capacity</th>
+            <th scope="col" class="num">Commissioned</th>
+            <th scope="col">Approximate route</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/IFA_(interconnector)">IFA</a></td>
+            <td>France</td>
+            <td class="num">2,000MW</td>
+            <td class="num">1986</td>
+            <td>Sellindge, Kent ↔ Bonningues‑lès‑Calais</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/Moyle_Interconnector">Moyle</a></td>
+            <td>Northern Ireland</td>
+            <td class="num">500MW</td>
+            <td class="num">2001</td>
+            <td>Auchencrosh, Scotland ↔ Ballycronan More, Co. Antrim</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/BritNed">BritNed</a></td>
+            <td>Netherlands</td>
+            <td class="num">1,000MW</td>
+            <td class="num">2011</td>
+            <td>Isle of Grain, Kent ↔ Maasvlakte, Rotterdam</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/East%E2%80%93West_Interconnector">East–West (EWIC)</a></td>
+            <td>Ireland</td>
+            <td class="num">500MW</td>
+            <td class="num">2012</td>
+            <td>Barkby Beach, Wales ↔ Rush, Co. Dublin</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/Nemo_Link">Nemo Link</a></td>
+            <td>Belgium</td>
+            <td class="num">1,000MW</td>
+            <td class="num">2019</td>
+            <td>Richborough, Kent ↔ Herdersbrug, Zeebrugge</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/North_Sea_Link">North Sea Link</a></td>
+            <td>Norway</td>
+            <td class="num">1,400MW</td>
+            <td class="num">2021</td>
+            <td>Blyth, Northumberland ↔ Kvilldal</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/ElecLink">ElecLink</a></td>
+            <td>France</td>
+            <td class="num">1,000MW</td>
+            <td class="num">2022</td>
+            <td>Folkestone ↔ Sangatte, via the Channel Tunnel</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/Viking_Link">Viking Link</a></td>
+            <td>Denmark</td>
+            <td class="num">1,400MW</td>
+            <td class="num">2023</td>
+            <td>Bicker Fen, Lincolnshire ↔ Revsing, Jutland</td>
+          </tr>
+          <tr>
+            <td><a href="https://en.wikipedia.org/wiki/Greenlink">Greenlink</a></td>
+            <td>Ireland</td>
+            <td class="num">500MW</td>
+            <td class="num">2024</td>
+            <td>Pembroke, Wales ↔ Great Island, Co. Wexford</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="chart-caption">Capacities and commissioning years are sourced from each cable's Wikipedia article, cross-checked against operator announcements (TenneT/National Grid for BritNed, Elia/National Grid for Nemo Link, Getlink for ElecLink, EirGrid for EWIC and Greenlink). Figures are nominal transfer capacity, not always-available capacity.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="map-heading">
+      <h2 id="map-heading">Where the cables run</h2>
+      <p class="chart-caption">A schematic diagram, not a navigational or geographically precise map - it shows roughly which coast each cable leaves from and which country it reaches, not the true undersea path.</p>
+      <svg viewBox="0 0 640 440" role="img" aria-labelledby="map-title map-desc" style="width:100%;height:auto;max-height:480px;">
+        <title id="map-title">Schematic map of Great Britain's electricity interconnectors</title>
+        <desc id="map-desc">Great Britain sits centrally, with cables radiating to Ireland in the west, France and Belgium to the south, the Netherlands to the south-east, Denmark to the east, and Norway to the north-east.</desc>
+
+        <!-- landmasses (stylised, not to scale) -->
+        <ellipse cx="290" cy="180" rx="48" ry="140" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="290" y="180" text-anchor="middle" fill="var(--text)" font-size="15" font-weight="700">GB</text>
+
+        <ellipse cx="140" cy="200" rx="46" ry="62" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="140" y="204" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700">Ireland</text>
+
+        <ellipse cx="330" cy="380" rx="72" ry="44" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="330" y="384" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700">France</text>
+
+        <ellipse cx="410" cy="300" rx="26" ry="19" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="410" y="304" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">Belgium</text>
+
+        <ellipse cx="450" cy="245" rx="30" ry="22" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="450" y="249" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">Netherlands</text>
+
+        <ellipse cx="490" cy="150" rx="32" ry="24" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="490" y="154" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">Denmark</text>
+
+        <ellipse cx="545" cy="60" rx="55" ry="40" fill="var(--bg-inset)" stroke="var(--border)"/>
+        <text x="545" y="64" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="700">Norway</text>
+
+        <!-- cables -->
+        <g fill="none" stroke="var(--interconnector)" stroke-width="2.2" opacity="0.9">
+          <path d="M255,110 Q195,140 168,165"/>
+          <path d="M250,180 Q195,190 178,195"/>
+          <path d="M255,235 Q195,225 178,225"/>
+          <path d="M300,300 Q305,340 320,350"/>
+          <path d="M310,295 Q345,330 355,350"/>
+          <path d="M328,235 Q370,270 395,288"/>
+          <path d="M330,215 Q390,235 428,238"/>
+          <path d="M320,145 Q400,165 465,155"/>
+          <path d="M310,90 Q420,75 500,68"/>
+        </g>
+        <g fill="var(--interconnector)">
+          <circle cx="255" cy="110" r="3.5"/><circle cx="168" cy="165" r="3.5"/>
+          <circle cx="250" cy="180" r="3.5"/><circle cx="178" cy="195" r="3.5"/>
+          <circle cx="255" cy="235" r="3.5"/><circle cx="178" cy="225" r="3.5"/>
+          <circle cx="300" cy="300" r="3.5"/><circle cx="320" cy="350" r="3.5"/>
+          <circle cx="310" cy="295" r="3.5"/><circle cx="355" cy="350" r="3.5"/>
+          <circle cx="328" cy="235" r="3.5"/><circle cx="395" cy="288" r="3.5"/>
+          <circle cx="330" cy="215" r="3.5"/><circle cx="428" cy="238" r="3.5"/>
+          <circle cx="320" cy="145" r="3.5"/><circle cx="465" cy="155" r="3.5"/>
+          <circle cx="310" cy="90" r="3.5"/><circle cx="500" cy="68" r="3.5"/>
+        </g>
+
+        <!-- labels with background for legibility -->
+        <g font-size="10.5" fill="var(--text-muted)">
+          <rect x="180" y="118" width="66" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="183" y="128">Moyle 500MW</text>
+
+          <rect x="178" y="172" width="66" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="181" y="182">EWIC 500MW</text>
+
+          <rect x="178" y="212" width="76" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="181" y="222">Greenlink 500MW</text>
+
+          <rect x="300" y="315" width="60" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="303" y="325">IFA 2,000MW</text>
+
+          <rect x="330" y="303" width="76" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="333" y="313">ElecLink 1,000MW</text>
+
+          <rect x="352" y="255" width="86" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="355" y="265">Nemo Link 1,000MW</text>
+
+          <rect x="368" y="205" width="76" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="371" y="215">BritNed 1,000MW</text>
+
+          <rect x="368" y="140" width="100" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="371" y="150">Viking Link 1,400MW</text>
+
+          <rect x="368" y="65" width="120" height="14" fill="var(--bg-elevated)" opacity="0.85"/>
+          <text x="371" y="75">North Sea Link 1,400MW</text>
+        </g>
+      </svg>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="chart-grid">
+          <div class="chart-card"><h3>Interconnectors net flow</h3><div class="chart-wrap is-loading"><canvas data-metric="output"></canvas></div></div>
+          <div class="chart-card"><h3>Net flow as a share of demand</h3><div class="chart-wrap is-loading"><canvas data-metric="share"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+      <p class="chart-caption">Net interconnector flow (positive = importing, negative = exporting) and that flow as a share of GB demand, over the selected range.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About interconnectors</h2>
+      
+<p>Great Britain is connected to France, Belgium, the Netherlands, Denmark, Norway and Ireland by subsea interconnector cables. These let the country import cheaper or cleaner power when available abroad, and export surplus renewable generation when domestic supply exceeds demand.</p>
+<h3>From one cable to a continental network</h3>
+<p>The first Anglo-French interconnector, IFA, was completed in 1986 with a capacity of 2GW, built partly to let Britain draw on France's large nuclear fleet. It stood as the only significant interconnector for over two decades.</p>
+<p>Expansion accelerated from the 2010s onward as European electricity markets became more integrated and Britain's own renewable fleet grew large enough that exporting surplus power became commercially attractive. BritNed to the Netherlands opened in 2011, followed by Nemo Link to Belgium (2019), the North Sea Link to Norway (2021) - at the time the world's longest subsea interconnector - and Viking Link to Denmark (2023), the longest yet.</p>
+<p>Ireland now has three separate links: the Moyle interconnector to Scotland (opened 2001), the East–West Interconnector to Wales (opened 2012), and the newest, Greenlink, also to Wales (opened 2024). A second France link, ElecLink, opened in 2022, running through the Channel Tunnel alongside IFA rather than under the open sea.</p>
+<h3>Why flows reverse so often</h3>
+<p>Interconnector flows are driven by relative wholesale prices either side of the cable, which in turn depend on each country's generation mix at that moment. When Britain is windy and France's nuclear output is steady, Britain often exports; when Britain is calm and Norwegian hydro reservoirs are full, Britain typically imports. This can make interconnectors the most volatile line on the generation-mix table, sometimes swinging from strongly importing to strongly exporting within a single day.</p>
+<h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
+<ul style="font-size:.85rem;color:var(--text-muted);">
+  <li><a href="https://en.wikipedia.org/wiki/IFA_(interconnector)">IFA</a>, <a href="https://en.wikipedia.org/wiki/Moyle_Interconnector">Moyle</a>, <a href="https://en.wikipedia.org/wiki/BritNed">BritNed</a>, <a href="https://en.wikipedia.org/wiki/East%E2%80%93West_Interconnector">East–West Interconnector</a>, <a href="https://en.wikipedia.org/wiki/Nemo_Link">Nemo Link</a>, <a href="https://en.wikipedia.org/wiki/North_Sea_Link">North Sea Link</a>, <a href="https://en.wikipedia.org/wiki/ElecLink">ElecLink</a>, <a href="https://en.wikipedia.org/wiki/Viking_Link">Viking Link</a> and <a href="https://en.wikipedia.org/wiki/Greenlink">Greenlink</a> - Wikipedia entries, each citing primary sources including project developers and Ofgem.</li>
+  <li><a href="https://www.tennet.eu/nl-en/news/britned-marks-15-years-cross-border-electricity-trading">TenNet: "BritNed marks 15 years of cross-border electricity trading"</a> (2026), confirming BritNed's 2011 commissioning and 1,000MW capacity.</li>
+  <li><a href="https://www.elexon.co.uk/bsc/about/interconnectors/">Elexon: "About Interconnectors"</a> - for how interconnector flows are metered and settled in the GB market.</li>
+</ul>
+
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Records</h2>
+      <ul class="records-list">
+        <li><span>Highest net imports (this year)</span><strong>6.8GW - 2 February 2026</strong></li>
+        <li><span>Highest net exports (this year)</span><strong>4.4GW - 5 December 2025</strong></li>
+        <li><span>First interconnector (IFA, to France)</span><strong>1986</strong></li>
+        <li><span>Longest subsea interconnector (Viking Link, to Denmark)</span><strong>2023</strong></li>
+      </ul>
+      <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a> (Elexon BMRS for the "this year" figures) and <a href="https://www.nationalgrid.com/electricity-transmission/network-and-infrastructure/interconnectors">National Grid, Interconnectors</a>. Last checked: 23 August 2026.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  // Real data: 'transfers' is api/series.php's net interconnector flow
+  // (positive = importing), 'demand' is GB transmission demand - both
+  // already-existing metrics, no new backend needed for this page. No
+  // illustrative fallback: a fresh install with little stored history
+  // yet honestly shows "not enough recorded history" instead of a
+  // plausible-looking made-up trend line.
+  function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const outputCanvas = host.querySelector('canvas[data-metric="output"]');
+    const shareCanvas = host.querySelector('canvas[data-metric="share"]');
+
+    const outputPromise = window.GridData ? window.GridData.fetchSeries("transfers", range) : Promise.resolve(null);
+    const demandPromise = window.GridData ? window.GridData.fetchSeries("demand", range) : Promise.resolve(null);
+
+    outputPromise.then((outSeries) => {
+      outputCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      if (outSeries) {
+        GridPreview.renderLineChart(outputCanvas, outSeries, { label: "Interconnectors", color: "#d98e04", unit: "GW" });
+      } else {
+        GridPreview.showChartError(outputCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+
+    Promise.all([outputPromise, demandPromise]).then(([outSeries, demandSeries]) => {
+      shareCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      const shareSeries = GridPreview.computeShareSeries(outSeries, demandSeries);
+      if (shareSeries) {
+        GridPreview.renderLineChart(shareCanvas, shareSeries, { label: "Share of demand", color: "#d98e04", unit: "%" });
+      } else {
+        GridPreview.showChartError(shareCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+})();
+</script>
+</body>
+</html>

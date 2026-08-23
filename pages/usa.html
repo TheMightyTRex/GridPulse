@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USA: Live+ - an overview of the US electricity grid</title>
+<meta name="description" content="An overview of the US electricity grid's demand, generation, generation mix and history - live from the EIA (typically about a day behind). Wholesale price and emissions aren't published by the EIA and are shown as not available rather than a placeholder.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">USA: the US electricity grid, partially live via the EIA</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group>
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group data-active="true">
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html" aria-current="page">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>USA: an overview of the US electricity grid</h1>
+      <p>The United States doesn't run one single synchronous grid the way Great Britain or the island of Ireland do - it runs three, loosely tied together: the Eastern Interconnection, the Western Interconnection, and Texas's own ERCOT. Within those, around 66 separate balancing authorities each keep their own patch of the system in balance. Demand, generation, net interchange and the generation mix below are live from the EIA's Hourly Electric Grid Monitor, typically about a day behind. Wholesale price and emissions aren't published by the EIA at all, so those are shown as not available rather than a placeholder figure. See <a href="#usa-sources">data sources</a> for the full picture.</p>
+    </section>
+
+    <p class="data-status-banner is-illustrative" id="usa-status-banner"><span class="dot" aria-hidden="true"></span>Connecting to live data…</p>
+
+    <dl class="status-grid" aria-label="USA grid snapshot">
+      <div class="stat stat--live"><dt>Data as of</dt><dd id="stat-time" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat stat--unavailable"><dt>Avg. wholesale price</dt><dd id="stat-price">Not available</dd><p class="chart-caption" style="margin:.35rem 0 0;">Not published by the EIA</p></div>
+      <div class="stat stat--unavailable"><dt>Emissions</dt><dd id="stat-emissions">Not available</dd><p class="chart-caption" style="margin:.35rem 0 0;">Not published by the EIA</p></div>
+      <div class="stat"><dt>Demand</dt><dd><span id="stat-demand">-</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-demand-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-demand" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Generation</dt><dd><span id="stat-generation">-</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-generation-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-generation" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Total interchange</dt><dd><span id="stat-transfers">-</span><small>GW</small></dd><div class="stat__spark chart-wrap"><canvas id="spark-transfers" aria-hidden="true"></canvas></div></div>
+    </dl>
+    <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Loading live data from the EIA's Hourly Electric Grid Monitor…</p>
+
+    <section class="panel" aria-labelledby="mix-heading">
+      <h2 id="mix-heading">Generation mix</h2>
+      <p class="chart-caption" id="mix-status-caption" style="margin-top:-.25rem;">Loading live data…</p>
+      <div class="panel-grid panel-grid--2">
+        <table class="mix">
+          <caption class="visually-hidden">USA generation by source</caption>
+          <thead>
+            <tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr>
+          </thead>
+          <tbody id="mix-tbody">
+          </tbody>
+        </table>
+        <div>
+          <div class="chart-wrap is-loading"><canvas id="mix-donut" role="img" aria-label="Donut chart of USA generation mix by source"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-legend"></ul>
+          <p class="chart-caption" id="mix-donut-caption">Actual mix varies hugely by region: the Pacific Northwest leans hydro, Texas and the Plains lean wind, California leans solar - this is the lower-48 total.</p>
+        </div>
+      </div>
+      <div class="chart-wrap is-loading" style="height:220px;margin-top:1.5rem;">
+        <canvas id="mix-bar" role="img" aria-label="Bar chart comparing USA generation by source"></canvas>
+      </div>
+      <p class="chart-caption">Generation by source, ranked highest to lowest.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
+      <div class="chart-wrap is-loading" style="height:300px;">
+        <canvas id="mix-stack" role="img" aria-label="Stacked area chart of fossil, renewable and nuclear/other generation over the last 24 hours"></canvas>
+      </div>
+      <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
+      <p class="chart-caption" id="mix-stack-caption">Fossil (gas, coal, oil), renewable (wind, solar, hydro) and nuclear/other, from the EIA's per-fuel-type feed.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <p class="chart-caption">Choose a time range to see demand, generation and total interchange over time. Wholesale price and emissions aren't published by the EIA, so those two panels show "not available" rather than a chart.</p>
+
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="range-panel chart-grid">
+          <div class="chart-card"><h3>Demand</h3><div class="chart-wrap is-loading"><canvas data-metric="demand"></canvas></div></div>
+          <div class="chart-card"><h3>Generation</h3><div class="chart-wrap is-loading"><canvas data-metric="generation"></canvas></div></div>
+          <div class="chart-card"><h3>Avg. wholesale price</h3><div class="chart-wrap is-loading"><canvas data-metric="price"></canvas></div></div>
+          <div class="chart-card"><h3>Emissions per kWh</h3><div class="chart-wrap is-loading"><canvas data-metric="emissions"></canvas></div></div>
+          <div class="chart-card"><h3>Total interchange</h3><div class="chart-wrap is-loading"><canvas data-metric="transfers"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About the US grid</h2>
+      <p>Unlike Great Britain or Ireland's single all-island system, the US mainland is split into three asynchronous interconnections that don't share a common frequency reference: the Eastern Interconnection (most of the country east of the Rockies), the Western Interconnection (the Pacific states, the Rockies and the desert Southwest), and ERCOT, which covers most of Texas and deliberately stays outside the other two - and largely outside federal FERC jurisdiction - specifically to avoid being classified as interstate commerce.</p>
+      <p>Within those three, day-to-day balancing is handled by around 66 separate balancing authorities, ranging from huge regional grid operators like PJM (spanning 13 states and DC) and MISO, to Independent System Operators like CAISO, ERCOT, NYISO and ISO-NE that also run competitive wholesale markets, down to small municipal and cooperative utilities that balance their own patch directly. There's no single "US demand" figure the way there's a single GB or Ireland one - EIA's Hourly Electric Grid Monitor is the closest thing, summing the lower-48 states' balancing authorities together.</p>
+      <p>Demand, generation, total interchange and the generation mix above and below are all live from the EIA's own API - the closest thing to a single "USA" figure. Wholesale price and emissions genuinely aren't published anywhere for the lower-48 aggregate, which is why those two are shown as not available rather than a number from a different, incompatible source - see <a href="#usa-sources">data sources</a> below.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Context</h2>
+      <div class="panel-grid panel-grid--2">
+        <ul class="records-list">
+          <li><span>Approx. all-time US demand record</span><strong>~759GW - summer 2025 heatwave</strong></li>
+          <li><span>ERCOT's February 2021 winter crisis</span><strong>Texas-wide multi-day outages</strong></li>
+          <li><span>Wind + solar share, 2015</span><strong>~5% of generation</strong></li>
+          <li><span>Wind + solar share, 2025</span><strong>~17% of generation</strong></li>
+        </ul>
+        <div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="records-bar" role="img" aria-label="Bar chart of wind and solar's rising share of US generation, 2015 to 2025"></canvas></div>
+          <p class="chart-caption">Wind and solar's combined share of US generation, roughly every five years - approximate, from EIA's published annual figures.</p>
+        </div>
+      </div>
+      <p class="chart-caption">Figures are approximate, gathered from public EIA reporting rather than a live feed. Last checked: 23 August 2026.</p>
+    </section>
+
+    <section class="panel" id="usa-sources" aria-labelledby="usa-sources-heading">
+      <h2 id="usa-sources-heading">Data sources for USA</h2>
+      <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are UK-specific and don't cover the US at all - and unlike GB or Ireland, there's no single US operator to point a live feed at either. This page uses one source only: the <a href="https://www.eia.gov/opendata/">US Energy Information Administration's own free API</a>, specifically its Hourly Electric Grid Monitor (EIA-930), which powers demand, generation, total interchange and the generation mix (including the 24-hour stack and this page's History section) above and below.</p>
+      <p>Why it's limited, and why this page deliberately sticks to that one source rather than stitching several together:</p>
+      <ul>
+        <li><strong>About a day behind, not real-time.</strong> EIA-930 is built from roughly 66 individual balancing authorities' own hourly submissions, which get revised over the following days as authorities correct earlier figures - EIA itself flags this data as preliminary. There's no faster "official" version of the same lower-48 total to fall back to instead.</li>
+        <li><strong>Lower-48 states only.</strong> Alaska, Hawaii and US territories run their own separate, non-interconnected grids outside EIA-930's balancing-authority coverage, so none of them are reflected in any figure on this page.</li>
+        <li><strong>No wholesale price.</strong> Unlike ENTSO-E's day-ahead price feed for the European pages on this site, EIA-930 doesn't publish price data at all. Rather than show a number from an unrelated, incompatible source, the price stat and its History panel are marked "not available".</li>
+        <li><strong>No emissions figure.</strong> EIA doesn't publish a carbon-intensity number either, live or historical, so emissions is also marked "not available" rather than estimated.</li>
+      </ul>
+      <p>Faster, more granular USA data does exist - <a href="https://www.gridstatus.io/">gridstatus.io</a> normalises near-real-time feeds from CAISO, ERCOT, PJM, MISO, SPP, NYISO and ISO-NE, and each of those ISOs also publishes its own feed directly. This page deliberately doesn't use them: they each cover a specific region rather than a national figure, which would mean showing seven-plus separate numbers instead of the single lower-48 total EIA already provides in one call. See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the GB and Ireland pages.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p style="margin-top:.5rem;">Demand, generation, total interchange and the generation mix are live from the <a href="https://www.eia.gov/opendata/">EIA's Hourly Electric Grid Monitor</a>, typically about a day behind. Wholesale price and emissions aren't published by the EIA and are shown as not available.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with the EIA, FERC or any US grid operator</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  // demand/generation/transfers have real bucketed history via
+  // api/usa_series.php - price/emissions don't exist as a metric there at
+  // all (EIA doesn't publish either), so those two panels always render as
+  // a chart error rather than any kind of line, mock or otherwise.
+  const METRICS = {
+    demand:     { label: "Demand",     unit: "GW", color: "#1d6fe0" },
+    generation: { label: "Generation", unit: "GW", color: "#0a6e5c" },
+    transfers:  { label: "Total interchange", unit: "GW", color: "#d98e04" },
+  };
+  const UNAVAILABLE_METRICS = {
+    price: "Not available - the EIA doesn't publish a wholesale price for the lower-48 aggregate.",
+    emissions: "Not available - the EIA doesn't publish an emissions figure for the lower-48 aggregate.",
+  };
+
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  async function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const canvases = Array.from(host.querySelectorAll("canvas[data-metric]"));
+    const liveCanvases = canvases.filter((c) => METRICS[c.dataset.metric]);
+    const seriesList = await Promise.all(liveCanvases.map((c) => window.GridData.fetchUsaSeries(c.dataset.metric, range)));
+
+    canvases.forEach((canvas) => {
+      const metric = canvas.dataset.metric;
+      if (UNAVAILABLE_METRICS[metric]) {
+        GridPreview.showChartError(canvas, UNAVAILABLE_METRICS[metric]);
+        return;
+      }
+      const cfg = METRICS[metric];
+      const series = seriesList[liveCanvases.indexOf(canvas)];
+      if (series && series.values.length) {
+        GridPreview.renderLineChart(canvas, series, { label: cfg.label, color: cfg.color, unit: series.unit || cfg.unit });
+      } else {
+        GridPreview.showChartError(canvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+
+  // Generation mix grouping - mirrors api/usa_series.php's metric=mix SQL
+  // and assets/data.js's USA_FUEL_LABELS. Named "Nuclear & other" in the
+  // table/donut since EIA-930 doesn't split out biomass the way GB's
+  // Elexon feed does - NUC/OTH/UNK get lumped together here, same as the
+  // page's original static markup did.
+  const USA_MIX_GROUPS = [
+    { key: "fossil", label: "Fossil fuels", color: "var(--fossil)", codes: ["NG", "COL", "OIL"] },
+    { key: "renewable", label: "Renewables", color: "var(--renewable)", codes: ["WND", "SUN", "WAT"] },
+    { key: "other", label: "Nuclear & other", color: "var(--other)", codes: ["NUC", "OTH", "UNK"] },
+  ];
+  const USA_FUEL_COLORS = { NG: "#8a5a3c", COL: "#4a4a4a", OIL: "#5c4b3c", WND: "#2fa876", SUN: "#e0a800", WAT: "#2a8fbd", NUC: "#6a5acd", OTH: "#6b5847", UNK: "#9a9a9a" };
+
+  function renderUsaMix(mixMw, isLive) {
+    // Works directly off the raw { fuelCode: MW } object rather than
+    // round-tripping through summarizeUsaMix()'s label strings, so
+    // grouping/colouring stays keyed on the actual EIA fuel codes - no
+    // fragile "look up which code has this label" reverse search.
+    const codes = Object.keys(mixMw || {}).filter((c) => mixMw[c] != null).sort((a, b) => mixMw[b] - mixMw[a]);
+    const tbody = document.getElementById("mix-tbody");
+    const statusCaption = document.getElementById("mix-status-caption");
+    const donutCaption = document.getElementById("mix-donut-caption");
+
+    if (!codes.length) {
+      if (tbody) tbody.innerHTML = "";
+      GridPreview.showChartError(document.getElementById("mix-donut"), "Not available yet.");
+      GridPreview.showChartError(document.getElementById("mix-bar"), "Not available yet.");
+      if (statusCaption) statusCaption.textContent = "Not available yet - no live EIA fuel-type reading has been recorded on this install.";
+      if (donutCaption) donutCaption.textContent = "";
+      return;
+    }
+
+    const totalMw = codes.reduce((sum, c) => sum + mixMw[c], 0);
+    const gw = (mw) => (mw / 1000).toFixed(1);
+    const pct = (mw) => totalMw > 0 ? (mw / totalMw * 100).toFixed(1) : "0.0";
+    const labelFor = (c) => (window.GridData.USA_FUEL_LABELS && window.GridData.USA_FUEL_LABELS[c]) || c;
+
+    if (tbody) {
+      tbody.innerHTML = "";
+      USA_MIX_GROUPS.forEach((group) => {
+        const groupCodes = codes.filter((c) => group.codes.includes(c));
+        const groupMw = groupCodes.reduce((sum, c) => sum + mixMw[c], 0);
+        if (groupMw <= 0) return;
+        const groupRow = document.createElement("tr");
+        groupRow.className = "group-row";
+        groupRow.innerHTML = `<th scope="row"><span class="swatch" style="background:${group.color}"></span>${group.label}</th><td class="num">${gw(groupMw)}</td><td class="num">${pct(groupMw)}</td>`;
+        tbody.appendChild(groupRow);
+        groupCodes.forEach((c) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${labelFor(c)}</td><td class="num">${gw(mixMw[c])}</td><td class="num">${pct(mixMw[c])}</td>`;
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    const donutCanvas = document.getElementById("mix-donut");
+    if (donutCanvas) {
+      donutCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      const labels = codes.map(labelFor);
+      const values = codes.map((c) => mixMw[c] / 1000);
+      const colors = codes.map((c) => USA_FUEL_COLORS[c] || "#7a7a7a");
+      GridPreview.renderDonutChart(donutCanvas, labels, values, colors, {
+        legendTarget: "mix-donut-legend", unit: "GW", centerLabel: gw(totalMw) + "GW", centerSub: "generated",
+      });
+      const barCanvas = document.getElementById("mix-bar");
+      if (barCanvas) {
+        barCanvas.closest(".chart-wrap").classList.remove("is-loading");
+        GridPreview.renderBarChart(barCanvas, labels, values, colors, { unit: "GW" });
+      }
+    }
+    if (donutCaption) donutCaption.textContent = `Generation ${gw(totalMw)}GW, live from the EIA's Hourly Electric Grid Monitor.`;
+    if (statusCaption) statusCaption.textContent = isLive ? "Live from the EIA's per-fuel-type feed (typically about a day behind)." : "Showing the last recorded reading.";
+  }
+
+  // Demand, generation, total interchange and the generation mix are all
+  // live from the EIA (see api/usa_current.php) - price and emissions have
+  // no source at all, live or historical, so those two stats are static
+  // "Not available" markup and never touched by this function. This
+  // mirrors pages/ireland.html's initIeStatusStrip(), except here a
+  // failed/unconfigured EIA fetch means those stats simply stay at "-"
+  // rather than falling back to a fabricated number.
+  async function initUsaStatusStrip() {
+    const caption = document.getElementById("stat-caption");
+    const banner = document.getElementById("usa-status-banner");
+    const asOfEl = document.getElementById("stat-time");
+    const liveKeys = ["demand", "generation", "transfers"];
+    const sparkColors = { demand: "#1d6fe0", generation: "#0a6e5c", transfers: "#d98e04" };
+
+    // Renders one usa_current.php-shaped snapshot - called once
+    // immediately with cached data (if any) and again once the real fetch
+    // resolves, via GridPreview.withCachedFallback below (same pattern as
+    // index.html's initStatusStrip - see its comment for the reasoning).
+    function renderUsa(current, isCached) {
+      const setStat = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      setStat("stat-demand", current.demand_mw != null ? (current.demand_mw / 1000).toFixed(1) : "-");
+      setStat("stat-generation", current.generation_mw != null ? (current.generation_mw / 1000).toFixed(1) : "-");
+      setStat("stat-transfers", current.interconnection_mw != null ? (current.interconnection_mw / 1000).toFixed(1) : "-");
+      // Reference range: a rough typical lower-48 low-to-peak demand window
+      // (not an official EIA threshold - see GridPreview.bandFromRange's
+      // own docblock). No band on "Total interchange" here - unlike the
+      // GB/Ireland interconnector figures, this site hasn't confirmed
+      // which sign EIA's total-interchange field uses for import vs.
+      // export, so labelling it "Exporting"/"Importing" risks getting the
+      // direction backwards rather than just being rough.
+      GridPreview.setStatBand("stat-demand-band", GridPreview.bandFromRange(current.demand_mw != null ? current.demand_mw / 1000 : null, 380, 580), " relative to the US lower-48's typical demand range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-generation-band", GridPreview.bandFromRange(current.generation_mw != null ? current.generation_mw / 1000 : null, 380, 580), " relative to the US lower-48's typical generation range (rough guide, not an official banding)");
+
+      if (asOfEl) {
+        asOfEl.innerHTML = isCached
+          ? GridPreview.formatShowingHtml(current.ts)
+          : GridPreview.formatAsOfHtml(current.ts, { month: "short", day: "numeric" });
+        asOfEl.classList.remove("is-loading-text");
+      }
+      if (banner) {
+        banner.className = "data-status-banner is-delayed";
+        banner.innerHTML = isCached
+          ? '<span class="dot" aria-hidden="true"></span>Showing the last successfully loaded figures - refreshing…'
+          : '<span class="dot" aria-hidden="true"></span>Demand, generation, interchange &amp; the mix are live from the EIA' + (current.stale ? " (running later than usual right now)" : " (typically ~1 day behind)") + ' - price &amp; emissions aren\'t published';
+      }
+      if (caption) {
+        caption.textContent = isCached
+          ? "Showing the last successfully loaded figures while this page fetches the latest data."
+          : "Live demand, generation and total interchange from the EIA's Hourly Electric Grid Monitor (lower-48 aggregate)" +
+            (current.stale ? ". This is running later than its usual ~1 day lag; check the site's cron jobs or EIA API status." : ", typically about a day behind - not real-time.");
+      }
+      renderUsaMix(current.mix_mw, !isCached);
+    }
+
+    const { usedCache, promise } = GridPreview.withCachedFallback(
+      "usa-current",
+      () => (window.GridData ? window.GridData.fetchUsaCurrent() : Promise.resolve(null)),
+      renderUsa
+    );
+    const current = await promise;
+
+    if (!current) {
+      // No live EIA data yet - no API key configured, ingestion hasn't run,
+      // or the request failed. Nothing fabricated to fall back to: the
+      // stats stay at "-" (already in the markup) and the mix/24h chart
+      // show their own "not available" states.
+      if (!usedCache) {
+        if (asOfEl) { asOfEl.textContent = "Not available"; asOfEl.classList.remove("is-loading-text"); }
+        if (banner) {
+          banner.className = "data-status-banner";
+          banner.innerHTML = '<span class="dot" aria-hidden="true"></span>No live EIA data yet on this install';
+        }
+        if (caption) caption.textContent = "No live EIA data has been recorded on this install yet - see data sources for how to add an API key.";
+        liveKeys.forEach((key) => GridPreview.showChartError(document.getElementById("spark-" + key), "Not available"));
+        renderUsaMix({}, false);
+      }
+      return;
+    }
+
+    // Fetch all three sparklines' series in parallel rather than one at a
+    // time - each is a separate api/usa_series.php round trip, and
+    // awaiting them sequentially in a loop meant the page waited for three
+    // full network round trips back-to-back instead of the slowest one
+    // (see the matching comment in pages/ireland.html's initIeStatusStrip).
+    const usSeriesList = await Promise.all(liveKeys.map((key) => window.GridData.fetchUsaSeries(key, "3hour")));
+    liveKeys.forEach((key, i) => {
+      const canvas = document.getElementById("spark-" + key);
+      if (!canvas) return;
+      const series = usSeriesList[i];
+      if (series && series.values.length) {
+        GridPreview.renderSparkline(canvas, series.values, sparkColors[key]);
+      }
+    });
+  }
+
+  initUsaStatusStrip();
+
+  // Generation mix over the last 24 hours: real per-fuel-type history from
+  // api/usa_series.php's metric=mix, same renderStackedAreaChart component
+  // (per-band gradient fade + hover tooltip) used everywhere else on the
+  // site. Falls back to a chart error rather than any placeholder shape if
+  // there's not enough history yet.
+  (async function () {
+    const canvas = document.getElementById("mix-stack");
+    if (!canvas || !window.GridData) return;
+    const mix = await window.GridData.fetchUsaMixSeries("day");
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+    if (!mix) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for the last 24 hours.");
+      return;
+    }
+    GridPreview.renderStackedAreaChart(canvas, mix.times, mix.labels, [
+      { name: "Fossil fuels", color: "#8a5a3c", values: mix.fossil },
+      { name: "Renewables", color: "#1f9d5a", values: mix.renewable },
+      { name: "Nuclear & other", color: "#6a5acd", values: mix.other },
+    ], { unit: "GW", legendTarget: "mix-stack-legend" });
+    const captionEl = document.getElementById("mix-stack-caption");
+    if (captionEl) captionEl.textContent = "Fossil (gas, coal, oil), renewable (wind, solar, hydro) and nuclear/other, from the EIA's per-fuel-type feed.";
+  })();
+
+  GridPreview.renderBarChart(
+    document.getElementById("records-bar"),
+    ["2015", "2020", "2025"],
+    [5, 11, 17],
+    "#2fa876",
+    { unit: "%", horizontal: false, thickness: 40 }
+  );
+})();
+</script>
+</body>
+</html>

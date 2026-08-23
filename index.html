@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UK Grid: Live+ - the live status of Great Britain's electricity grid</title>
+<meta name="description" content="A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="pages/data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="index.html" aria-current="page">GB: Overview</a></li>
+          <li><a href="pages/fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="pages/renewables.html">GB: Renewables</a></li>
+          <li><a href="pages/nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="pages/interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="pages/storage.html">GB: Storage</a></li>
+          <li><a href="pages/history.html">GB: History</a></li>
+          <li><a href="pages/electricity-prices.html">GB: Prices</a></li>
+          <li><a href="pages/price-history.html">GB: Historic prices</a></li>
+          <li><a href="pages/renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="pages/ireland.html">Ireland</a></li>
+          <li><a href="pages/france.html">France</a></li>
+          <li><a href="pages/nl.html">Netherlands</a></li>
+          <li><a href="pages/belgium.html">Belgium</a></li>
+          <li><a href="pages/norway.html">Norway (NO2)</a></li>
+          <li><a href="pages/denmark.html">Denmark (DK1)</a></li>
+          <li><a href="pages/germany.html">Germany</a></li>
+          <li><a href="pages/spain.html">Spain</a></li>
+          <li><a href="pages/italy.html">Italy</a></li>
+          <li><a href="pages/sweden.html">Sweden (SE3)</a></li>
+          <li><a href="pages/portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="pages/usa.html">USA</a></li>
+          <li><a href="pages/canada.html">Canada</a></li>
+          <li><a href="pages/brazil.html">Brazil</a></li>
+          <li><a href="pages/argentina.html">Argentina</a></li>
+          <li><a href="pages/chile.html">Chile</a></li>
+          <li><a href="pages/colombia.html">Colombia</a></li>
+          <li><a href="pages/americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="pages/comparisons.html">Comparisons</a></li>
+      <li><a href="pages/data-sources.html">Sources</a></li>
+      <li><a href="pages/about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>The live status of Great Britain's electricity grid</h1>
+      <p>Real-time generation, demand, price and carbon intensity - with history you can explore from the past day to the past decade.</p>
+    </section>
+
+    <dl class="status-grid" aria-label="Current grid status">
+      <div class="stat stat--live"><dt>Data as of</dt><dd id="stat-time" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat"><dt>Price</dt><dd><span id="stat-price">£135.47</span><small>/MWh</small></dd><div class="stat-band-slot"><span id="stat-price-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-price" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Emissions</dt><dd><span id="stat-emissions">84</span><small>g/kWh</small></dd><div class="stat-band-slot"><span id="stat-emissions-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-emissions" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Demand</dt><dd><span id="stat-demand">28.9</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-demand-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-demand" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Generation</dt><dd><span id="stat-generation">28.7</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-generation-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-generation" aria-hidden="true"></canvas></div></div>
+      <div class="stat"><dt>Transfers</dt><dd><span id="stat-transfers">0.2</span><small>GW</small></dd><div class="stat-band-slot"><span id="stat-transfers-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap"><canvas id="spark-transfers" aria-hidden="true"></canvas></div></div>
+    </dl>
+    <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Each figure shows its trend over the last 3 hours.</p>
+
+    <section class="panel" aria-labelledby="mix-heading">
+      <h2 id="mix-heading">Generation mix right now</h2>
+
+      <div class="chart-grid chart-grid--donuts">
+        <div>
+          <div class="chart-wrap" style="height:440px;"><canvas id="mix-donut-source" role="img" aria-label="Donut chart of current generation by individual source"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-source-legend"></ul>
+          <p class="chart-caption">Generation by individual source (28.7GW). Hover a slice for details.</p>
+        </div>
+        <div>
+          <div class="chart-wrap" style="height:440px;"><canvas id="mix-donut-category" role="img" aria-label="Donut chart of the renewable, non-renewable and interconnector share of demand"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-category-legend"></ul>
+          <p class="chart-caption">Renewable vs. non-renewable generation plus the net interconnector contribution, as a share of demand (28.9GW). Hover a slice for details.</p>
+        </div>
+      </div>
+
+      <p class="download-row" style="margin-top:1.5rem;">
+        <button type="button" class="copy-btn" data-copy-table="mix-table" data-copy-title="Generation mix right now - UK Grid: Live+">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span data-copy-label aria-live="polite">Copy as text</span>
+        </button>
+        <button type="button" class="copy-btn" id="snapshot-btn">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span id="snapshot-btn-label" aria-live="polite">Download snapshot (PNG)</span>
+        </button>
+      </p>
+      <table class="mix" id="mix-table">
+        <caption class="visually-hidden">Current generation by source</caption>
+        <thead>
+          <tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--fossil)"></span>Fossil fuels</th><td class="num">7.58</td><td class="num">26.2</td></tr>
+          <tr><td>Gas</td><td class="num">7.58</td><td class="num">26.2</td></tr>
+          <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--renewable)"></span>Renewables</th><td class="num">14.73</td><td class="num">51.0</td></tr>
+          <tr><td>Solar</td><td class="num">4.19</td><td class="num">14.5</td></tr>
+          <tr><td>Wind</td><td class="num">10.33</td><td class="num">35.8</td></tr>
+          <tr><td>Hydro</td><td class="num">0.21</td><td class="num">0.7</td></tr>
+          <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--other)"></span>Other sources</th><td class="num">6.38</td><td class="num">22.1</td></tr>
+          <tr><td>Nuclear</td><td class="num">3.86</td><td class="num">13.4</td></tr>
+          <tr><td>Biomass</td><td class="num">2.52</td><td class="num">8.7</td></tr>
+          <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--interconnector)"></span>Interconnectors</th><td class="num">−0.59</td><td class="num">−2.0</td></tr>
+          <tr class="group-row"><th scope="row"><span class="swatch" style="background:var(--storage)"></span>Storage</th><td class="num" id="idx-storage-total-gw">0.79</td><td class="num" id="idx-storage-total-pct">2.7</td></tr>
+          <tr><td>Pumped hydro</td><td class="num">0.79</td><td class="num">2.7</td></tr>
+          <tr><td>Battery</td><td class="num" id="idx-battery-gw" aria-live="polite">-</td><td class="num" id="idx-battery-pct" aria-live="polite">-</td></tr>
+        </tbody>
+      </table>
+
+      <label class="toggle-row" style="margin-top:1.25rem;">
+        <span class="switch">
+          <input type="checkbox" id="idx-battery-toggle">
+          <span class="switch__track"><span class="switch__thumb"></span></span>
+        </span>
+        <span>Include battery charge/discharge detail <em>(preview of a planned feature - see the <a href="pages/storage.html">Storage page</a> for more)</em></span>
+      </label>
+
+      <div id="idx-battery-panel" hidden style="margin-top:1rem;">
+        <h3 style="font-size:.95rem;">Battery charge/discharge over the last 24 hours</h3>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="idx-battery-chart" role="img" aria-label="Line chart of battery storage swinging between charging and discharging over the last 24 hours"></canvas>
+        </div>
+        <p class="chart-caption">Positive values mean batteries are discharging onto the grid; negative values mean they're charging up.</p>
+      </div>
+
+      <div class="chart-wrap" style="height:220px;margin-top:1.5rem;">
+        <canvas id="mix-bar" role="img" aria-label="Bar chart comparing generation by source"></canvas>
+      </div>
+      <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
+      <div class="chart-wrap" style="height:300px;">
+        <canvas id="mix-stack" role="img" aria-label="Stacked area chart of fossil fuel, renewable and other generation over the last 24 hours"></canvas>
+      </div>
+      <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
+      <p class="chart-caption">Fossil fuel, renewable and nuclear/biomass generation stacked to show how the overall mix shifts through the day.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <p>Demand, generation, price, emissions, transfers and the generation mix, from the past day to the past decade - now on its own dashboard with more charts, the current UK season, a battery toggle, and data you can copy to the clipboard.</p>
+      <p><a href="pages/history.html">Open the History dashboard →</a></p>
+    </section>
+
+    <section aria-labelledby="types-heading">
+      <h2 id="types-heading">Explore by energy type</h2>
+      <div class="type-grid">
+        <a class="type-card" href="pages/fossil-fuels.html" style="border-left-color:var(--fossil)">
+          <h3>Fossil fuels</h3>
+          <span class="type-card__value">7.58GW</span>
+          <p>Gas generation, current share and long-term decline since coal's closure.</p>
+        </a>
+        <a class="type-card" href="pages/renewables.html" style="border-left-color:var(--renewable)">
+          <h3>Renewables</h3>
+          <span class="type-card__value">14.73GW</span>
+          <p>Solar, wind and hydro - including embedded generation estimates.</p>
+        </a>
+        <a class="type-card" href="pages/nuclear-biomass.html" style="border-left-color:var(--other)">
+          <h3>Nuclear &amp; biomass</h3>
+          <span class="type-card__value">6.38GW</span>
+          <p>Steady baseload generation from nuclear and biomass plants.</p>
+        </a>
+        <a class="type-card" href="pages/interconnectors.html" style="border-left-color:var(--interconnector)">
+          <h3>Interconnectors</h3>
+          <span class="type-card__value">−0.59GW</span>
+          <p>Imports and exports with Belgium, Denmark, France, Ireland, the Netherlands and Norway.</p>
+        </a>
+        <a class="type-card" href="pages/storage.html" style="border-left-color:var(--storage)">
+          <h3>Storage</h3>
+          <span class="type-card__value">0.79GW</span>
+          <p>Pumped hydro and battery storage charging and discharging.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Records</h2>
+      <p class="chart-caption">The figures on this panel are real, sourced records. They're currently hand-entered and checked periodically against the sources below, rather than computed automatically from stored history - each record's "last checked" date shows when it was last verified.</p>
+
+      <div class="range-tabs" role="tablist" data-tablist id="records-tablist" aria-label="Record category">
+        <button role="tab" id="rtab-wind" aria-controls="rpanel-wind" aria-selected="true" tabindex="0" data-range="wind">Wind</button>
+        <button role="tab" id="rtab-solar" aria-controls="rpanel-solar" aria-selected="false" tabindex="-1" data-range="solar">Solar</button>
+        <button role="tab" id="rtab-emissions" aria-controls="rpanel-emissions" aria-selected="false" tabindex="-1" data-range="emissions">Emissions</button>
+        <button role="tab" id="rtab-demand" aria-controls="rpanel-demand" aria-selected="false" tabindex="-1" data-range="demand">Demand</button>
+      </div>
+
+      <div id="rpanel-wind" role="tabpanel" aria-labelledby="rtab-wind" tabindex="0">
+        <ul class="records-list">
+          <li><span>Highest wind generation ever</span><strong>23,880MW - 25 March 2026</strong></li>
+          <li><span>Wind curtailed, Q1 2026</span><strong>3.6TWh (11% of potential output), due to transmission constraints</strong></li>
+          <li><span>Previous record</span><strong>23,825MW - 5 Dec 2025, 5:30pm</strong></li>
+        </ul>
+        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-wind" role="img" aria-label="Bar chart of the two most recent wind generation records"></canvas></div>
+        <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a>, reported by <a href="https://www.edie.net/uk-soars-past-wind-power-generation-record-for-second-time-in-two-months/">Edie</a>, March 2026. Last checked: 23 August 2026.</p>
+      </div>
+
+      <div id="rpanel-solar" role="tabpanel" aria-labelledby="rtab-solar" tabindex="0" hidden>
+        <ul class="records-list">
+          <li><span>Highest solar generation ever</span><strong>15,427MW - 12 July 2026, late morning</strong></li>
+          <li><span>Solar's share of the mix at that moment</span><strong>44%</strong></li>
+          <li><span>First time above 9.5GW</span><strong>May 2019</strong></li>
+        </ul>
+        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-solar" role="img" aria-label="Bar chart of solar generation records rising from 9.55GW in 2019 to 15.4GW in 2026"></canvas></div>
+        <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a>, reported by <a href="https://www.solarpowerportal.co.uk/solar-installations/summer-sun-boosted-uk-s-solar-generation-record-in-july">Solar Power Portal</a>, July 2026. Last checked: 23 August 2026.</p>
+      </div>
+
+      <div id="rpanel-emissions" role="tabpanel" aria-labelledby="rtab-emissions" tabindex="0" hidden>
+        <ul class="records-list">
+          <li><span>Record lowest carbon intensity</span><strong>39g/kWh - Easter Monday 2021</strong></li>
+          <li><span>Near-record low</span><strong>89g/kWh - 23 May 2026</strong></li>
+          <li><span>Average intensity, 2012 vs 2025</span><strong>~500g → &lt;150g</strong></li>
+        </ul>
+        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-emissions" role="img" aria-label="Bar chart of carbon intensity falling from around 500 grams per kilowatt hour in 2012 to under 150 in 2025"></canvas></div>
+        <p class="chart-caption">Source: <a href="https://www.carbonintensity.org.uk/">Carbon Intensity API</a> and NESO decarbonisation reporting. Last checked: 23 August 2026.</p>
+      </div>
+
+      <div id="rpanel-demand" role="tabpanel" aria-labelledby="rtab-demand" tabindex="0" hidden>
+        <ul class="records-list">
+          <li><span>Winter 2025/26 peak demand</span><strong>47.32GW - 5 Jan 2026</strong></li>
+          <li><span>Winter 2025/26 operating margin</span><strong>6.1GW (10.0%) - highest since 2019/20</strong></li>
+        </ul>
+        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-demand" role="img" aria-label="Bar chart contrasting a typical summer demand trough with the winter 2025/26 peak"></canvas></div>
+        <p class="chart-caption">Source: <a href="https://www.neso.energy/neso-sets-out-expectations-strongest-winter-electricity-margins-six-years">NESO Winter Outlook 2025/26</a>. The "summer low" bar is a rough comparison, not a specific sourced figure. Last checked: 23 August 2026.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="moments-heading">
+      <h2 id="moments-heading">Notable moments</h2>
+      <p class="chart-caption" id="moments-caption">Loading…</p>
+      <ul class="records-list" id="moments-list" hidden></ul>
+      <p class="chart-caption" id="moments-unavailable" hidden>Not available</p>
+    </section>
+
+    <section class="panel" aria-labelledby="alerts-heading">
+      <h2 id="alerts-heading">Alerts</h2>
+      <p class="chart-caption">Get a browser notification when price or carbon intensity crosses a threshold you set. <strong>This only works while this page stays open in a browser tab</strong> - this site has no server that sends push or email notifications, so closing the tab (or the browser) turns alerts off until you reopen it.</p>
+
+      <p id="alerts-permission-row">
+        <button type="button" class="copy-btn" id="alerts-enable-btn">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5a3 3 0 0 0-3 3v2.2c0 .5-.2 1-.5 1.4L3.5 10.6c-.4.5 0 1.2.6 1.2h7.8c.6 0 1-.7.6-1.2l-1-1.5c-.3-.4-.5-.9-.5-1.4V5.5a3 3 0 0 0-3-3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.5 12.3a1.6 1.6 0 0 0 3 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span id="alerts-enable-label" aria-live="polite">Enable browser notifications</span>
+        </button>
+        <span id="alerts-permission-status" style="font-size:.85rem;color:var(--text-muted);margin-left:.6rem;"></span>
+      </p>
+
+      <div class="alert-rules">
+        <div class="alert-rule">
+          <label class="toggle-row">
+            <span class="switch">
+              <input type="checkbox" id="alert-price-enabled">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </span>
+            <span>Notify when price goes
+              <select id="alert-price-direction" aria-label="Price alert direction">
+                <option value="below">below</option>
+                <option value="above">above</option>
+              </select>
+              £<input type="number" id="alert-price-threshold" inputmode="decimal" step="1" style="width:5.5em;" aria-label="Price threshold in pounds per megawatt hour"> /MWh
+            </span>
+          </label>
+        </div>
+        <div class="alert-rule">
+          <label class="toggle-row">
+            <span class="switch">
+              <input type="checkbox" id="alert-emissions-enabled">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </span>
+            <span>Notify when carbon intensity goes
+              <select id="alert-emissions-direction" aria-label="Carbon intensity alert direction">
+                <option value="below">below</option>
+                <option value="above">above</option>
+              </select>
+              <input type="number" id="alert-emissions-threshold" inputmode="decimal" step="1" style="width:5.5em;" aria-label="Carbon intensity threshold in grams per kilowatt hour"> g/kWh
+            </span>
+          </label>
+        </div>
+      </div>
+      <p class="chart-caption">Checked against live data roughly every 5 minutes while this page is open, plus once whenever it first loads. Your thresholds are saved in this browser only (not sent anywhere) and only fire once per crossing, so you won't get repeated notifications while a value stays past your threshold.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div id="data-sources">
+        <h2 style="font-size:1rem;margin-bottom:.5rem;">Sources</h2>
+        <p>The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+        <p><a href="pages/data-sources.html">Full sources &amp; methodology page →</a></p>
+      </div>
+    </div>
+    <p style="margin-top:2rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script src="assets/data.js"></script>
+<script>
+(function () {
+  // Donut chart for current mix
+  const SOURCE_LABELS = ["Gas", "Solar", "Wind", "Hydro", "Nuclear", "Biomass"];
+  const SOURCE_VALUES = [7.58, 4.19, 10.33, 0.21, 3.86, 2.52];
+  // Colours come from GridData's site-wide canonical label->colour map (see
+  // assets/data.js) rather than being hardcoded here, so this donut always
+  // matches every other chart that shows the same fuel - see that map's own
+  // comment for why per-page hardcoded arrays are worth avoiding.
+  const SOURCE_COLORS = window.GridData.colorsFor(SOURCE_LABELS);
+
+  // Outer ring: renewable / non-renewable / interconnector share of demand.
+  // Renewable = Solar+Wind+Hydro (14.73GW); Non-renewable = Gas+Nuclear+Biomass (13.96GW);
+  // Interconnector = net import, matching the Transfers stat above (0.2GW). Together these
+  // total ~28.9GW, matching the Demand stat.
+  const CATEGORY_LABELS = ["Renewable", "Non-renewable", "Interconnector"];
+  const CATEGORY_VALUES = [14.73, 13.96, 0.20];
+  const CATEGORY_COLORS = window.GridData.colorsFor(CATEGORY_LABELS);
+
+  GridPreview.renderDonutChart(
+    document.getElementById("mix-donut-source"),
+    SOURCE_LABELS, SOURCE_VALUES, SOURCE_COLORS,
+    { legendTarget: "mix-donut-source-legend", unit: "GW", centerLabel: "28.7GW", centerSub: "generation" }
+  );
+
+  GridPreview.renderDonutChart(
+    document.getElementById("mix-donut-category"),
+    CATEGORY_LABELS, CATEGORY_VALUES, CATEGORY_COLORS,
+    { legendTarget: "mix-donut-category-legend", unit: "GW", centerLabel: "28.9GW", centerSub: "demand" }
+  );
+
+  // Horizontal bar chart, ranked by output
+  (function () {
+    const paired = SOURCE_LABELS.map((l, i) => ({ l, v: SOURCE_VALUES[i], c: SOURCE_COLORS[i] })).sort((a, b) => b.v - a.v);
+    GridPreview.renderBarChart(
+      document.getElementById("mix-bar"),
+      paired.map((p) => p.l),
+      paired.map((p) => p.v),
+      paired.map((p) => p.c),
+      { unit: "GW" }
+    );
+  })();
+
+  // Sparklines + headline numbers in the status strip. Tries the real
+  // backend first (api/current.php + api/series.php); falls back to
+  // placeholder data if there's nothing live yet, so the dashboard never
+  // looks broken before ingestion has run.
+  const SPARK_METRICS = {
+    price:      { base: 90, amp: 60, color: "#d98e04", min: -40, max: 220 },
+    emissions:  { base: 120, amp: 90, color: "#8a5a3c", min: 0, max: 400 },
+    demand:     { base: 27, amp: 8, color: "#1d6fe0", min: 15, max: 45 },
+    generation: { base: 25, amp: 8, color: "#0a6e5c", min: 12, max: 42 },
+    transfers:  { base: 1, amp: 3, color: "#6a5acd", min: -6, max: 8 },
+  };
+
+  function drawMockSparkline(key, i) {
+    const canvas = document.getElementById("spark-" + key);
+    if (!canvas) return;
+    const cfg = SPARK_METRICS[key];
+    const series = GridPreview.buildSeries("3hour", cfg.base, cfg.amp, i * 41 + 5, { min: cfg.min, max: cfg.max, cycles: 1 });
+    GridPreview.renderSparkline(canvas, series.values, cfg.color);
+  }
+
+  function drawAllMockSparklines() {
+    Object.keys(SPARK_METRICS).forEach((key, i) => drawMockSparkline(key, i));
+  }
+
+  // Data behind the "Download snapshot" button (see GridPreview.downloadSnapshotCard
+  // in assets/app.js). Starts out built from this page's own illustrative
+  // placeholder figures above, so the button works even before the first
+  // live fetch resolves, then gets overwritten with real data by
+  // renderStats below - first from any cached data, then again once the
+  // live fetch confirms.
+  let latestSnapshot = {
+    title: "UK Grid: Live+",
+    asOf: "illustrative preview data",
+    sourceLabels: SOURCE_LABELS,
+    sourceValues: SOURCE_VALUES,
+    sourceColors: SOURCE_COLORS,
+    renewablePct: (14.73 / 28.7) * 100,
+    stats: [
+      { label: "Price", value: "135.47", unit: "£/MWh" },
+      { label: "Emissions", value: "84", unit: "g/kWh" },
+      { label: "Demand", value: "28.9", unit: "GW" },
+      { label: "Generation", value: "28.7", unit: "GW" },
+    ],
+    filename: "ukgridlive-snapshot-preview.png",
+  };
+
+  function buildSnapshot(current, summary, isCached) {
+    const labels = Object.keys(summary.bySource);
+    const values = labels.map((l) => summary.bySource[l] / 1000);
+    const colors = window.GridData.colorsFor(labels);
+    const renewablePct = summary.totalGenMw ? (summary.renewableMw / summary.totalGenMw) * 100 : 0;
+    const d = new Date(current.ts);
+    const asOf = (isCached ? "last known - " : "") + "as of " +
+      d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + ", " +
+      d.toLocaleDateString([], { day: "numeric", month: "short" });
+    return {
+      title: "UK Grid: Live+",
+      asOf,
+      sourceLabels: labels,
+      sourceValues: values,
+      sourceColors: colors,
+      renewablePct,
+      stats: [
+        { label: "Price", value: current.price_gbp_mwh != null ? current.price_gbp_mwh.toFixed(2) : "-", unit: "£/MWh" },
+        { label: "Emissions", value: current.emissions_gco2 != null ? String(current.emissions_gco2) : "-", unit: "g/kWh" },
+        { label: "Demand", value: current.demand_mw != null ? (current.demand_mw / 1000).toFixed(1) : "-", unit: "GW" },
+        { label: "Generation", value: (summary.totalGenMw / 1000).toFixed(1), unit: "GW" },
+      ],
+      filename: "ukgridlive-snapshot-" + new Date().toISOString().slice(0, 10) + ".png",
+    };
+  }
+
+  (function () {
+    const btn = document.getElementById("snapshot-btn");
+    const label = document.getElementById("snapshot-btn-label");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      GridPreview.downloadSnapshotCard(latestSnapshot);
+      if (label) {
+        const original = label.textContent;
+        label.textContent = "Downloaded!";
+        btn.classList.add("is-copied");
+        setTimeout(() => {
+          label.textContent = original;
+          btn.classList.remove("is-copied");
+        }, 1800);
+      }
+    });
+  })();
+
+  // Alerts: browser notifications when price/carbon-intensity cross a
+  // user-set threshold. Deliberately NOT a push/email system - there's no
+  // server component here that could send one while the browser is
+  // closed, only client-side polling while this tab stays open (see the
+  // panel's own caption). Rules are stored in localStorage; "already
+  // notified for this crossing" state is stored in sessionStorage so a
+  // rule fires once per crossing per browsing session rather than
+  // repeatedly every 5 minutes while a value stays past its threshold.
+  const ALERTS_STORAGE_KEY = "ukgl-alerts";
+  const ALERT_RULES = [
+    { key: "price", field: "price_gbp_mwh", label: "Price", format: (v) => "£" + v.toFixed(2) + "/MWh" },
+    { key: "emissions", field: "emissions_gco2", label: "Carbon intensity", format: (v) => Math.round(v) + "g/kWh" },
+  ];
+
+  function loadAlertRules() {
+    try {
+      return JSON.parse(localStorage.getItem(ALERTS_STORAGE_KEY)) || {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveAlertRules(rules) {
+    try {
+      localStorage.setItem(ALERTS_STORAGE_KEY, JSON.stringify(rules));
+    } catch (e) {}
+  }
+
+  (function () {
+    const enableBtn = document.getElementById("alerts-enable-btn");
+    const enableLabel = document.getElementById("alerts-enable-label");
+    const statusEl = document.getElementById("alerts-permission-status");
+    const supported = typeof Notification !== "undefined";
+
+    function refreshPermissionUi() {
+      if (!supported) {
+        if (statusEl) statusEl.textContent = "Notifications aren't supported in this browser.";
+        if (enableBtn) enableBtn.disabled = true;
+        return;
+      }
+      if (Notification.permission === "granted") {
+        if (enableLabel) enableLabel.textContent = "Notifications enabled";
+        if (statusEl) statusEl.textContent = "";
+        if (enableBtn) enableBtn.classList.add("is-copied");
+      } else if (Notification.permission === "denied") {
+        if (statusEl) statusEl.textContent = "Notifications are blocked for this site in your browser settings.";
+        if (enableBtn) enableBtn.disabled = true;
+      }
+    }
+    refreshPermissionUi();
+
+    if (enableBtn && supported) {
+      enableBtn.addEventListener("click", () => {
+        Notification.requestPermission().then(refreshPermissionUi);
+      });
+    }
+
+    const rules = loadAlertRules();
+    ALERT_RULES.forEach(({ key }) => {
+      const enabledEl = document.getElementById("alert-" + key + "-enabled");
+      const directionEl = document.getElementById("alert-" + key + "-direction");
+      const thresholdEl = document.getElementById("alert-" + key + "-threshold");
+      if (!enabledEl || !directionEl || !thresholdEl) return;
+
+      const saved = rules[key] || {};
+      enabledEl.checked = !!saved.enabled;
+      directionEl.value = saved.direction || "below";
+      thresholdEl.value = saved.threshold != null ? saved.threshold : "";
+
+      const persist = () => {
+        const current = loadAlertRules();
+        current[key] = {
+          enabled: enabledEl.checked,
+          direction: directionEl.value,
+          threshold: thresholdEl.value === "" ? null : parseFloat(thresholdEl.value),
+        };
+        saveAlertRules(current);
+      };
+      enabledEl.addEventListener("change", persist);
+      directionEl.addEventListener("change", persist);
+      thresholdEl.addEventListener("change", persist);
+    });
+  })();
+
+  /** Checks the current live snapshot against every enabled alert rule and
+      fires a browser Notification for any rule that has just crossed its
+      threshold (not already firing before this check). Safe to call as
+      often as you like - a no-op whenever notifications aren't supported,
+      permission hasn't been granted, or no rule is enabled. */
+  function checkAlerts(current) {
+    if (!current || typeof Notification === "undefined" || Notification.permission !== "granted") return;
+    const rules = loadAlertRules();
+    ALERT_RULES.forEach(({ key, field, label, format }) => {
+      const rule = rules[key];
+      const value = current[field];
+      if (!rule || !rule.enabled || value == null || rule.threshold == null || !isFinite(rule.threshold)) return;
+
+      const crossed = rule.direction === "below" ? value < rule.threshold : value > rule.threshold;
+      const sideKey = "ukgl-alert-side-" + key;
+      let wasCrossed = false;
+      try {
+        wasCrossed = sessionStorage.getItem(sideKey) === "1";
+      } catch (e) {}
+
+      if (crossed && !wasCrossed) {
+        try {
+          new Notification("UK Grid: Live+", {
+            body: label + " is now " + rule.direction + " " + format(rule.threshold) + " - currently " + format(value),
+            icon: "assets/logo.svg",
+            tag: "ukgl-alert-" + key, // replaces any earlier notification for the same rule rather than piling up
+          });
+        } catch (e) {
+          // Notification constructor can throw on some mobile browsers
+          // that only support notifications via a service worker - fail
+          // silently rather than breaking the rest of the page over a
+          // best-effort feature.
+        }
+      }
+      try {
+        sessionStorage.setItem(sideKey, crossed ? "1" : "0");
+      } catch (e) {}
+    });
+  }
+
+  // Re-checks roughly every 5 minutes while this page stays open (see the
+  // Alerts panel's own caption for why this can't work once the tab is
+  // closed). Independent of the status strip's own single page-load
+  // fetch below - this is what makes "alerts" mean something more than
+  // "checked once when you happened to load the page".
+  setInterval(() => {
+    (window.GridData ? window.GridData.fetchCurrent() : Promise.resolve(null)).then(checkAlerts);
+  }, 5 * 60 * 1000);
+
+  async function initStatusStrip() {
+    const caption = document.getElementById("stat-caption");
+    // The status grid's first tile doubles as the "as of [time]" indicator:
+    // rather than a separate banner (or a locally-ticking clock unrelated
+    // to the data itself), its value is the fetched data's own timestamp,
+    // so "Data as of" and the figures beside it always describe the same
+    // moment.
+    const asOfEl = document.getElementById("stat-time");
+
+    // Renders one current.php-shaped snapshot onto the stat strip -
+    // called once immediately with cached data (if a previous visit left
+    // any) and again once the real fetch resolves, via
+    // GridPreview.withCachedFallback below. isCached decides only how the
+    // "Data as of" tile itself reads ("Showing: 14:32 - refreshing…" vs.
+    // the normal two-line as-of time) - every other figure renders the
+    // same way regardless, since a stale-but-real number is still more
+    // useful on first paint than a blank placeholder.
+    function renderStats(current, isCached) {
+      const setStat = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+      const summary = window.GridData.summarizeGeneration(current.generation);
+
+      setStat("stat-price", current.price_gbp_mwh != null ? "£" + current.price_gbp_mwh.toFixed(2) : "-");
+      setStat("stat-emissions", current.emissions_gco2 != null ? String(current.emissions_gco2) : "-");
+      GridPreview.setStatBand("stat-price-band", GridPreview.priceBand(current.price_gbp_mwh), " wholesale price (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-emissions-band", GridPreview.carbonBand(current.emissions_gco2), " carbon intensity (NESO bands)");
+      latestSnapshot = buildSnapshot(current, summary, isCached);
+      if (!isCached) checkAlerts(current); // only check confirmed-live data, not a stale cached first-paint
+      setStat("stat-demand", current.demand_mw != null ? (current.demand_mw / 1000).toFixed(1) : "-");
+      setStat("stat-generation", (summary.totalGenMw / 1000).toFixed(1));
+      setStat("stat-transfers", (summary.interconnectorMw / 1000).toFixed(1));
+      // Demand/generation bands: rough, disclosed-not-official reference
+      // range - low end an approximate summer-overnight GB demand (~20GW),
+      // high end this site's own sourced "Winter 2025/26 peak demand"
+      // record (47.32GW - see the Records panel further down this page).
+      // A magnitude indicator (how close to GB's own typical peak is it
+      // right now?), not a "good/bad" judgment - see GridPreview.bandFromRange.
+      GridPreview.setStatBand("stat-demand-band", GridPreview.bandFromRange(current.demand_mw != null ? current.demand_mw / 1000 : null, 20, 47), " relative to GB's typical demand range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-generation-band", GridPreview.bandFromRange(summary.totalGenMw / 1000, 20, 47), " relative to GB's typical generation range (rough guide, not an official banding)");
+      GridPreview.setStatBand("stat-transfers-band", GridPreview.transfersBand(summary.interconnectorMw), " (positive = importing, negative = exporting - rough guide, not an official banding)");
+
+      if (asOfEl) {
+        asOfEl.innerHTML = isCached ? GridPreview.formatShowingHtml(current.ts) : GridPreview.formatAsOfHtml(current.ts);
+        asOfEl.classList.remove("is-loading-text");
+      }
+      if (caption) {
+        caption.textContent = isCached
+          ? "Showing the last successfully loaded figures while this page fetches the latest data."
+          : "Live data from Elexon" + (summary.totalGenMw ? ", NESO and the Carbon Intensity API" : "") +
+            (current.stale ? ". This may be a few updates behind; check the site's cron jobs." : ".") +
+            " Each figure's trend covers the last 3 hours.";
+      }
+    }
+
+    const { usedCache, promise } = GridPreview.withCachedFallback(
+      "gb-current",
+      () => (window.GridData ? window.GridData.fetchCurrent() : Promise.resolve(null)),
+      renderStats
+    );
+    const current = await promise;
+
+    if (!current) {
+      if (usedCache) {
+        // Still showing last-known figures (rendered above) - just flag
+        // that this run's own fetch didn't confirm anything fresher,
+        // rather than wiping out real numbers in favour of an error state.
+        GridPreview.showLiveDataBanner("Live data is currently unavailable - the figures shown are from the last successful update, not right now.");
+      } else {
+        GridPreview.showLiveDataBanner("Live data is currently unavailable. The figures below could not be loaded - see the footer for the data pipeline's status.");
+        if (asOfEl) { asOfEl.textContent = "-"; asOfEl.classList.remove("is-loading-text"); }
+        ["stat-price", "stat-emissions", "stat-demand", "stat-generation", "stat-transfers"].forEach(GridPreview.showStatError);
+        GridPreview.setStatBand("stat-price-band", null);
+        GridPreview.setStatBand("stat-emissions-band", null);
+        GridPreview.setStatBand("stat-demand-band", null);
+        GridPreview.setStatBand("stat-generation-band", null);
+        GridPreview.setStatBand("stat-transfers-band", null);
+        Object.keys(SPARK_METRICS).forEach((key) => {
+          const canvas = document.getElementById("spark-" + key);
+          if (canvas) GridPreview.showChartError(canvas, null);
+        });
+        if (caption) caption.textContent = "Live data is currently unavailable.";
+      }
+      return;
+    }
+
+    // Elexon, Carbon Intensity and NESO are three independent sources feeding
+    // this one status strip - api/current.php can still return usable data
+    // (e.g. Elexon's figures) even while one of the others' most recent
+    // ingest attempt is erroring. Surface that distinctly from the
+    // total-outage case above, rather than staying silent about it.
+    const issueBanner = await GridPreview.buildApiIssueBanner({
+      ELEXON: "demand, price and transmission generation (Elexon)",
+      CARBON_INTENSITY: "carbon intensity (Carbon Intensity API)",
+      NESO: "embedded wind & solar generation (NESO)",
+    });
+    if (issueBanner) {
+      GridPreview.showLiveDataBanner(issueBanner);
+    } else {
+      GridPreview.hideLiveDataBanner();
+    }
+
+    // Same fix as drawRange() above: fetch all five sparklines' series in
+    // parallel rather than awaiting them one at a time in a loop.
+    const keys = Object.keys(SPARK_METRICS);
+    const sparkSeriesList = await Promise.all(keys.map((key) => window.GridData.fetchSeries(key, "3hour")));
+    keys.forEach((key, i) => {
+      const series = sparkSeriesList[i];
+      const canvas = document.getElementById("spark-" + key);
+      if (!canvas) return;
+      if (series && series.values.length) {
+        canvas.closest(".chart-wrap").classList.remove("has-error");
+        GridPreview.renderSparkline(canvas, series.values, SPARK_METRICS[key].color);
+      } else {
+        GridPreview.showChartError(canvas, null);
+      }
+    });
+  }
+
+  initStatusStrip();
+
+  // "Notable moments" - this install's own recorded highs/lows (see
+  // api/notable_moments.php). Deliberately separate from the hand-typed,
+  // independently sourced "Records" panel above: that one is real all-time
+  // GB records, checked against NESO/press reporting; this one only ever
+  // reflects however much history this particular install has stored,
+  // which for a fresh install could be a few days or weeks - "recorded
+  // since" below exists specifically to make that limitation visible
+  // rather than let a small/recent "highest" figure look like a genuine
+  // record.
+  async function initNotableMoments() {
+    const listEl = document.getElementById("moments-list");
+    const captionEl = document.getElementById("moments-caption");
+    const unavailableEl = document.getElementById("moments-unavailable");
+    if (!window.GridData) return;
+
+    const data = await window.GridData.fetchNotableMoments();
+    if (!data) {
+      if (captionEl) captionEl.hidden = true;
+      if (unavailableEl) unavailableEl.hidden = false;
+      return;
+    }
+
+    const dateOpts = { day: "numeric", month: "short", year: "numeric" };
+    const sinceStr = data.recorded_since ? new Date(data.recorded_since).toLocaleDateString([], dateOpts) : "an unknown date";
+    if (captionEl) {
+      captionEl.textContent = `The highest/lowest value this site has itself recorded since ${sinceStr} - not the same as the sourced all-time "Records" panel above. A short recording window (this is only as old as this install's own stored history) means these can be far short of the real UK record.`;
+    }
+
+    if (listEl) {
+      listEl.hidden = false;
+      listEl.innerHTML = "";
+      data.moments.forEach((m) => {
+        const dt = new Date(m.ts);
+        const dtStr = dt.toLocaleDateString([], dateOpts) + ", " + dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+        const valueStr = m.unit === "GBP/MWh" ? "£" + m.value.toFixed(2) + "/MWh"
+          : m.unit === "gCO2/kWh" ? Math.round(m.value) + "g/kWh"
+          : Math.round(m.value).toLocaleString() + "MW";
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${m.label}</span><strong>${valueStr} - ${dtStr}</strong>`;
+        listEl.appendChild(li);
+      });
+    }
+    if (unavailableEl) unavailableEl.hidden = true;
+  }
+
+  initNotableMoments();
+
+  // Stacked area: generation mix over the last 24 hours. Uses the same
+  // renderStackedAreaChart component as the History page's mix chart, so
+  // this gets the same per-band fade fill and the same hover behaviour
+  // (guide line + tooltip breaking down every type at that point) rather
+  // than a separate, older implementation with neither.
+  (function () {
+    const canvas = document.getElementById("mix-stack");
+    const fossil = GridPreview.buildSeries("day", 7, 4, 11, { min: 1, max: 16, cycles: 2 });
+    const renewable = GridPreview.buildSeries("day", 14, 9, 22, { min: 2, max: 26, cycles: 3 });
+    const other = GridPreview.buildSeries("day", 6, 1.5, 33, { min: 4, max: 9, cycles: 1 });
+
+    GridPreview.renderStackedAreaChart(canvas, fossil.times, fossil.labels, [
+      { name: "Fossil fuels", color: "#8a5a3c", values: fossil.values },
+      { name: "Renewables", color: "#1f9d5a", values: renewable.values },
+      { name: "Nuclear & biomass", color: "#6a5acd", values: other.values },
+    ], { unit: "GW", legendTarget: "mix-stack-legend" });
+  })();
+
+  // Records tabs: draw the chart for each category once, lazily on first view
+  (function () {
+    const recordsDrawn = {};
+    function drawRecords(category) {
+      if (recordsDrawn[category]) return;
+      recordsDrawn[category] = true;
+      if (category === "wind") {
+        GridPreview.renderBarChart(
+          document.getElementById("records-bar-wind"),
+          ["5 Dec 2025", "25 Mar 2026"], [23.825, 23.880], "#1f9d5a",
+          { unit: "GW", horizontal: false, thickness: 60 }
+        );
+      } else if (category === "solar") {
+        GridPreview.renderBarChart(
+          document.getElementById("records-bar-solar"),
+          ["May 2019", "May 2020", "Jul 2026"], [9.55, 9.7, 15.427], "#e0a800",
+          { unit: "GW", horizontal: false, thickness: 44 }
+        );
+      } else if (category === "emissions") {
+        GridPreview.renderBarChart(
+          document.getElementById("records-bar-emissions"),
+          ["2012 (avg.)", "2025 (avg.)", "23 May 2026"], [500, 145, 89], "#8a5a3c",
+          { unit: "g", horizontal: false, thickness: 44 }
+        );
+      } else if (category === "demand") {
+        GridPreview.renderBarChart(
+          document.getElementById("records-bar-demand"),
+          ["Summer low (typical)", "Winter 2025/26 peak"], [20, 47.32], "#1d6fe0",
+          { unit: "GW", horizontal: false, thickness: 60 }
+        );
+      }
+    }
+    drawRecords("wind");
+    document.getElementById("records-tablist").addEventListener("rangechange", (e) => drawRecords(e.detail.range));
+  })();
+
+  // Battery charge/discharge toggle (overview)
+  (function () {
+    const PUMPED_GW = 0.79, PUMPED_PCT = 2.7;
+    const toggle = document.getElementById("idx-battery-toggle");
+    const panel = document.getElementById("idx-battery-panel");
+    const batteryGw = document.getElementById("idx-battery-gw");
+    const batteryPct = document.getElementById("idx-battery-pct");
+    const totalGw = document.getElementById("idx-storage-total-gw");
+    const totalPct = document.getElementById("idx-storage-total-pct");
+    let drawn = false;
+
+    function drawChart() {
+      const canvas = document.getElementById("idx-battery-chart");
+      const series = GridPreview.buildSeries("day", -0.04, 0.7, 61, { min: -0.9, max: 0.9, cycles: 3 });
+      GridPreview.renderLineChart(canvas, series, { color: "#2a8fbd", unit: "GW" });
+    }
+
+    function update(on) {
+      if (on) {
+        const batteryNow = -0.18;
+        batteryGw.textContent = batteryNow.toFixed(2);
+        batteryPct.textContent = ((batteryNow / 28.7) * 100).toFixed(1);
+        totalGw.textContent = (PUMPED_GW + batteryNow).toFixed(2);
+        totalPct.textContent = (PUMPED_PCT + (batteryNow / 28.7) * 100).toFixed(1);
+        panel.hidden = false;
+        if (!drawn) { drawChart(); drawn = true; }
+      } else {
+        batteryGw.textContent = "-";
+        batteryPct.textContent = "-";
+        totalGw.textContent = PUMPED_GW.toFixed(2);
+        totalPct.textContent = PUMPED_PCT.toFixed(1);
+        panel.hidden = true;
+      }
+    }
+
+    toggle.addEventListener("change", () => update(toggle.checked));
+    update(false);
+  })();
+})();
+</script>
+</body>
+</html>

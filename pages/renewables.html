@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renewables - UK Grid: Live+</title>
+<meta name="description" content="Detailed live and historical data for renewables generation on Great Britain's electricity grid.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html" aria-current="page">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="type-hero">
+        <span class="type-hero__swatch" style="background:var(--renewable)"></span>
+        <h1>Renewables</h1>
+      </div>
+      <p>Renewable generation includes wind (onshore and offshore), solar, and hydro. Much of Great Britain's solar and onshore wind capacity is 'embedded' in the local distribution network rather than the national transmission network, so it is estimated separately by the NESO Data Portal.</p>
+    </section>
+
+    <dl class="status-grid" aria-label="Current renewables status" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat"><dt>Current output</dt><dd>14.73GW</dd></div>
+      <div class="stat"><dt>Share of generation</dt><dd>51.0%</dd></div>
+    </dl>
+
+    <section class="panel">
+      <h2>Breakdown</h2>
+      <table class="mix">
+        <caption class="visually-hidden">Renewables generation by source</caption>
+        <thead><tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr></thead>
+        <tbody>
+            <tr><td>Wind</td><td class="num">10.33</td><td class="num">35.8</td></tr>
+            <tr><td>Solar</td><td class="num">4.19</td><td class="num">14.5</td></tr>
+            <tr><td>Hydro</td><td class="num">0.21</td><td class="num">0.7</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="chart-grid">
+          <div class="chart-card"><h3>Renewables output</h3><div class="chart-wrap is-loading"><canvas data-metric="output"></canvas></div></div>
+          <div class="chart-card"><h3>Share of total generation</h3><div class="chart-wrap is-loading"><canvas data-metric="share"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+      <p class="chart-caption">Renewables output and share of total generation over the selected range.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About renewables</h2>
+      
+<p>Great Britain's position in the north-east Atlantic, combined with the shallow waters of the North Sea, makes it one of the best locations in the world for wind power. Offshore wind farms off the coasts of England and Scotland are among the largest in the world.</p>
+<h3>How wind and solar grew</h3>
+<p>Britain's first commercial wind farm opened at Delabole in Cornwall in 1991, with ten turbines generating a total of 4 megawatts - enough for a few thousand homes. Offshore wind followed in 2000 with a small pilot project off Blyth, Northumberland, but it was the 2000s and 2010s that saw dramatic growth, driven by falling turbine costs, government contracts-for-difference auctions, and a series of ever-larger offshore projects in the North Sea and Irish Sea.</p>
+<p>Solar power arrived later at scale. Feed-in tariffs introduced in 2010 triggered a boom in rooftop and field-mounted solar, and continuing cost falls mean solar is now often the cheapest new form of generation to build, even without subsidy.</p>
+<p>New wind power records are set regularly. At 5:30pm on 5 December 2025, British wind farms hit a record 23,825MW of generation - at that moment, wind alone was meeting 47.4% of the country's demand.</p>
+<table class="mix" style="margin:1rem 0;">
+<caption class="visually-hidden">Wind power milestones</caption>
+<thead><tr><th scope="col" class="num">Power first achieved</th><th scope="col">Date</th></tr></thead>
+<tbody>
+<tr><td class="num">23GW</td><td>5 December 2025</td></tr>
+<tr><td class="num">22GW</td><td>11 November 2025</td></tr>
+<tr><td class="num">21GW</td><td>10 January 2023</td></tr>
+<tr><td class="num">20GW</td><td>2 November 2022</td></tr>
+<tr><td class="num">15GW</td><td>18 December 2018</td></tr>
+<tr><td class="num">10GW</td><td>8 December 2016</td></tr>
+</tbody>
+</table>
+<p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a>, reported by <a href="https://www.edie.net/great-britain-breaks-wind-power-generation-record/">Edie</a> and <a href="https://electrek.co/2025/11/20/uk-wind-farms-generate-a-record-22-7-gw-of-power-on-a-single-day/">Electrek</a>.</p>
+<h3>Variability</h3>
+<p>Solar generation follows a strong daily and seasonal cycle, peaking around midday in summer and contributing little overnight or in winter. Wind is more variable on shorter timescales but, because Britain's wind fleet is spread across the whole country and offshore, total output rarely falls to zero - though prolonged calm, high-pressure spells (sometimes called "wind droughts") can still push wind output very low for days at a time, which is when gas and imports pick up the slack.</p>
+
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Records</h2>
+      <p class="chart-caption">Hand-curated and checked periodically against the sources below, rather than calculated live from stored history.</p>
+      <ul class="records-list">
+        <li><span>Highest wind generation ever</span><strong>23,880MW - 25 March 2026</strong></li>
+        <li><span>Highest solar generation ever</span><strong>15,427MW - 12 July 2026, late morning</strong></li>
+        <li><span>Renewables' share of annual generation, 2025</span><strong>44% - a record year</strong></li>
+        <li><span>First commercial wind farm</span><strong>Delabole, Cornwall, 1991</strong></li>
+      </ul>
+      <p class="chart-caption">Sources: <a href="https://www.neso.energy/">National Energy System Operator</a> via <a href="https://www.edie.net/uk-soars-past-wind-power-generation-record-for-second-time-in-two-months/">Edie</a> (wind) and <a href="https://www.solarpowerportal.co.uk/solar-installations/summer-sun-boosted-uk-s-solar-generation-record-in-july">Solar Power Portal</a> (solar); <a href="https://www.neso.energy/news/britains-energy-explained-2025-review">NESO's 2025 review</a> (annual renewable share). Last checked: 23 August 2026.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="constraints-heading">
+      <h2 id="constraints-heading">Network constraint costs</h2>
+      <p class="chart-caption" id="constraints-caption">Loading…</p>
+
+      <div id="constraints-content" hidden>
+        <ul class="records-list" id="constraints-list"></ul>
+        <p class="chart-caption" id="constraints-calc"></p>
+      </div>
+
+      <div id="constraints-unavailable" hidden>
+        <p class="chart-caption">Not available yet - this refreshes automatically (no cron job needed) but hasn't run for the first time on this install yet. It'll appear after the next visit that triggers a data refresh.</p>
+      </div>
+
+      <p class="chart-caption">Source: <a href="https://www.neso.energy/data-portal/constraint-breakdown">NESO Data Portal - Constraint Breakdown Costs and Volume</a>, updated by NESO weekly.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  const ranges = ["day", "week", "month", "season", "year", "5year", "10year"];
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const outputCanvas = host.querySelector('canvas[data-metric="output"]');
+    const shareCanvas = host.querySelector('canvas[data-metric="share"]');
+
+    const outputPromise = window.GridData ? window.GridData.fetchSeries("renewable", range) : Promise.resolve(null);
+    const totalPromise = window.GridData ? window.GridData.fetchSeries("generation", range) : Promise.resolve(null);
+
+    outputPromise.then((outSeries) => {
+      outputCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      if (outSeries) {
+        GridPreview.renderLineChart(outputCanvas, outSeries, { label: "Renewables", color: "#1f9d5a", unit: "GW" });
+      } else {
+        GridPreview.showChartError(outputCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+
+    Promise.all([outputPromise, totalPromise]).then(([outSeries, totalSeries]) => {
+      shareCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      const shareSeries = GridPreview.computeShareSeries(outSeries, totalSeries);
+      if (shareSeries) {
+        GridPreview.renderLineChart(shareCanvas, shareSeries, { label: "Share", color: "#1f9d5a", unit: "%" });
+      } else {
+        GridPreview.showChartError(shareCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+})();
+
+// Network constraint costs panel. No illustrative/mock fallback here
+// (unlike the range charts above) - a made-up cost figure would be a much
+// more misleading thing to show than an empty chart, so if
+// fetchConstraintsSummary() comes back null this just says so plainly
+// rather than inventing numbers.
+(function () {
+  const captionEl = document.getElementById("constraints-caption");
+  const contentEl = document.getElementById("constraints-content");
+  const listEl = document.getElementById("constraints-list");
+  const calcEl = document.getElementById("constraints-calc");
+  const unavailableEl = document.getElementById("constraints-unavailable");
+  if (!captionEl) return;
+
+  const gbp = (n) => "£" + Math.round(n).toLocaleString();
+  const mwh = (n) => Math.round(n).toLocaleString() + " MWh";
+  const formatDate = (isoDate) => {
+    const d = new Date(isoDate + "T00:00:00Z");
+    return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  };
+
+  function render(summary) {
+    if (!summary) {
+      captionEl.hidden = true;
+      unavailableEl.hidden = false;
+      return;
+    }
+
+    const rows = [
+      ["Thermal constraints", summary.thermal, "the closest available proxy for wind curtailment - see note below"],
+      ["Voltage constraints", summary.voltage, null],
+      ["Increasing system inertia", summary.inertia, null],
+      ["Reducing largest loss", summary.largest_loss, null],
+    ];
+    listEl.innerHTML = rows.map(([label, v, note]) => {
+      const sub = note ? ` <em style="font-weight:400;">(${note})</em>` : "";
+      return `<li><span>${label}${sub}</span><strong>${gbp(v.cost)} <small style="font-weight:500;">- ${mwh(v.volume_mwh)}</small></strong></li>`;
+    }).join("") + `<li><span><strong>Total, all constraint types</strong></span><strong>${gbp(summary.total_cost)}</strong></li>`;
+
+    captionEl.textContent = `Great Britain-wide totals for ${formatDate(summary.from)} - ${formatDate(summary.to)} (the most recent ${summary.days_covered} day${summary.days_covered === 1 ? "" : "s"} NESO has published figures for).`;
+
+    calcEl.innerHTML = `<strong>How this is calculated:</strong> each row is NESO's own daily £ (and MWh) figure for that constraint type, summed across the ${summary.days_covered} days above - a plain addition, no modelling or estimation on this site's part. NESO's dataset breaks costs down by <em>why</em> an action was taken (a thermal network limit, a voltage limit, or a system-inertia requirement), not by <em>which generation technology</em> was affected - there's no "wind" column in the source data. Thermal constraints are shown first because most GB wind curtailment happens via thermal-constraint actions on the Scotland-England transmission boundary, making it the closest available proxy for wind curtailment cost - but it isn't wind-exclusive: it also counts any other generation curtailed or redispatched to manage the same thermal limits. Treat it as a directional indicator of curtailment activity, not a precise wind-only figure.`;
+
+    contentEl.hidden = false;
+  }
+
+  (window.GridData ? window.GridData.fetchConstraintsSummary() : Promise.resolve(null)).then(render);
+})();
+</script>
+</body>
+</html>

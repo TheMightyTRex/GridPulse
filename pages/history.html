@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History - UK Grid: Live+</title>
+<meta name="description" content="Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html" aria-current="page">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>History</h1>
+      <p>Demand, generation, price, emissions, transfers and the generation mix - every time period, side by side. The Season tab always shows the current UK meteorological season to date (right now, that's <strong data-season-label>this season</strong>), not a fixed rolling window. Every chart's underlying data can be copied to the clipboard for use elsewhere.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading" class="visually-hidden">Time range</h2>
+
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <p class="period-caption"><strong>Period shown:</strong> <span data-period-label></span></p>
+
+        <p class="download-row">
+          <button type="button" class="copy-btn" data-download-series="csv">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <span>Download CSV</span>
+          </button>
+          <button type="button" class="copy-btn" data-download-series="json">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <span>Download JSON</span>
+          </button>
+          <span style="font-size:.8rem;color:var(--text-muted);">Every metric shown below, for this period.</span>
+        </p>
+
+        <div class="range-panel chart-grid">
+          <div class="chart-card">
+            <h3>Demand</h3>
+            <div class="chart-wrap is-loading"><canvas data-metric="demand"></canvas></div>
+            <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="demand">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+              <span data-copy-label aria-live="polite">Copy data</span>
+            </button>
+          </div>
+          <div class="chart-card">
+            <h3>Generation</h3>
+            <div class="chart-wrap is-loading"><canvas data-metric="generation"></canvas></div>
+            <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="generation">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+              <span data-copy-label aria-live="polite">Copy data</span>
+            </button>
+          </div>
+          <div class="chart-card">
+            <h3>Price per MWh</h3>
+            <div class="chart-wrap is-loading"><canvas data-metric="price"></canvas></div>
+            <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="price">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+              <span data-copy-label aria-live="polite">Copy data</span>
+            </button>
+          </div>
+          <div class="chart-card">
+            <h3>Emissions per kWh</h3>
+            <div class="chart-wrap is-loading"><canvas data-metric="emissions"></canvas></div>
+            <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="emissions">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+              <span data-copy-label aria-live="polite">Copy data</span>
+            </button>
+          </div>
+          <div class="chart-card">
+            <h3>Transfers</h3>
+            <div class="chart-wrap is-loading"><canvas data-metric="transfers"></canvas></div>
+            <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="transfers">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+              <span data-copy-label aria-live="polite">Copy data</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chart-card" style="margin-top:1.25rem;">
+          <h3>Generation mix over this period</h3>
+          <div class="chart-wrap is-loading" style="height:260px;"><canvas data-mix-chart role="img" aria-label="Stacked area chart of renewable, non-renewable and storage generation over this period"></canvas></div>
+          <ul class="chart-legend" data-mix-legend></ul>
+          <button type="button" class="copy-btn" style="margin-top:.9rem;" data-copy-series="mix">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+            <span data-copy-label aria-live="polite">Copy data</span>
+          </button>
+        </div>
+
+        <div class="chart-card" style="margin-top:1.25rem;">
+          <h3>Wind speed &amp; cloud cover</h3>
+          <div class="chart-grid">
+            <div>
+              <div class="chart-wrap is-loading" style="height:180px;"><canvas data-weather-wind role="img" aria-label="Line chart of wind speed over this period"></canvas></div>
+              <p class="chart-caption" style="margin-top:.4rem;">Wind speed (m/s)</p>
+            </div>
+            <div>
+              <div class="chart-wrap is-loading" style="height:180px;"><canvas data-weather-cloud role="img" aria-label="Line chart of cloud cover over this period"></canvas></div>
+              <p class="chart-caption" style="margin-top:.4rem;">Cloud cover (%)</p>
+            </div>
+          </div>
+          <p class="chart-caption">From <a href="https://open-meteo.com/">Open-Meteo</a>, for a single representative GB point (roughly central England) - not a national average, and not tied to conditions at any specific wind farm. Shown for context alongside the charts above, e.g. to see whether a generation or price swing lines up with a windy or calm spell.</p>
+          <button type="button" class="copy-btn" style="margin-top:.7rem;" data-copy-series="weather">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+            <span data-copy-label aria-live="polite">Copy data</span>
+          </button>
+        </div>
+
+        <div class="chart-grid" style="margin-top:1.25rem;">
+          <div class="chart-card">
+            <h3>Average mix this period</h3>
+            <div class="chart-wrap is-loading" style="height:280px;"><canvas data-mix-donut role="img" aria-label="Donut chart of the average renewable, non-renewable and storage share of generation over this period"></canvas></div>
+            <ul class="chart-legend" data-mix-donut-legend style="justify-content:center;"></ul>
+          </div>
+          <div class="chart-card">
+            <h3>What's in each group</h3>
+            <p style="margin:0 0 .6rem;"><span class="swatch" style="background:#1f9d5a;display:inline-block;width:.65rem;height:.65rem;border-radius:2px;margin-right:.4rem;"></span><strong>Renewable</strong> - wind (transmission and embedded), embedded solar, non-pumped hydro.</p>
+            <p style="margin:0 0 .6rem;"><span class="swatch" style="background:#8a5a3c;display:inline-block;width:.65rem;height:.65rem;border-radius:2px;margin-right:.4rem;"></span><strong>Non-renewable</strong> - gas, coal, oil, nuclear, biomass and other thermal generation.</p>
+            <p style="margin:0;"><span class="swatch" style="background:#2a8fbd;display:inline-block;width:.65rem;height:.65rem;border-radius:2px;margin-right:.4rem;"></span><strong>Storage</strong> - pumped hydro discharge. See <a href="storage.html">the Storage page</a> and the battery toggle below for more.</p>
+          </div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden>
+        <label class="toggle-row" style="margin-bottom:1.1rem;">
+          <span class="switch">
+            <input type="checkbox" id="season-compare-toggle">
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+          </span>
+          <span>Compare with <strong id="season-compare-label">last year's season</strong> <em>(overlays a dashed line on each chart below)</em></span>
+        </label>
+      </div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+      <p class="chart-caption">Want more on price specifically? See <a href="electricity-prices.html">how the price is calculated</a> or the dedicated <a href="price-history.html">historic prices page</a>.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="hist-battery-heading">
+      <h2 id="hist-battery-heading" style="font-size:1.05rem;">Battery charge/discharge</h2>
+      <label class="toggle-row">
+        <span class="switch">
+          <input type="checkbox" id="hist-battery-toggle">
+          <span class="switch__track"><span class="switch__thumb"></span></span>
+        </span>
+        <span>Include battery charge/discharge detail <em>(preview of a planned feature - see the <a href="storage.html">Storage page</a> for more)</em></span>
+      </label>
+
+      <div id="hist-battery-panel" hidden>
+        <h3 style="font-size:.95rem;">Battery charge/discharge over the last 24 hours</h3>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="hist-battery-chart" role="img" aria-label="Line chart of battery storage swinging between charging and discharging over the last 24 hours"></canvas>
+        </div>
+        <p class="chart-caption">Positive values mean batteries are discharging onto the grid; negative values mean they're charging up. Illustrative until battery output is separately confirmed in the live feed - see the Storage page.</p>
+        <button type="button" class="copy-btn" style="margin-top:.7rem;" id="hist-battery-copy">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span data-copy-label aria-live="polite">Copy data</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  const METRICS = {
+    demand:     { label: "Demand",     unit: "GW", color: "#1d6fe0" },
+    generation: { label: "Generation", unit: "GW", color: "#0a6e5c" },
+    price:      { label: "Price",      unit: "£/MWh", color: "#d98e04" },
+    emissions:  { label: "Emissions",  unit: "g/kWh", color: "#8a5a3c" },
+    transfers:  { label: "Transfers",  unit: "GW", color: "#6a5acd" },
+  };
+
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  const seasonEl = document.querySelector("[data-season-label]");
+  if (seasonEl && window.GridPreview) seasonEl.textContent = GridPreview.getCurrentUkSeason().label;
+
+  // "Compare seasons" checkbox (Season tab only): overlays the same
+  // season one year ago as a dashed line on each of the 5 metric charts,
+  // aligned by position within the season rather than by calendar date -
+  // see renderLineChart's opts.compareSeries in assets/app.js for how the
+  // overlay itself is drawn. seasonSeriesStore is a reference to the
+  // Season panel's own seriesStore (set inside drawRange below) so the
+  // toggle handler can re-render already-loaded charts without refetching
+  // the primary data; seasonCompareSeries caches each metric's fetched
+  // comparison series so switching the checkbox off and back on doesn't
+  // re-fetch anything already fetched once.
+  let seasonSeriesStore = null;
+  const seasonCompareSeries = {};
+  const compareBounds = window.GridPreview ? GridPreview.getUkSeasonBounds(-1) : null;
+  const compareToggle = document.getElementById("season-compare-toggle");
+  const compareLabelEl = document.getElementById("season-compare-label");
+  if (compareLabelEl && compareBounds) compareLabelEl.textContent = compareBounds.label;
+
+  function renderMetricWithCompare(canvas, metric, cfg, primary) {
+    if (!primary) return;
+    const baseOpts = { label: cfg.label, color: cfg.color, unit: primary.unit || cfg.unit };
+    if (!compareToggle || !compareToggle.checked) {
+      GridPreview.renderLineChart(canvas, primary, baseOpts);
+      return;
+    }
+    if (seasonCompareSeries[metric]) {
+      GridPreview.renderLineChart(canvas, primary, Object.assign({}, baseOpts, {
+        compareSeries: seasonCompareSeries[metric],
+        compareLabel: compareBounds ? compareBounds.label : "Comparison",
+      }));
+      return;
+    }
+    // Comparison data not fetched yet - show the primary line straight
+    // away rather than waiting, then layer the dashed overlay on once it
+    // arrives (or leave the chart as-is if none exists for that period).
+    GridPreview.renderLineChart(canvas, primary, baseOpts);
+    const fetchCompare = window.GridData ? window.GridData.fetchSeries(metric, "season", null, -1) : Promise.resolve(null);
+    fetchCompare.then((series) => {
+      if (!series) return;
+      seasonCompareSeries[metric] = series;
+      if (compareToggle && compareToggle.checked) {
+        GridPreview.renderLineChart(canvas, primary, Object.assign({}, baseOpts, {
+          compareSeries: series,
+          compareLabel: compareBounds ? compareBounds.label : "Comparison",
+        }));
+      }
+    });
+  }
+
+  if (compareToggle) {
+    compareToggle.addEventListener("change", () => {
+      const host = document.getElementById("panel-season");
+      if (!host || !seasonSeriesStore) return;
+      Array.from(host.querySelectorAll("canvas[data-metric]")).forEach((canvas) => {
+        const metric = canvas.dataset.metric;
+        const cfg = METRICS[metric];
+        renderMetricWithCompare(canvas, metric, cfg, seasonSeriesStore[metric]);
+      });
+    });
+  }
+
+  function averageFinite(values) {
+    const nums = (values || []).filter((v) => typeof v === "number" && isFinite(v));
+    return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
+  }
+
+  function wireCopyButtons(host, range, seriesStore) {
+    host.querySelectorAll("[data-copy-series]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-copy-series");
+        const periodLabel = GridPreview.getRangePeriodLabel(range);
+        let text = null;
+        if (key === "mix") {
+          const m = seriesStore.mix;
+          if (m) {
+            text = GridPreview.seriesToText(m.times, m.labels, m.columns, {
+              title: `Generation mix - ${periodLabel} - UK Grid: Live+`,
+            });
+          }
+        } else if (key === "weather") {
+          const w = seriesStore.weather;
+          if (w) {
+            text = GridPreview.seriesToText(w.times, w.labels, w.columns, {
+              title: `Wind speed & cloud cover - ${periodLabel} - UK Grid: Live+`,
+            });
+          }
+        } else {
+          const s = seriesStore[key];
+          const cfg = METRICS[key];
+          if (s) {
+            text = GridPreview.seriesToText(s.times, s.labels, [{ name: cfg.label, unit: s.unit || cfg.unit, values: s.values }], {
+              title: `${cfg.label} - ${periodLabel} - UK Grid: Live+`,
+            });
+          }
+        }
+        if (!text) {
+          GridPreview.announceCopyResult(btn, false);
+          return;
+        }
+        GridPreview.copyText(text)
+          .then(() => GridPreview.announceCopyResult(btn, true))
+          .catch(() => GridPreview.announceCopyResult(btn, false));
+      });
+    });
+  }
+
+  // Combines every metric currently in seriesStore (demand/generation/
+  // price/emissions/transfers, plus the mix split if it's arrived) onto one
+  // shared time axis and offers it as a CSV or JSON download - the "give me
+  // the underlying numbers" counterpart to the per-chart Copy data buttons,
+  // for anyone who wants to plot this themselves rather than read it off
+  // the site's own charts.
+  // Same flash-feedback pattern as GridPreview.announceCopyResult, but with
+  // wording that fits a file download rather than a clipboard copy.
+  function announceDownloadResult(btn, ok) {
+    const label = btn.querySelector("span:last-of-type");
+    const original = label ? label.getAttribute("data-original") || label.textContent : null;
+    if (label && !label.getAttribute("data-original")) label.setAttribute("data-original", label.textContent);
+    if (label) label.textContent = ok ? "Downloaded!" : "No data yet";
+    btn.classList.toggle("is-copied", ok);
+    btn.classList.toggle("is-copy-failed", !ok);
+    clearTimeout(btn._downloadResetTimer);
+    btn._downloadResetTimer = setTimeout(() => {
+      if (label && original) label.textContent = original;
+      btn.classList.remove("is-copied", "is-copy-failed");
+    }, 1800);
+  }
+
+  function wireDownloadButtons(host, range, seriesStore) {
+    host.querySelectorAll("[data-download-series]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const format = btn.getAttribute("data-download-series");
+        const periodLabel = GridPreview.getRangePeriodLabel(range);
+        const named = {};
+        Object.keys(METRICS).forEach((key) => {
+          if (seriesStore[key]) named[METRICS[key].label] = seriesStore[key];
+        });
+        if (seriesStore.mix) {
+          named["Renewable"] = { times: seriesStore.mix.times, values: seriesStore.mix.columns.find((c) => c.name === "Renewable").values, unit: seriesStore.mix.columns[0].unit };
+          named["Non-renewable"] = { times: seriesStore.mix.times, values: seriesStore.mix.columns.find((c) => c.name === "Non-renewable").values, unit: seriesStore.mix.columns[0].unit };
+          named["Storage"] = { times: seriesStore.mix.times, values: seriesStore.mix.columns.find((c) => c.name === "Storage").values, unit: seriesStore.mix.columns[0].unit };
+        }
+        if (seriesStore.weather) {
+          named["Wind speed"] = { times: seriesStore.weather.times, values: seriesStore.weather.columns[0].values, unit: seriesStore.weather.columns[0].unit };
+          named["Cloud cover"] = { times: seriesStore.weather.times, values: seriesStore.weather.columns[1].values, unit: seriesStore.weather.columns[1].unit };
+        }
+        if (!Object.keys(named).length) {
+          announceDownloadResult(btn, false);
+          return;
+        }
+        const merged = GridPreview.mergeSeriesByTime(named);
+        const title = `UK Grid: Live+ - ${periodLabel}`;
+        const stamp = new Date().toISOString().slice(0, 10);
+        if (format === "csv") {
+          const csv = GridPreview.seriesToCsv(merged.times, null, merged.columns, { title });
+          GridPreview.downloadTextFile(`ukgridlive-${range}-${stamp}.csv`, csv, "text/csv");
+        } else {
+          const json = GridPreview.seriesToJson(merged.times, null, merged.columns, { title });
+          GridPreview.downloadTextFile(`ukgridlive-${range}-${stamp}.json`, json, "application/json");
+        }
+        announceDownloadResult(btn, true);
+      });
+    });
+  }
+
+  function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    const node = template.content.cloneNode(true);
+    host.appendChild(node);
+
+    const periodLabelEl = host.querySelector("[data-period-label]");
+    if (periodLabelEl) periodLabelEl.textContent = GridPreview.getRangePeriodLabel(range);
+
+    // seriesStore is filled in gradually as each fetch below resolves.
+    // wireCopyButtons/wireDownloadButtons read from it lazily, at click
+    // time, so it's safe - and correct - to wire the buttons up immediately
+    // rather than waiting for every fetch to finish first.
+    const seriesStore = {};
+    if (range === "season") seasonSeriesStore = seriesStore;
+    wireCopyButtons(host, range, seriesStore);
+    wireDownloadButtons(host, range, seriesStore);
+
+    // Each of the 6 charts (5 metrics + the generation mix) fetches and
+    // renders independently rather than everything waiting on one shared
+    // Promise.all. api/series.php's on-demand-refresh check means any ONE
+    // of these calls can occasionally take several seconds (whichever
+    // request happens to find a source overdue pays for the external API
+    // call that refreshes it) - with a shared Promise.all, that single
+    // slow request held the ENTIRE tab blank until it finished, even
+    // though the other 5 charts' data was ready almost instantly. Now
+    // each chart appears the moment its own data arrives, and only the
+    // unlucky slow one keeps spinning.
+    const canvases = Array.from(host.querySelectorAll("canvas[data-metric]"));
+    canvases.forEach((canvas) => {
+      const metric = canvas.dataset.metric;
+      const cfg = METRICS[metric];
+      const fetchPromise = window.GridData ? window.GridData.fetchSeries(metric, range) : Promise.resolve(null);
+      fetchPromise.then((series) => {
+        canvas.closest(".chart-wrap").classList.remove("is-loading");
+        seriesStore[metric] = series;
+        if (series) {
+          // The compare-seasons overlay only ever applies to the Season
+          // tab's own charts - every other range renders its primary
+          // series plain, regardless of whether the checkbox happens to
+          // be checked (it's only visible/reachable from the Season tab).
+          if (range === "season") {
+            renderMetricWithCompare(canvas, metric, cfg, series);
+          } else {
+            GridPreview.renderLineChart(canvas, series, { label: cfg.label, color: cfg.color, unit: series.unit || cfg.unit });
+          }
+        } else {
+          GridPreview.showChartError(canvas, "Live data unavailable for this range.");
+        }
+      });
+    });
+
+    // Generation mix: stacked area over time + period-average donut -
+    // fetched and rendered independently of the 5 metric charts above.
+    const mixCanvas = host.querySelector("canvas[data-mix-chart]");
+    const donutCanvas = host.querySelector("canvas[data-mix-donut]");
+    const mixFetchPromise = window.GridData ? window.GridData.fetchMixSeries(range) : Promise.resolve(null);
+    mixFetchPromise.then((mix) => {
+      if (mixCanvas) mixCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      if (donutCanvas) donutCanvas.closest(".chart-wrap").classList.remove("is-loading");
+
+      if (mix && mixCanvas && donutCanvas) {
+        // Colours from GridData's site-wide canonical label->colour map
+        // (assets/data.js) - this used to hardcode Storage to the same blue
+        // as Hydro; harmless here since Hydro isn't one of these three
+        // categories, but still worth keeping in step with the map so
+        // "Storage" reads the same colour on every chart that shows it.
+        const mixSeriesDefs = [
+          { name: "Renewable", color: window.GridData.colorFor("Renewable"), values: mix.renewable },
+          { name: "Non-renewable", color: window.GridData.colorFor("Non-renewable"), values: mix.nonRenewable },
+          { name: "Storage", color: window.GridData.colorFor("Battery"), values: mix.storage },
+        ];
+        seriesStore.mix = {
+          times: mix.times,
+          labels: mix.labels,
+          columns: mixSeriesDefs.map((s) => ({ name: s.name, unit: mix.unit, values: s.values })),
+        };
+        GridPreview.renderStackedAreaChart(mixCanvas, mix.times, mix.labels, mixSeriesDefs, {
+          unit: mix.unit,
+          legendTarget: host.querySelector("[data-mix-legend]"),
+        });
+
+        const avgValues = [averageFinite(mix.renewable), averageFinite(mix.nonRenewable), averageFinite(mix.storage)];
+        GridPreview.renderDonutChart(
+          donutCanvas,
+          ["Renewable", "Non-renewable", "Storage"],
+          avgValues,
+          [window.GridData.colorFor("Renewable"), window.GridData.colorFor("Non-renewable"), window.GridData.colorFor("Battery")],
+          { legendTarget: host.querySelector("[data-mix-donut-legend]"), unit: "GW" }
+        );
+      } else {
+        if (mixCanvas) GridPreview.showChartError(mixCanvas, "Live data unavailable for this range.");
+        if (donutCanvas) GridPreview.showChartError(donutCanvas, "Live data unavailable for this range.");
+      }
+    });
+
+    // Wind speed + cloud cover: fetched and rendered independently, same
+    // reasoning as the mix chart above. This one refreshes automatically
+    // with zero cron access, same as every other chart on this page (see
+    // includes/refresh.php) - but on a brand new install its very first
+    // refresh hasn't happened until someone visits, so its "no data" state
+    // still points at cron/fetch_weather.php by name rather than the
+    // generic "Live data unavailable" wording used elsewhere, in case that
+    // first refresh genuinely hasn't landed yet.
+    const weatherWindCanvas = host.querySelector("canvas[data-weather-wind]");
+    const weatherCloudCanvas = host.querySelector("canvas[data-weather-cloud]");
+    const weatherFetchPromise = window.GridData ? window.GridData.fetchWeatherSeries(range) : Promise.resolve(null);
+    weatherFetchPromise.then((weather) => {
+      if (weatherWindCanvas) weatherWindCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      if (weatherCloudCanvas) weatherCloudCanvas.closest(".chart-wrap").classList.remove("is-loading");
+
+      if (weather) {
+        seriesStore.weather = {
+          times: weather.times,
+          labels: weather.labels,
+          columns: [
+            { name: "Wind speed", unit: "m/s", values: weather.windSpeed },
+            { name: "Cloud cover", unit: "%", values: weather.cloudCover },
+          ],
+        };
+        if (weatherWindCanvas) {
+          GridPreview.renderLineChart(weatherWindCanvas, { times: weather.times, labels: weather.labels, values: weather.windSpeed }, { label: "Wind speed", color: "#1f9d5a", unit: "m/s" });
+        }
+        if (weatherCloudCanvas) {
+          GridPreview.renderLineChart(weatherCloudCanvas, { times: weather.times, labels: weather.labels, values: weather.cloudCover }, { label: "Cloud cover", color: "#6a7280", unit: "%" });
+        }
+      } else {
+        if (weatherWindCanvas) GridPreview.showChartError(weatherWindCanvas, "No weather data yet - it should appear after this site's next data refresh.");
+        if (weatherCloudCanvas) GridPreview.showChartError(weatherCloudCanvas, "No weather data yet - it should appear after this site's next data refresh.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+
+  // Battery charge/discharge toggle - same illustrative preview as the
+  // Overview page's "Generation mix right now" panel, ported here so it's
+  // available alongside the rest of the historical detail.
+  (function () {
+    const toggle = document.getElementById("hist-battery-toggle");
+    const panel = document.getElementById("hist-battery-panel");
+    const copyBtn = document.getElementById("hist-battery-copy");
+    let batterySeries = null;
+
+    function drawChart() {
+      const canvas = document.getElementById("hist-battery-chart");
+      batterySeries = GridPreview.buildSeries("day", -0.04, 0.7, 61, { min: -0.9, max: 0.9, cycles: 3 });
+      GridPreview.renderLineChart(canvas, batterySeries, { label: "Battery", color: "#2a8fbd", unit: "GW" });
+    }
+
+    toggle.addEventListener("change", () => {
+      panel.hidden = !toggle.checked;
+      if (toggle.checked && !batterySeries) drawChart();
+    });
+
+    copyBtn.addEventListener("click", () => {
+      if (!batterySeries) {
+        GridPreview.announceCopyResult(copyBtn, false);
+        return;
+      }
+      const text = GridPreview.seriesToText(batterySeries.times, batterySeries.labels, [{ name: "Battery", unit: "GW", values: batterySeries.values }], {
+        title: "Battery charge/discharge - last 24 hours - UK Grid: Live+",
+      });
+      GridPreview.copyText(text)
+        .then(() => GridPreview.announceCopyResult(copyBtn, true))
+        .catch(() => GridPreview.announceCopyResult(copyBtn, false));
+    });
+  })();
+})();
+</script>
+</body>
+</html>

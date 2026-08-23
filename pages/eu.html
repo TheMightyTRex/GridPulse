@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EU countries: Live - a live snapshot of the EU member states this site tracks</title>
+<meta name="description" content="A live snapshot summing demand, generation, day-ahead price and generation mix across the handful of EU member states this site tracks via ENTSO-E - not a full EU-27 total.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="https://ukgridlive.info/index.html#data-sources">See data sources ↓</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">EU countries this site tracks: a live combined snapshot</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group>
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>EU countries: a combined snapshot of the member states this site tracks</h1>
+      <p>The EU's 27 member states run separate national grids, tightly interconnected and increasingly traded as one synchronous market. This page isn't a full EU-27 total - it sums live figures across the member states this site tracks via the ENTSO-E Transparency Platform (Ireland, France, the Netherlands, Belgium, Denmark, Germany, Spain, Italy, Sweden and Portugal), which still leaves out other EU grids including Poland, Austria and the Baltic and Balkan states. Treat it as a live snapshot of ten EU grids, not a bloc-wide figure.</p>
+    </section>
+
+    <p class="chart-caption data-status-banner" id="eu-status-banner"><span class="dot" aria-hidden="true"></span>Loading live data from tracked EU countries…</p>
+
+    <dl class="status-grid status-grid--4" aria-label="Live snapshot across tracked EU countries">
+      <div class="stat stat--live"><dt>Data as of</dt><dd id="stat-time" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat"><dt>Day-ahead price (avg.)</dt><dd>€<span id="stat-price">-</span><small>/MWh</small></dd></div>
+      <div class="stat"><dt>Demand</dt><dd><span id="stat-demand">-</span><small>GW</small></dd></div>
+      <div class="stat"><dt>Generation</dt><dd><span id="stat-generation">-</span><small>GW</small></dd></div>
+    </dl>
+    <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Loading…</p>
+
+    <section class="panel" aria-labelledby="mix-heading">
+      <h2 id="mix-heading">Generation mix right now</h2>
+      <p class="chart-caption" id="mix-status-caption" style="margin-top:-.25rem;">Loading live data…</p>
+      <div class="panel-grid panel-grid--2">
+        <table class="mix">
+          <caption class="visually-hidden">Current generation by source, summed across tracked EU countries</caption>
+          <thead>
+            <tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr>
+          </thead>
+          <tbody id="mix-tbody"></tbody>
+        </table>
+        <div>
+          <div class="chart-wrap"><canvas id="mix-donut" role="img" aria-label="Donut chart of current generation mix by source, summed across tracked EU countries"></canvas></div>
+          <ul class="chart-legend" id="mix-donut-legend"></ul>
+          <p class="chart-caption" id="mix-donut-caption">France's nuclear fleet and the others' more mixed generation combine here into one blended total.</p>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:220px;margin-top:1.5rem;">
+        <canvas id="mix-bar" role="img" aria-label="Bar chart comparing generation by source, summed across tracked EU countries"></canvas>
+      </div>
+      <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
+      <div class="chart-wrap is-loading" style="height:300px;">
+        <canvas id="mix-stack" role="img" aria-label="Stacked area chart of renewable, fossil, nuclear and other generation, summed across tracked countries, over the last 24 hours"></canvas>
+      </div>
+      <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
+      <p class="chart-caption" id="mix-stack-caption">Renewable, fossil, nuclear and other generation, summed across the tracked countries, from the ENTSO-E Transparency Platform.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <p class="chart-caption">Choose a time range to see real recorded demand, generation and day-ahead price summed across the tracked countries, over time. Demand excludes Ireland (its demand comes from EirGrid, not ENTSO-E - see <a href="ireland.html">Ireland</a>'s own page for that figure); price is a simple average across countries reporting a value, not weighted by demand.</p>
+
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="range-panel chart-grid">
+          <div class="chart-card"><h3>Demand</h3><div class="chart-wrap is-loading"><canvas data-metric="demand"></canvas></div></div>
+          <div class="chart-card"><h3>Generation</h3><div class="chart-wrap is-loading"><canvas data-metric="generation"></canvas></div></div>
+          <div class="chart-card"><h3>Day-ahead price per MWh</h3><div class="chart-wrap is-loading"><canvas data-metric="price"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About the EU-27 aggregate</h2>
+      <p>Continental Europe's grid - from Portugal to Poland, and as far as the Balkans - runs as one large synchronous area coordinated by ENTSO-E, the European Network of Transmission System Operators for Electricity. Within it, national mixes differ hugely: France generates roughly two-thirds of its power from nuclear, Poland still leans heavily on coal, Norway and Austria are dominated by hydro, and Denmark regularly covers all of its demand with wind alone on windy days.</p>
+      <p>Cross-border interconnection lets surplus power flow to where it's needed: German wind exported south on a windy afternoon, French nuclear exported north on a still winter evening. The EU's target of a fully integrated internal electricity market - and its REPowerEU and Fit for 55 programmes - are steadily pushing member states toward more shared infrastructure and faster renewable buildout.</p>
+      <p>Great Britain, having left the EU's internal energy market after Brexit, now trades with the bloc only through bilateral interconnectors (to France, Belgium and the Netherlands) rather than as part of the coupled EU market - which is why GB's flows appear here as "net non-EU trade".</p>
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">About the wider EU-27</h2>
+      <p>The ten grids tracked above cover a good share of the EU-27's population and generation capacity, including its two largest economies (Germany and France) and several of its most renewable-heavy grids (Sweden, Portugal, Denmark), but still leave out Poland, Austria, the Baltic states, the Balkans and others, so nothing on this page should be read as a genuine EU-wide total or record. For actual EU-27-wide figures and records, the <a href="https://ec.europa.eu/eurostat">Eurostat</a> energy statistics and the <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a> (covering all connected TSOs, not just the ten this site tracks) are the standard references.</p>
+    </section>
+
+    <section class="panel" id="eu-sources" aria-labelledby="eu-sources-heading">
+      <h2 id="eu-sources-heading">Data sources for this page</h2>
+      <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are GB-specific and don't cover the EU. This page instead sums the same live per-country <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a> feed that powers <a href="ireland.html">Ireland</a>, <a href="france.html">France</a>, <a href="nl.html">Netherlands</a>, <a href="belgium.html">Belgium</a>, <a href="denmark.html">Denmark</a>, <a href="germany.html">Germany</a>, <a href="spain.html">Spain</a>, <a href="italy.html">Italy</a>, <a href="sweden.html">Sweden</a> and <a href="portugal.html">Portugal</a>'s own pages - see each of those pages, or <a href="data-sources.html">the sitewide data sources page</a>, for details on that feed and its limitations. <a href="norway.html">Norway (NO2)</a> is also tracked via the same feed but excluded from this page's totals, since Norway isn't an EU member state.</p>
+      <p>A genuine EU-27 aggregate would need every connected TSO's data, not just these ten - via the full ENTSO-E Transparency Platform and Eurostat's energy statistics. That's a substantially larger integration than this site currently does, so it isn't attempted here.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="credit">
+      <svg width="20" height="20" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      UK Grid: Live+ is built on the concept and data pipeline of
+      <a href="https://github.com/KateMorley/grid"><strong>National Grid: Live</strong></a>,
+      created by <a href="https://iamkate.com/"><strong>Kate Morley</strong></a>.
+    </p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with ENTSO-E or the European Union</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  // EU member states this site tracks live via ENTSO-E - a subset of the
+  // EU-27, see the hero and #eu-sources section above for why. Norway (NO2)
+  // is tracked by the same pipeline but deliberately excluded here since it
+  // isn't an EU member state.
+  const EU_COUNTRIES = ["IE", "FR", "NL", "BE", "DK", "DE", "ES", "IT", "SE", "PT"];
+
+  // Sums (or averages) an array of same-metric country series into one
+  // combined series, matching points by ISO timestamp rather than assuming
+  // every country's bucket set lines up exactly - same reasoning as
+  // GridPreview.computeShareSeries. Returns null if none of the input
+  // series have any data.
+  function sumSeriesAcrossCountries(seriesArr, mode) {
+    const present = seriesArr.filter((s) => s && s.times && s.times.length);
+    if (!present.length) return null;
+    const acc = {};
+    present.forEach((s) => {
+      s.times.forEach((t, i) => {
+        const v = s.values[i];
+        if (typeof v !== "number") return;
+        if (!acc[t]) acc[t] = { total: 0, count: 0, label: s.labels[i] };
+        acc[t].total += v;
+        acc[t].count += 1;
+      });
+    });
+    const times = Object.keys(acc).sort();
+    if (!times.length) return null;
+    const values = times.map((t) => (mode === "avg" ? acc[t].total / acc[t].count : acc[t].total));
+    const labels = times.map((t) => acc[t].label);
+    return { times, values, labels, unit: present[0].unit };
+  }
+
+  // History section: sums each of the 5 tracked countries' own real
+  // recorded history, same sumSeriesAcrossCountries() helper as the live
+  // snapshot above (demand/generation summed, price averaged - not
+  // weighted by demand, same simplification the live figures already
+  // make). Ireland doesn't fetch "demand" from ENTSO-E (see
+  // api/country_series.php's docblock - EirGrid covers that instead, on
+  // pages/ireland.html, not here), so fetchCountrySeries("IE","demand",…)
+  // always resolves null and Ireland is silently excluded from the demand
+  // sum - the exact same gap the live snapshot above already has for the
+  // same reason, not a new one introduced here.
+  const HISTORY_METRICS = {
+    demand:     { label: "Demand",     unit: "GW",    color: "#1d6fe0", mode: "sum" },
+    generation: { label: "Generation", unit: "GW",    color: "#0a6e5c", mode: "sum" },
+    price:      { label: "Price",      unit: "€/MWh", color: "#d98e04", mode: "avg" },
+  };
+
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  async function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const canvases = Array.from(host.querySelectorAll("canvas[data-metric]"));
+    const summed = await Promise.all(canvases.map(async (canvas) => {
+      const metric = canvas.dataset.metric;
+      const perCountry = await Promise.all(EU_COUNTRIES.map((cc) => window.GridData.fetchCountrySeries(cc, metric, range)));
+      return sumSeriesAcrossCountries(perCountry, HISTORY_METRICS[metric].mode);
+    }));
+
+    canvases.forEach((canvas, i) => {
+      const metric = canvas.dataset.metric;
+      const cfg = HISTORY_METRICS[metric];
+      const series = summed[i];
+      if (series && series.values.length) {
+        GridPreview.renderLineChart(canvas, series, { label: cfg.label, color: cfg.color, unit: series.unit || cfg.unit });
+      } else {
+        GridPreview.showChartError(canvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+
+  async function initEuStatusStrip() {
+    const banner = document.getElementById("eu-status-banner");
+    const asOfEl = document.getElementById("stat-time");
+    const caption = document.getElementById("stat-caption");
+    const mixCaption = document.getElementById("mix-status-caption");
+    const setStat = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+
+    if (!window.GridData) return;
+
+    const currents = await Promise.all(EU_COUNTRIES.map((cc) => window.GridData.fetchCountryCurrent(cc)));
+    const live = currents.filter(Boolean);
+
+    if (!live.length) {
+      if (banner) { banner.className = "chart-caption data-status-banner is-illustrative"; banner.innerHTML = '<span class="dot" aria-hidden="true"></span>None of the tracked EU countries have live data yet on this install'; }
+      if (asOfEl) { asOfEl.textContent = "Not available yet"; asOfEl.classList.remove("is-loading-text"); }
+      if (caption) caption.textContent = "None of the 5 tracked EU countries have live ENTSO-E data yet on this install - see data sources below.";
+      if (mixCaption) mixCaption.textContent = "Not available yet - see data sources below.";
+      return;
+    }
+
+    let demandSum = 0, demandCount = 0, generationSum = 0, generationCount = 0, priceSum = 0, priceCount = 0;
+    let latestTs = null;
+    const mixTotals = {};
+    let mixCountriesCount = 0;
+    live.forEach((c) => {
+      if (c.demand_mw != null) { demandSum += c.demand_mw; demandCount++; }
+      if (c.generation_mw != null) { generationSum += c.generation_mw; generationCount++; }
+      if (c.price_eur_mwh != null) { priceSum += c.price_eur_mwh; priceCount++; }
+      // Each country's ENTSO-E feed can be a different number of updates
+      // behind - show the oldest of the live countries' timestamps, so
+      // "Data as of" never claims to be fresher than the stalest input.
+      if (c.ts && (!latestTs || c.ts < latestTs)) latestTs = c.ts;
+      if (c.mix_mw && Object.keys(c.mix_mw).length) {
+        mixCountriesCount++;
+        Object.keys(c.mix_mw).forEach((psr) => { mixTotals[psr] = (mixTotals[psr] || 0) + c.mix_mw[psr]; });
+      }
+    });
+
+    if (demandCount) setStat("stat-demand", (demandSum / 1000).toFixed(1));
+    if (generationCount) setStat("stat-generation", (generationSum / 1000).toFixed(1));
+    if (priceCount) setStat("stat-price", (priceSum / priceCount).toFixed(2));
+
+    if (asOfEl && latestTs) {
+      asOfEl.innerHTML = GridPreview.formatAsOfHtml(latestTs);
+      asOfEl.classList.remove("is-loading-text");
+    }
+    if (banner) {
+      banner.className = "chart-caption data-status-banner";
+      banner.innerHTML = `<span class="dot" aria-hidden="true"></span>Live from ${live.length} of 5 tracked EU countries via ENTSO-E`;
+    }
+    if (caption) {
+      caption.textContent = `Live totals summed across ${live.length} of the 10 EU member states this site tracks (Ireland, France, Netherlands, Belgium, Denmark, Germany, Spain, Italy, Sweden, Portugal) - price is a simple average, not weighted by demand. "Data as of" shows the oldest of those countries' own timestamps, since each updates on its own schedule. This is a subset of the EU-27, not a full EU total - see the note below.`;
+    }
+
+    if (Object.keys(mixTotals).length) {
+      GridPreview.renderPsrMixSection(mixTotals, {
+        tbodyId: "mix-tbody", donutId: "mix-donut", legendId: "mix-donut-legend", barId: "mix-bar",
+        donutCaptionId: "mix-donut-caption", statusCaptionId: "mix-status-caption",
+        statusCaptionHtml: `Live, summed across ${mixCountriesCount} of the 5 tracked countries - see <a href="#eu-sources">data sources</a>.`,
+        sourceLabel: "ENTSO-E Transparency Platform, summed across tracked countries",
+      });
+    } else if (mixCaption) {
+      mixCaption.textContent = "Generation mix not available yet for any tracked country on this install.";
+    }
+  }
+
+  initEuStatusStrip();
+
+  // Generation mix over the last 24 hours: fetches each tracked country's
+  // own real renewable/fossil/nuclear/other mix history (see
+  // api/country_series.php's metric=mix), then sums each of those four
+  // categories across countries using the same sumSeriesAcrossCountries()
+  // helper as the History panels above - just applied once per category
+  // instead of once per whole-grid metric.
+  (async function () {
+    const canvas = document.getElementById("mix-stack");
+    if (!canvas || !window.GridData) return;
+    const perCountry = await Promise.all(EU_COUNTRIES.map((cc) => window.GridData.fetchCountryMixSeries(cc, "day")));
+    canvas.closest(".chart-wrap").classList.remove("is-loading");
+    const present = perCountry.filter(Boolean);
+    if (!present.length) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for the last 24 hours.");
+      return;
+    }
+    const toSeries = (key) => present.map((m) => ({ times: m.times, values: m[key], labels: m.labels, unit: m.unit }));
+    const renewable = sumSeriesAcrossCountries(toSeries("renewable"), "sum");
+    const fossil = sumSeriesAcrossCountries(toSeries("fossil"), "sum");
+    const nuclear = sumSeriesAcrossCountries(toSeries("nuclear"), "sum");
+    const other = sumSeriesAcrossCountries(toSeries("other"), "sum");
+    if (!renewable) {
+      GridPreview.showChartError(canvas, "Not enough recorded history yet for the last 24 hours.");
+      return;
+    }
+    GridPreview.renderStackedAreaChart(canvas, renewable.times, renewable.labels, [
+      { name: "Renewables", color: "#1f9d5a", values: renewable.values },
+      { name: "Fossil fuels", color: "#8a5a3c", values: (fossil && fossil.values) || renewable.times.map(() => 0) },
+      { name: "Nuclear", color: "#6a5acd", values: (nuclear && nuclear.values) || renewable.times.map(() => 0) },
+      { name: "Other", color: "#6b5847", values: (other && other.values) || renewable.times.map(() => 0) },
+    ], { unit: "GW", legendTarget: "mix-stack-legend" });
+  })();
+})();
+</script>
+</body>
+</html>

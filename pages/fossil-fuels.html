@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fossil fuels - UK Grid: Live+</title>
+<meta name="description" content="Detailed live and historical data for fossil fuels generation on Great Britain's electricity grid.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
+        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
+        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
+        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
+      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+    </a>
+    <div class="header-controls">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-theme-label>Auto mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap">
+    <ul id="site-nav-list" data-nav-list>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
+          Great Britain
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-uk">
+          <li><a href="../index.html">GB: Overview</a></li>
+          <li><a href="fossil-fuels.html" aria-current="page">GB: Fossil fuels</a></li>
+          <li><a href="renewables.html">GB: Renewables</a></li>
+          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
+          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
+          <li><a href="storage.html">GB: Storage</a></li>
+          <li><a href="history.html">GB: History</a></li>
+          <li><a href="electricity-prices.html">GB: Prices</a></li>
+          <li><a href="price-history.html">GB: Historic prices</a></li>
+          <li><a href="renewables-plans.html">2030 GB plans</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+          Europe
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-europe">
+          <li><a href="ireland.html">Ireland</a></li>
+          <li><a href="france.html">France</a></li>
+          <li><a href="nl.html">Netherlands</a></li>
+          <li><a href="belgium.html">Belgium</a></li>
+          <li><a href="norway.html">Norway (NO2)</a></li>
+          <li><a href="denmark.html">Denmark (DK1)</a></li>
+          <li><a href="germany.html">Germany</a></li>
+          <li><a href="spain.html">Spain</a></li>
+          <li><a href="italy.html">Italy</a></li>
+          <li><a href="sweden.html">Sweden (SE3)</a></li>
+          <li><a href="portugal.html">Portugal</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
+          Americas
+          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-group__menu" id="navgroup-americas">
+          <li><a href="usa.html">USA</a></li>
+          <li><a href="canada.html">Canada</a></li>
+          <li><a href="brazil.html">Brazil</a></li>
+          <li><a href="argentina.html">Argentina</a></li>
+          <li><a href="chile.html">Chile</a></li>
+          <li><a href="colombia.html">Colombia</a></li>
+          <li><a href="americas-interconnects.html">Interconnections</a></li>
+        </ul>
+      </li>
+      <li><a href="comparisons.html">Comparisons</a></li>
+      <li><a href="data-sources.html">Sources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
+    </button>
+  </div>
+</nav>
+</div>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="type-hero">
+        <span class="type-hero__swatch" style="background:var(--fossil)"></span>
+        <h1>Fossil fuels</h1>
+      </div>
+      <p>Fossil fuel generation on Great Britain's transmission network is now almost entirely gas-fired. Coal-fired generation ended on 30 September 2024, when the country's last coal power station closed.</p>
+    </section>
+
+    <dl class="status-grid" aria-label="Current fossil fuels status" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat"><dt>Current output</dt><dd>7.58GW</dd></div>
+      <div class="stat"><dt>Share of generation</dt><dd>26.2%</dd></div>
+    </dl>
+
+    <section class="panel">
+      <h2>Breakdown</h2>
+      <table class="mix">
+        <caption class="visually-hidden">Fossil fuels generation by source</caption>
+        <thead><tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr></thead>
+        <tbody>
+            <tr><td>Gas</td><td class="num">7.58</td><td class="num">26.2</td></tr>
+            <tr><td>Coal</td><td class="num">0.00</td><td class="num">0.0</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">History</h2>
+      <div class="range-tabs" role="tablist" data-tablist aria-label="Time range">
+        <button role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true" tabindex="0" data-range="day">Day</button>
+        <button role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1" data-range="week">Week</button>
+        <button role="tab" id="tab-month" aria-controls="panel-month" aria-selected="false" tabindex="-1" data-range="month">Month</button>
+        <button role="tab" id="tab-season" aria-controls="panel-season" aria-selected="false" tabindex="-1" data-range="season">Season</button>
+        <button role="tab" id="tab-year" aria-controls="panel-year" aria-selected="false" tabindex="-1" data-range="year">Year</button>
+        <button role="tab" id="tab-5year" aria-controls="panel-5year" aria-selected="false" tabindex="-1" data-range="5year">5 years</button>
+        <button role="tab" id="tab-10year" aria-controls="panel-10year" aria-selected="false" tabindex="-1" data-range="10year">10 years</button>
+      </div>
+
+      <template id="range-panel-template">
+        <div class="chart-grid">
+          <div class="chart-card"><h3>Fossil fuels output</h3><div class="chart-wrap is-loading"><canvas data-metric="output"></canvas></div></div>
+          <div class="chart-card"><h3>Share of total generation</h3><div class="chart-wrap is-loading"><canvas data-metric="share"></canvas></div></div>
+        </div>
+      </template>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day" tabindex="0"></div>
+      <div id="panel-week" role="tabpanel" aria-labelledby="tab-week" tabindex="0" hidden></div>
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" tabindex="0" hidden></div>
+      <div id="panel-season" role="tabpanel" aria-labelledby="tab-season" tabindex="0" hidden></div>
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" tabindex="0" hidden></div>
+      <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
+      <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
+      <p class="chart-caption">Fossil fuels output and share of total generation over the selected range.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="about-heading">
+      <h2 id="about-heading">About fossil fuels</h2>
+      
+<p>Gas remains the largest single dispatchable source on the system, filling the gap left by coal and balancing the intermittency of wind and solar. Gas-fired output tends to rise on cold, still days when wind generation is low, and fall on windy days when renewables cover most of demand.</p>
+<h3>A history of coal</h3>
+<p>The world's first coal-fired power station opened at 57 Holborn Viaduct in London on 12 January 1882, built by Thomas Edison to supply electric lighting to the surrounding streets. Coal went on to dominate Great Britain's electricity supply for over a century, at its peak in the 1980s supplying around 70% of the country's power from dozens of large stations.</p>
+<p>Decline began in the 1990s during the so-called "dash for gas", as privatisation and cheaper North Sea gas made new combined-cycle gas turbines more attractive than coal. The pace accelerated sharply after 2013, when the government introduced a carbon price floor that made coal generation increasingly uneconomic compared with gas.</p>
+<p>In 2001 the European Union's Large Combustion Plant Directive obliged ageing power stations to fit expensive emissions-reduction equipment or close by 2015, prompting the closure of most of Britain's oldest coal plants. The country's last coal-fired power station, Ratcliffe-on-Soar in Nottinghamshire, generated its final unit of electricity on 30 September 2024 - bringing 142 years of coal power in Great Britain to an end, and making it the first G7 nation to phase out coal entirely.</p>
+<p>Across that history, Great Britain is estimated to have burnt around 4.6 billion tonnes of coal for grid electricity, emitting roughly 10.6 billion tonnes of carbon dioxide in the process.</p>
+<h3>Gas today</h3>
+<p>Combined-cycle gas turbines (CCGTs) can start up and adjust output far faster than coal or nuclear plants, which is why gas has become the system's main "swing" generator - stepping in when renewable output drops and stepping back when it recovers. This flexibility is also why gas prices have such a strong influence on the wholesale electricity price shown on this site: gas is very often the marginal generator that sets the market price.</p>
+<h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
+<ul style="font-size:.85rem;color:var(--text-muted);">
+  <li><a href="https://interactive.carbonbrief.org/coal-phaseout-UK/">Carbon Brief: "How the UK transformed its electricity supply in just a decade"</a> - coal tonnage and CO₂ totals since 1882.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Holborn_Viaduct_power_station">Holborn Viaduct power station</a> and <a href="https://en.wikipedia.org/wiki/Ratcliffe-on-Soar_Power_Station">Ratcliffe-on-Soar Power Station</a> - Wikipedia, for opening and closure dates.</li>
+  <li><a href="https://www.gov.uk/government/publications/carbon-price-floor-reform">UK government: carbon price floor policy documents</a>.</li>
+</ul>
+
+    </section>
+
+    <section class="panel" aria-labelledby="records-heading">
+      <h2 id="records-heading">Records</h2>
+      <p class="chart-caption">Real, sourced figures - hand-checked periodically against the sources below (see "Last checked"), not computed live from this site's own stored history, which for a fresh install would only cover a few days or weeks rather than a full year.</p>
+      <ul class="records-list">
+        <li><span>Highest gas generation (this year)</span><strong>24.1GW - 14 January 2026</strong></li>
+        <li><span>Lowest gas generation (this year)</span><strong>0.4GW - 5 June 2026</strong></li>
+        <li><span>Last coal generation</span><strong>30 September 2024</strong></li>
+        <li><span>Peak coal share of generation (1980s)</span><strong>~70%</strong></li>
+      </ul>
+      <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a> (Elexon BMRS for the "this year" figures) and <a href="https://www.gov.uk/government/news/end-of-coal-power-in-great-britain-as-last-plant-closes">UK Government, "End of coal power in Great Britain"</a>, September 2024. Last checked: 23 August 2026.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+(function () {
+  const template = document.getElementById("range-panel-template");
+  const drawn = {};
+
+  // Real data from api/series.php's fossil/generation metrics (see that
+  // file's comment on the 'fossil' case for exactly which fuel codes
+  // count) - no illustrative fallback: a fresh install with little stored
+  // history yet will honestly show "not enough recorded history" rather
+  // than a plausible-looking made-up trend line.
+  function drawRange(range) {
+    if (drawn[range]) return;
+    drawn[range] = true;
+    const host = document.getElementById("panel-" + range);
+    host.appendChild(template.content.cloneNode(true));
+
+    const outputCanvas = host.querySelector('canvas[data-metric="output"]');
+    const shareCanvas = host.querySelector('canvas[data-metric="share"]');
+
+    const outputPromise = window.GridData ? window.GridData.fetchSeries("fossil", range) : Promise.resolve(null);
+    const totalPromise = window.GridData ? window.GridData.fetchSeries("generation", range) : Promise.resolve(null);
+
+    outputPromise.then((outSeries) => {
+      outputCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      if (outSeries) {
+        GridPreview.renderLineChart(outputCanvas, outSeries, { label: "Fossil fuels", color: "#8a5a3c", unit: "GW" });
+      } else {
+        GridPreview.showChartError(outputCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+
+    Promise.all([outputPromise, totalPromise]).then(([outSeries, totalSeries]) => {
+      shareCanvas.closest(".chart-wrap").classList.remove("is-loading");
+      const shareSeries = GridPreview.computeShareSeries(outSeries, totalSeries);
+      if (shareSeries) {
+        GridPreview.renderLineChart(shareCanvas, shareSeries, { label: "Share", color: "#8a5a3c", unit: "%" });
+      } else {
+        GridPreview.showChartError(shareCanvas, "Not enough recorded history yet for this range.");
+      }
+    });
+  }
+
+  drawRange("day");
+  document.querySelector('[data-tablist]').addEventListener("rangechange", (e) => drawRange(e.detail.range));
+})();
+</script>
+</body>
+</html>
