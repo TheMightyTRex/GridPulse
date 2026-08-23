@@ -1,0 +1,257 @@
+<?php
+/**
+ * UK Grid: Live+ - site configuration.
+ *
+ * Copy this file to "config.php" in the same folder and fill in your own
+ * values. config.php itself is never committed/shipped with real values
+ * and is excluded from version control - see README-DEPLOY.md.
+ *
+ * For a hardening step you can instead put the filled-in copy at
+ * <one level above public_html>/uk-grid-config/config.php - db.php checks
+ * there first. See README-DEPLOY.md, "Optional: move config.php out of
+ * public_html".
+ */
+
+return [
+
+  // --- Database (from cPanel > MySQL Databases) ---------------------------
+  // 'name' and 'user' almost always need the cPanel account prefix, e.g.
+  // "cpaneluser_ukgrid" not just "ukgrid" - copy them exactly as shown on
+  // the MySQL Databases page, don't retype them. If you get a
+  // db_connection_failed error with everything else looking right, try
+  // 'host' => '127.0.0.1' instead of 'localhost' (a common fix - some
+  // hosts' PHP has trouble with the "localhost" socket shortcut).
+  'db' => [
+    'host'    => 'localhost',
+    'name'    => 'cpaneluser_ukgrid',
+    'user'    => 'cpaneluser_ukgrid',
+    'pass'    => 'CHANGE-ME',
+    'charset' => 'utf8mb4',
+  ],
+
+  // --- Data sources ---------------------------------------------------------
+  // Elexon Insights Solution, the Carbon Intensity API and EirGrid's Smart
+  // Grid Dashboard are all public and keyless - nothing to fill in below
+  // for them. The NESO Data Portal is also keyless (CKAN); the package
+  // slug can be changed here if NESO ever renames the dataset.
+  'sources' => [
+    'elexon_base'            => 'https://data.elexon.co.uk/bmrs/api/v1',
+    'carbon_intensity_base'  => 'https://api.carbonintensity.org.uk',
+    'neso_api_base'          => 'https://api.neso.energy/api/3/action',
+    'neso_embedded_package'  => 'embedded-wind-and-solar-forecasts',
+    // Powers the Ireland page (demand, generation, wind, GB interconnection).
+    // Public under EirGrid Group's Open Data Licence, which requires the
+    // attribution "Supported by EirGrid Group Data" wherever this data is
+    // shown - already included in pages/ireland.html's footer, don't
+    // remove it if you customise that page.
+    'eirgrid_base'           => 'https://www.smartgriddashboard.com/DashboardService.svc',
+
+    // Powers the USA page (demand, generation, and net interstate/
+    // international interchange, all lower-48-states aggregate). Unlike
+    // every other source above, the EIA API is NOT keyless - register a
+    // free API key at https://www.eia.gov/opendata/register.php (a form,
+    // instant email) and paste it below. Leave as 'CHANGE-ME' to leave the
+    // USA page on illustrative data - includes/ingest.php's
+    // ukgrid_ingest_eia() checks for that placeholder and skips the fetch
+    // rather than erroring. EIA's own Hourly Electric Grid Monitor
+    // (EIA-930) data typically lags about a day behind real time - this is
+    // a genuine limitation of the source, not a bug here, and is called
+    // out honestly in pages/usa.html's own copy.
+    'eia_api_key'            => 'CHANGE-ME',
+    'eia_base'               => 'https://api.eia.gov/v2',
+
+    // Powers the SEM price + generation-mix "gap fill" on the Ireland page
+    // (EirGrid alone doesn't publish either), plus the standalone France,
+    // Netherlands, Belgium, Norway and Denmark pages. Also not keyless -
+    // register free at https://transparency.entsoe.eu/ (click Sign In >
+    // Register), verify your email, then email transparency@entsoe.eu with
+    // "RESTful API access" in the subject line and your registered address
+    // in the body. ENTSO-E grants access within ~3 working days by email;
+    // once granted, log in > My Account > generate a security token and
+    // paste it below. See includes/ingest.php's ukgrid_ingest_entsoe() -
+    // like eia_api_key above, leaving this as 'CHANGE-ME' just skips the
+    // fetch and leaves the relevant pages on illustrative data.
+    'entsoe_api_token'       => 'CHANGE-ME',
+    'entsoe_base'            => 'https://web-api.tp.entsoe.eu/api',
+
+    // Which countries to pull from ENTSO-E, and what to fetch for each.
+    // 'domain' is the country/bidding-zone's EIC code (see ENTSO-E's Area
+    // List with EIC) - don't change these unless ENTSO-E reassigns a code.
+    // 'fetch' controls which of price/generation/demand to pull: Ireland
+    // only needs price+generation since EirGrid (see eirgrid_base above)
+    // already covers its demand/generation-total/wind/interconnection more
+    // directly - fetching Ireland's demand here too would just be a
+    // second, redundant call for a number the site already has. Every
+    // other country here has no other live source, so all three apply.
+    // Add a country by adding an entry here - no code changes needed,
+    // ukgrid_ingest_entsoe() and api/country_current.php both read this
+    // list directly.
+    'entsoe_countries' => [
+      'IE' => ['domain' => '10Y1001A1001A59C', 'label' => 'Ireland (SEM)', 'fetch' => ['price', 'generation']],
+      'FR' => ['domain' => '10YFR-RTE------C', 'label' => 'France', 'fetch' => ['price', 'generation', 'demand']],
+      'NL' => ['domain' => '10YNL----------L', 'label' => 'Netherlands', 'fetch' => ['price', 'generation', 'demand']],
+      'BE' => ['domain' => '10YBE----------2', 'label' => 'Belgium', 'fetch' => ['price', 'generation', 'demand']],
+      'NO' => ['domain' => '10YNO-2--------T', 'label' => 'Norway (NO2)', 'fetch' => ['price', 'generation', 'demand']],
+      'DK' => ['domain' => '10YDK-1--------W', 'label' => 'Denmark (DK1)', 'fetch' => ['price', 'generation', 'demand']],
+      // The six above are all physically interconnected to GB (Ireland via
+      // Moyle/EWIC, France via IFA/IFA2/ElecLink, Netherlands via BritNed,
+      // Belgium via Nemo Link, Norway via North Sea Link, Denmark via
+      // Viking Link). The five below are not GB-interconnected - they're
+      // included purely for cross-country comparison (pages/comparisons.html,
+      // the "any country vs any country" Energy sources tab) since ENTSO-E
+      // covers them on the same terms as everything above. See
+      // pages/data-sources.html for this distinction spelled out.
+      'DE' => ['domain' => '10Y1001A1001A82H', 'label' => 'Germany', 'fetch' => ['price', 'generation', 'demand']],
+      'ES' => ['domain' => '10YES-REE------0', 'label' => 'Spain', 'fetch' => ['price', 'generation', 'demand']],
+      'IT' => ['domain' => '10YIT-GRTN-----B', 'label' => 'Italy', 'fetch' => ['price', 'generation', 'demand']],
+      'SE' => ['domain' => '10Y1001A1001A46L', 'label' => 'Sweden (SE3)', 'fetch' => ['price', 'generation', 'demand']],
+      'PT' => ['domain' => '10YPT-REN------W', 'label' => 'Portugal', 'fetch' => ['price', 'generation', 'demand']],
+    ],
+
+    // Powers the "Wind speed & cloud cover" card on the History page.
+    // Open-Meteo is free and keyless - nothing to fill in. weather_lat/lon
+    // default to a point in central England as a single representative GB
+    // location (not a national average - see the History page's own
+    // caption on this card for the honesty framing); change them if you'd
+    // rather the figures reflect somewhere more specific to your interests,
+    // e.g. a North Sea offshore wind cluster. Works with no cron access at
+    // all: it's included in refresh.intervals_minutes below the same as
+    // Elexon/EirGrid/etc, so an ordinary page load refreshes it once it's
+    // overdue. Also fine to add cron/fetch_weather.php as a real cron job
+    // if you have one - see README-DEPLOY.md Step 5.
+    'open_meteo_base'        => 'https://api.open-meteo.com/v1',
+    'weather_lat'            => 52.95,
+    'weather_lon'            => -1.15,
+
+    // Powers the "Network constraint costs" panel on the Renewables page.
+    // Same keyless NESO Data Portal as neso_api_base/neso_embedded_package
+    // above, different package. See sql/schema.sql's readings_constraints
+    // comment for an important caveat: this dataset breaks costs down by
+    // constraint TYPE (thermal/voltage/inertia), not by which generation
+    // technology was curtailed - there's no "wind" figure in the source
+    // data, only a proxy. Like open_meteo_base above, this works with no
+    // cron access - it's in refresh.intervals_minutes below - or via the
+    // optional cron/fetch_constraints.php job.
+    'neso_constraint_package' => 'constraint-breakdown',
+  ],
+
+  // --- No-cron mode ---------------------------------------------------------
+  // If true, every page load checks whether any data source is overdue and,
+  // at most, refreshes ONE of them right then (lock-guarded so concurrent
+  // visitors can't pile up duplicate fetches) - see includes/refresh.php.
+  // This means you don't need cron access at all. It's safe to leave this
+  // on even if you ALSO set up cron jobs below: it simply won't find
+  // anything overdue on most requests once cron is keeping things fresh.
+  'refresh' => [
+    'on_demand' => true,
+
+    // Minutes before each source is considered stale enough to refresh.
+    // NESO is deliberately left out here - unlike every other source, it
+    // has to make a few sequential "which dataset/resource is this right
+    // now?" discovery calls before it can even fetch data (see
+    // ukgrid_ingest_neso()), so by default it's cron-only. Add
+    // 'NESO' => 60 (or similar) here if you don't have cron and are fine
+    // with an occasional slower page load in exchange for the
+    // embedded-wind figure being refreshed automatically.
+    //
+    // EIA and ENTSOE ARE included below (unlike NESO) even though both need
+    // an API key most installs won't have set - leaving either key as
+    // 'CHANGE-ME' just makes that source's ingest function log "OK, 0 rows"
+    // and return immediately, so there's no real cost to having them
+    // enabled by default for installs that haven't set a key up. For
+    // installs that HAVE, this is what makes the USA and
+    // France/Netherlands/Belgium/Norway/Denmark/Ireland-SEM-price pages
+    // work with zero cron access at all - see includes/refresh.php's
+    // ENTSOE case: on-demand refreshes are capped to ONE of the 6
+    // configured countries per trigger (staleness-first, not config order),
+    // so every call - including the very first, before anything's ever
+    // been fetched - stays down to at most 3 requests rather than
+    // potentially all 17 at once. 240 minutes for EIA matches its own
+    // ~1-day publication lag. 20 for ENTSOE is shorter than you might
+    // expect for a source that only updates every 1-3 hours - that's
+    // deliberate: since each trigger only refreshes ONE of the 6 countries,
+    // a 20-minute interval means roughly one full rotation through all 6
+    // every ~2 hours, keeping each individual country reasonably close to
+    // ENTSO-E's own publication cadence rather than the 6-hour-plus cycle a
+    // longer interval would produce.
+    // WEATHER (Open-Meteo) and CONSTRAINTS (NESO's constraint-breakdown
+    // dataset) are both included here so their pages' panels work with
+    // zero cron access, same as everything else in this list. 60 minutes
+    // for WEATHER is plenty (Open-Meteo's own hourly data doesn't update
+    // faster than that). 1440 minutes (once a day) for CONSTRAINTS is
+    // already far more often than needed - NESO only updates that dataset
+    // weekly - but checking daily costs nothing extra and means a fresh
+    // install picks it up the same day rather than waiting up to a week.
+    // NOTABLE_MOMENTS isn't an external API call at all - it just re-scans
+    // this site's own already-stored data for new highs/lows (see
+    // ukgrid_compute_notable_moments() in includes/ingest.php) - once a day
+    // is simply cheap, not a freshness requirement.
+    'intervals_minutes' => [
+      'ELEXON' => 15,
+      'CARBON_INTENSITY' => 30,
+      'EIRGRID' => 15,
+      'EIA' => 240,
+      'ENTSOE' => 20,
+      'WEATHER' => 60,
+      'CONSTRAINTS' => 1440,
+      'NOTABLE_MOMENTS' => 1440,
+    ],
+
+    // Per-source request timeout when refreshing on-demand (kept shorter
+    // than the cron scripts' timeouts, since this runs during a real
+    // visitor's page load). ENTSOE's is deliberately the tightest of all
+    // of them, not the loosest: includes/refresh.php caps every on-demand
+    // ENTSOE call to one country (up to 3 requests) specifically so this
+    // timeout only ever has to cover a small, predictable worst case - at
+    // 6s that's at most ~18 seconds even on a completely cold start, well
+    // within any shared host's default page-load execution limit. (An
+    // earlier version of this let a cold-start refresh attempt all 6
+    // countries - up to 17 requests - in one go, which could exceed a
+    // typical ~30s default execution limit and get killed partway through,
+    // silently favouring whichever countries are listed first in
+    // entsoe_countries over the rest - that's why the cap exists now.) The
+    // cron script instead uses a much more generous 20s per request with
+    // its own longer overall time budget (see cron/fetch_entsoe.php),
+    // since a slow background job doesn't block anyone's page load the way
+    // on-demand refresh does.
+    'timeouts_seconds' => [
+      'ELEXON' => 8,
+      'CARBON_INTENSITY' => 6,
+      'NESO' => 10,
+      'EIRGRID' => 8,
+      'EIA' => 15,
+      'ENTSOE' => 6,
+      'WEATHER' => 8,
+      'CONSTRAINTS' => 10, // two sequential CKAN calls (resolve resource, then fetch it) - same shape as NESO above
+      'NOTABLE_MOMENTS' => 12, // a handful of MAX()/MIN() queries against this site's own tables, no external call
+    ],
+  ],
+
+  // --- Misc -----------------------------------------------------------------
+  // A shared secret so the cron scripts can also be triggered over HTTP if
+  // your host's cron can only call a URL rather than run `php file.php`
+  // directly (common on some cPanel plans). Leave blank to disable
+  // HTTP-triggered ingestion entirely (cron running the .php files directly
+  // is the more common and slightly more secure option - see README). Not
+  // needed at all if you're using no-cron/on-demand mode above.
+  'cron_http_secret' => '',
+
+  // How stale live data can be (in minutes) before the frontend falls back
+  // to illustrative preview data instead of showing an empty/broken widget.
+  'staleness_minutes' => 90,
+
+  // Same idea, but for the USA page specifically. EIA-930 data is normally
+  // about a day (~1440 minutes) behind, so reusing staleness_minutes above
+  // (90) would mark it "stale" constantly even when ingestion is working
+  // perfectly. This only needs to catch ingestion actually breaking, so
+  // it's set well past the normal lag.
+  'usa_staleness_minutes' => 2880,
+
+  // Same idea again, for every ENTSO-E-sourced figure (Ireland's SEM price
+  // + mix gap-fill, and the France/Netherlands/Belgium/Norway/Denmark
+  // pages). ENTSO-E TSOs typically publish actual load/generation within
+  // 1-3 hours - a shorter lag than EIA's, but still longer than GB/Ireland's
+  // own ~15-30 minute sources, hence its own threshold rather than reusing
+  // staleness_minutes (90).
+  'entsoe_staleness_minutes' => 240,
+];
