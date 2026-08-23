@@ -70,7 +70,15 @@ if (isset($_GET['ajax'])) {
         'NESO' => static fn () => ukgrid_ingest_neso($pdo, $config, 15),
         'EIRGRID' => static fn () => ukgrid_ingest_eirgrid($pdo, $config, 12),
         'EIA' => static fn () => ukgrid_ingest_eia($pdo, $config, 12),
-        'IESO' => static fn () => ukgrid_ingest_ieso($pdo, $config, 15),
+        // 8s per request, not 15s like the other sources here - IESO makes
+        // TWO sequential HTTP calls internally (RealtimeTotals then
+        // GenOutputbyFuelHourly), so worst case is already ~16s. IESO's
+        // servers are also further away/slower to reach from a UK host than
+        // this project's other sources, and a hang there risks tripping a
+        // host-level proxy timeout that PHP itself can't catch or report on
+        // (see this file's own docblock above) - keeping this tight leaves
+        // more headroom below whatever that ceiling turns out to be.
+        'IESO' => static fn () => ukgrid_ingest_ieso($pdo, $config, 8),
         // One country per call: skipFresherThanMinutes=0 so nothing is
         // ever skipped, maxCountriesPerRun=1 so this stays short. The page
         // calls this once per configured country, and staleness-based
@@ -126,6 +134,65 @@ foreach ($countries as $countryCfg) {
 $entsoeCallCount = max($entsoeCallCount, 1);
 
 $sourceOrder = ['ELEXON', 'CARBON_INTENSITY', 'NESO', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE'];
+
+// ---------------------------------------------------------------------
+// Config check - runs on every normal page load, entirely from what's
+// already in $config, no network calls involved. Added after two real
+// gaps shipped invisibly in the same release: IESO missing from
+// refresh.intervals_minutes/timeouts_seconds (on-demand refresh silently
+// never ran it - no error anywhere, nothing to click on, just permanently
+// stale data) and five new ENTSO-E countries not yet copied into a live
+// entsoe_countries array (the code has no way to know a country "should"
+// exist unless something tells it). entsoe_api_token/eia_api_key being
+// left as 'CHANGE-ME' already logs an INFO line when ENTSOE/EIA actually
+// run - but that's buried inside that source's own results table and easy
+// to miss, especially before you've ever run this page. This block is
+// meant to be the first thing you see, before anything below has run.
+//
+// Keep the two "expected" lists below in sync by hand whenever a country
+// page or an on-demand-refreshable source is added - there's no single
+// source of truth in the codebase to derive them from automatically.
+// ---------------------------------------------------------------------
+$configWarnings = [];
+
+$entsoeToken = trim((string) ($config['sources']['entsoe_api_token'] ?? ''));
+if ($entsoeToken === '' || $entsoeToken === 'CHANGE-ME') {
+    $configWarnings[] = "entsoe_api_token isn't set (still 'CHANGE-ME' or blank) in includes/config.php - Ireland's SEM price/mix and all ten ENTSO-E country pages (France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal) will show no live data until you add one. Free to get, but needs registration plus an email approval step - see includes/config.php.example.";
+}
+$eiaKey = trim((string) ($config['sources']['eia_api_key'] ?? ''));
+if ($eiaKey === '' || $eiaKey === 'CHANGE-ME') {
+    $configWarnings[] = "eia_api_key isn't set in includes/config.php - the USA page will show no live data until you add one. Free, instant signup - see includes/config.php.example.";
+}
+
+$expectedEntsoeCountries = [
+    'IE' => 'ireland.html', 'FR' => 'france.html', 'NL' => 'nl.html', 'BE' => 'belgium.html',
+    'NO' => 'norway.html', 'DK' => 'denmark.html', 'DE' => 'germany.html', 'ES' => 'spain.html',
+    'IT' => 'italy.html', 'SE' => 'sweden.html', 'PT' => 'portugal.html',
+];
+$configuredEntsoeCountries = array_keys($config['sources']['entsoe_countries'] ?? []);
+$missingEntsoeCountries = array_diff(array_keys($expectedEntsoeCountries), $configuredEntsoeCountries);
+if (!empty($missingEntsoeCountries)) {
+    $missingList = [];
+    foreach ($missingEntsoeCountries as $code) {
+        $missingList[] = $code . ' (pages/' . $expectedEntsoeCountries[$code] . ')';
+    }
+    $configWarnings[] = 'entsoe_countries in includes/config.php is missing: ' . implode(', ', $missingList) . ' - those pages will stay on illustrative/no data until added. See includes/config.php.example for the exact entries to copy in.';
+}
+
+$expectedOnDemandSources = ['ELEXON', 'CARBON_INTENSITY', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE', 'WEATHER', 'CONSTRAINTS', 'NOTABLE_MOMENTS'];
+$intervalsCfg = $config['refresh']['intervals_minutes'] ?? [];
+$timeoutsCfg = $config['refresh']['timeouts_seconds'] ?? [];
+$missingOnDemand = array_unique(array_merge(
+    array_diff($expectedOnDemandSources, array_keys($intervalsCfg)),
+    array_diff($expectedOnDemandSources, array_keys($timeoutsCfg))
+));
+if (!empty($missingOnDemand)) {
+    $configWarnings[] = "refresh.intervals_minutes and/or refresh.timeouts_seconds in includes/config.php has no entry for: " . implode(', ', $missingOnDemand) . " - without both, that source can only ever be refreshed by cron or by loading this page, never by an ordinary visitor's page load. See includes/config.php.example for the entries to add.";
+}
+
+if (empty($config['refresh']['on_demand'])) {
+    $configWarnings[] = "refresh.on_demand is false (or missing) in includes/config.php - no source will ever refresh itself from an ordinary page visit. That's fine only if you have cron jobs set up for everything (see README-DEPLOY.md) - otherwise set this to true.";
+}
 ?><!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -165,12 +232,32 @@ $sourceOrder = ['ELEXON', 'CARBON_INTENSITY', 'NESO', 'EIRGRID', 'EIA', 'IESO', 
   .btn { display: inline-block; padding: .5rem 1rem; background: #2a2c33; color: #e8e8ea; text-decoration: none; border-radius: 6px; font-size: .88rem; border: none; cursor: pointer; font-family: inherit; }
   .btn:hover { background: #34363e; }
   .btn--copied { background: #1f5c3f; color: #d8f5e6; }
+  .config-check { border: 1px solid #6b3a2e; background: #241a17; border-radius: 8px; padding: .85rem 1rem; margin-bottom: 1.25rem; }
+  .config-check__title { margin: 0 0 .5rem; font-weight: 700; font-size: .92rem; color: #e88a7d; }
+  .config-check ul { margin: 0; padding-left: 1.1rem; }
+  .config-check li { margin-bottom: .5rem; font-size: .85rem; color: #d8b9b3; line-height: 1.5; }
+  .config-check li:last-child { margin-bottom: 0; }
+  .config-check--ok { border-color: #1f5c3f; background: #16211c; color: #8fd6b4; padding: .6rem 1rem; margin-bottom: 1.25rem; border-radius: 8px; font-size: .88rem; font-weight: 600; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Full refresh - all sources</h1>
   <p class="sub">Runs each source one small request at a time (rather than one long request) so a slow or hanging source can't take the whole page down. Results stream in below as each one finishes.</p>
+
+  <?php if (!empty($configWarnings)): ?>
+    <div class="config-check">
+      <p class="config-check__title"><?php echo count($configWarnings); ?> config issue<?php echo count($configWarnings) === 1 ? '' : 's'; ?> found in includes/config.php (checked before running anything below):</p>
+      <ul>
+        <?php foreach ($configWarnings as $w): ?>
+          <li><?php echo ukgrid_tool_h($w); ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php else: ?>
+    <p class="config-check--ok">Config check passed - no missing API tokens, missing countries, or missing on-demand-refresh entries found.</p>
+  <?php endif; ?>
+
   <p class="progress" id="progress-line">Starting...</p>
 
   <?php foreach ($sourceOrder as $name): ?>

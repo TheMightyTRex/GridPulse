@@ -1276,7 +1276,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
 {
     $token = trim((string) ($config['sources']['entsoe_api_token'] ?? ''));
     if ($token === '' || $token === 'CHANGE-ME') {
-        ukgrid_log_ingest('ENTSOE', 'OK', 0, 'entsoe_api_token not set - skipping (Ireland\'s SEM price/mix and the France/Netherlands/Belgium/Norway/Denmark pages stay on illustrative data until you add one, see includes/config.php.example).');
+        ukgrid_log_ingest('ENTSOE', 'OK', 0, 'entsoe_api_token not set - skipping (Ireland\'s SEM price/mix and all ten ENTSO-E country pages - France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal - stay on illustrative/no data until you add one, see includes/config.php.example).');
         return ['rows' => 0, 'errors' => []];
     }
 

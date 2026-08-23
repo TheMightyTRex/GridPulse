@@ -61,8 +61,10 @@ return [
     'eia_base'               => 'https://api.eia.gov/v2',
 
     // Powers the SEM price + generation-mix "gap fill" on the Ireland page
-    // (EirGrid alone doesn't publish either), plus the standalone France,
-    // Netherlands, Belgium, Norway and Denmark pages. Also not keyless -
+    // (EirGrid alone doesn't publish either), plus the ten standalone
+    // country pages: France, Netherlands, Belgium, Norway and Denmark
+    // (GB-interconnected), and Germany, Spain, Italy, Sweden and Portugal
+    // (added for comparison only). Also not keyless -
     // register free at https://transparency.entsoe.eu/ (click Sign In >
     // Register), verify your email, then email transparency@entsoe.eu with
     // "RESTful API access" in the subject line and your registered address
@@ -191,6 +193,7 @@ return [
       'CARBON_INTENSITY' => 30,
       'EIRGRID' => 15,
       'EIA' => 240,
+      'IESO' => 30,
       'ENTSOE' => 20,
       'WEATHER' => 60,
       'CONSTRAINTS' => 1440,
@@ -220,6 +223,7 @@ return [
       'NESO' => 10,
       'EIRGRID' => 8,
       'EIA' => 15,
+      'IESO' => 7, // per-request, not total - ukgrid_ingest_ieso() makes two sequential calls (~14s worst case)
       'ENTSOE' => 6,
       'WEATHER' => 8,
       'CONSTRAINTS' => 10, // two sequential CKAN calls (resolve resource, then fetch it) - same shape as NESO above

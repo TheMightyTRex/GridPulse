@@ -78,6 +78,7 @@ function ukgrid_maybe_refresh_inner(PDO $pdo, array $config): void
         'CARBON_INTENSITY' => 30,
         'EIRGRID' => 15,
         'EIA' => 240,
+        'IESO' => 30,
         'ENTSOE' => 20,
         'WEATHER' => 60,
         'CONSTRAINTS' => 1440,
@@ -89,6 +90,7 @@ function ukgrid_maybe_refresh_inner(PDO $pdo, array $config): void
         'NESO' => 10,
         'EIRGRID' => 8,
         'EIA' => 15,
+        'IESO' => 7, // per-request, not total - ukgrid_ingest_ieso() makes two sequential calls
         'ENTSOE' => 6, // per-request, not total - see includes/config.php.example
         'WEATHER' => 8,
         'CONSTRAINTS' => 10,
@@ -141,6 +143,9 @@ function ukgrid_maybe_refresh_inner(PDO $pdo, array $config): void
                 break;
             case 'EIA':
                 ukgrid_ingest_eia($pdo, $config, $timeoutSeconds);
+                break;
+            case 'IESO':
+                ukgrid_ingest_ieso($pdo, $config, $timeoutSeconds);
                 break;
             case 'ENTSOE':
                 // Skip any of the 6 configured countries that already have
