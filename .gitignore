@@ -1,0 +1,22 @@
+# Real, filled-in site configuration - never commit this.
+# Copy includes/config.php.example to includes/config.php locally/on the
+# server and fill in real credentials there; config.php itself stays local.
+includes/config.php
+
+# Optional hardened config location (see README-DEPLOY.md "hardening step").
+uk-grid-config/
+
+# Real HTTP Basic Auth credentials for the /tools/ folder - the shipped
+# .htpasswd contains a live password hash and should be regenerated per
+# deployment, not published.
+tools/.htpasswd
+
+# Runtime log written by includes/refresh.php on live hosting.
+includes/refresh.log
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
