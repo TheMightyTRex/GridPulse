@@ -92,8 +92,15 @@ def cards(code, flows):
         <h2 id="year-h" class="gp-card__h">This year so far</h2>
         <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>"""
-    parts = [today, records] + ([borders] if flows else []) + [year]
-    return block("cards", '    <div class="gp-cards">\n' + "\n".join(parts) + "\n    </div>")
+    # Two columns that stack independently, so a short card never leaves a
+    # gap beside a tall one: Today and the map on the left, Records and
+    # This year on the right (Today and This year when there's no map).
+    # On narrow screens the columns dissolve and the cards stack in reading
+    # order: Today, Records, Borders, This year (CSS "order").
+    left = [today] + ([borders] if flows else [year])
+    right = [records] + ([year] if flows else [])
+    col = lambda cards: '      <div class="gp-cards__col">\n' + "\n".join(c.replace("\n      ", "\n        ").replace("      <section", "        <section", 1) for c in cards) + "\n      </div>"
+    return block("cards", '    <div class="gp-cards">\n' + col(left) + "\n" + col(right) + "\n    </div>")
 
 
 def apply(path, code, poss, flows, europe):

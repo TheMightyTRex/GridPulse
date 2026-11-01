@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse5 - 1 November 2026
+
+- **The four cards flow without gaps.** They now sit in two columns that stack on their own: Today so far and the map on the left, Records and This year so far on the right (Today and This year when a country has no map). A short card no longer leaves white space beside a tall one. Below 860 px wide the columns merge and the cards stack in reading order: Today, Records, Borders, This year.
+- "This year so far": the dashed line's label ("[last year] same dates") moved to the left, so it no longer sits on top of this month's column.
+- Cache-busting version bumped to 20261101f.
+
 ## GridPulse4 - 1 November 2026
 
 - The border and interconnector maps now scale with their card or page: full width, with the height set by the map's own shape. The big maps (Interconnectors page, Borders page) are capped at 80% of the window height so the whole map fits on screen.

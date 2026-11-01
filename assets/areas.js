@@ -805,7 +805,7 @@
       }
       cols += '<text x="' + (x + 6.5).toFixed(1) + '" y="69" font-size="8" text-anchor="middle" class="gp-axis">' + "JFMAMJJASOND"[m - 1] + "</text>";
     }
-    const avg = ly ? '<line x1="0" x2="' + W + '" y1="' + sy(ly.renewable_share).toFixed(1) + '" y2="' + sy(ly.renewable_share).toFixed(1) + '" class="gp-avg"/><text x="' + (W - 2) + '" y="' + (sy(ly.renewable_share) - 3).toFixed(1) + '" font-size="8" text-anchor="end" class="gp-axis">' + (yr.year - 1) + " so far</text>" : "";
+    const avg = ly ? '<line x1="0" x2="' + W + '" y1="' + sy(ly.renewable_share).toFixed(1) + '" y2="' + sy(ly.renewable_share).toFixed(1) + '" class="gp-avg"/><text x="2" y="' + Math.max(8, sy(ly.renewable_share) - 3).toFixed(1) + '" font-size="8" text-anchor="start" class="gp-axis gp-avg-label">' + (yr.year - 1) + " same dates</text>" : "";
     const monthsSvg = '<svg class="gp-months" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Renewable share in each month this year. The current month is so far.">' +
       '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" class="gp-base"/>' + avg + cols + "</svg>";
     const best = ty.best_month ? new Date(Date.UTC(2000, ty.best_month.month - 1, 15)).toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + " " + ty.best_month.renewable_share + "%" : "-";

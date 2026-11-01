@@ -763,8 +763,14 @@ a.area-cal__day:hover, a.area-cal__day:focus-visible { outline: 2px solid var(--
 [data-theme="dark"] { --map-home: #ffffff; --map-home-edge: #ffffff; --map-land: #3a414c; --map-edge: #4b5360; --flow-in: #e0a030; --flow-out: #5b9be6; --dark-card: #05070a; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --map-home: #ffffff; --map-home-edge: #ffffff; --map-land: #3a414c; --map-edge: #4b5360; --flow-in: #e0a030; --flow-out: #5b9be6; --dark-card: #05070a; } }
 
-.gp-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 1.25rem; align-items: start; }
-@media (max-width: 860px) { .gp-cards { grid-template-columns: minmax(0, 1fr); } }
+.gp-cards { display: flex; gap: 10px; margin: 0 0 1.25rem; align-items: flex-start; }
+.gp-cards__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+@media (max-width: 860px) {
+  .gp-cards { flex-direction: column; align-items: stretch; }
+  .gp-cards__col { display: contents; }
+  .gp-cards [data-area-today] { order: 1; } .gp-cards [data-area-recsum] { order: 2; }
+  .gp-cards [data-area-borders] { order: 3; } .gp-cards [data-area-year] { order: 4; }
+}
 .gp-card { background: var(--panel); color: var(--text); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .gp-card--dark { background: var(--dark-card); color: var(--dark-ink); }
 html[data-theme="dark"] .gp-card--dark { border: 2px solid var(--border); }
@@ -898,3 +904,4 @@ html.pref-calm .gp-ping { opacity: 0; }
 .gp-card > div { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .gp-months { max-width: 440px; }
 .gp-curve { max-width: 440px; }
+.gp-avg-label { paint-order: stroke; stroke: var(--panel); stroke-width: 3px; }
