@@ -896,7 +896,7 @@ a:not(:hover) { text-decoration-thickness: 1px; }
 .interconnector-map, .americas-map {
   width: 100%;
   height: auto;
-  max-height: 560px;
+  max-height: 80vh; /* scales with the page; capped so the whole map fits on screen */
 }
 .map-land path {
   fill: var(--bg-inset);

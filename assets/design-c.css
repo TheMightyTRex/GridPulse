@@ -794,8 +794,9 @@ html[data-theme="dark"] .gp-card--dark { border: 2px solid var(--border); }
 .gp-bar--row { grid-column: 1 / -1; margin: 4px 0 2px; height: 6px; }
 @keyframes gpGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-.gpmap { width: 100%; height: auto; max-height: 260px; display: block; }
-.gpmap--big { max-height: 520px; }
+/* Maps scale with their card or page: full width, height from the map's own shape. */
+.gpmap { width: 100%; height: auto; display: block; }
+.gpmap--big { max-height: 80vh; }
 .gpmap-home { fill: var(--map-home); stroke: var(--map-home-edge); stroke-width: 1; }
 .gpmap-land { fill: var(--map-land); stroke: var(--map-edge); stroke-width: .6; }
 .gpmap-in, .gpmap-out, .gpmap-idle { fill: none; stroke-linecap: round; }
@@ -897,4 +898,3 @@ html.pref-calm .gp-ping { opacity: 0; }
 .gp-card > div { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .gp-months { max-width: 440px; }
 .gp-curve { max-width: 440px; }
-.gpmap { max-width: 520px; }
