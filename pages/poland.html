@@ -16,7 +16,7 @@
 <meta property="og:title" content="Poland - the live status of the Polish electricity grid - Grid Pulse">
 <meta property="og:description" content="A live dashboard for Poland's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.">
 <meta property="og:url" content="https://gridpulse.info/pages/poland.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -288,25 +288,31 @@
         <canvas id="mix-bar" role="img" aria-label="Bar chart comparing Poland generation by source"></canvas>
       </div>
       <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
       </section>
-      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h">Records</h2>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
         <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-borders aria-labelledby="borders-h">
+        <h2 id="borders-h" class="gp-card__h">Borders</h2>
+        <div data-area-borders-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -319,6 +325,13 @@
       <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
       <p class="chart-caption" id="mix-stack-caption">Renewable (wind, solar, hydro, biomass), nuclear, fossil and other, from the ENTSO-E Transparency Platform.</p>
     </section>
+
+<!-- area:compare:start (written by tools/apply_areas.py) -->
+    <section class="panel gp-dark" data-area-compare aria-labelledby="compare-heading">
+      <div class="gp-head"><h2 id="compare-heading">Poland and its neighbours right now</h2><a href="comparisons.html">Compare any countries →</a></div>
+      <div data-area-compare-body><p class="area-empty">Loading...</p></div>
+    </section>
+<!-- area:compare:end -->
 
     <section class="panel" aria-labelledby="history-heading">
       <h2 id="history-heading">History</h2>
@@ -352,31 +365,41 @@
     </section>
 
 <!-- area:later:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="flows-heading">
-      <h2 id="flows-heading">Cross-border flows</h2>
-      <p class="chart-caption">Physical flows across each border today, from the ENTSO-E Transparency Platform. Borders are fetched one at a time, so each one updates every few hours.</p>
-      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
-    </section>
     <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
       <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
     </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=PL">Browse every day in the archive</a></p>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore Poland</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" data-area-records-link href="records.html?area=PL"><strong>Records</strong><span>Since this site started recording Poland</span></a>
+        <a class="gp-tile" data-area-borders-link href="borders.html?area=PL"><strong>Borders</strong><span>Every neighbour, in and out</span></a>
+        <a class="gp-tile" href="#history-heading"><strong>History</strong><span>A day to 10 years, and yearly</span></a>
+        <a class="gp-tile" data-area-archive-link href="archive.html?area=PL"><strong>Day archive</strong><span>Any day, shaded by renewables</span></a>
+        <a class="gp-tile" href="comparisons.html"><strong>Compare</strong><span>Poland against other grids</span></a>
+      </div>
     </section>
 <!-- area:later:end -->
 
-    <section class="panel" aria-labelledby="about-heading">
+    <!-- area:foldaopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold" open>
+      <summary><h2 class="gp-fold__h">About the Polish grid</h2></summary>
+<!-- area:foldaopen:end -->
+<section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the Polish grid</h2>
       <p>PSE (Polskie Sieci Elektroenergetyczne) operates Poland's transmission grid, part of the Continental Europe synchronous area. Poland's generation mix remains the most coal-dependent of any major European grid, with hard coal and lignite together supplying roughly half of output, though onshore wind and a fast-growing solar fleet have pushed renewables to a record share of generation in recent years. Poland has no commercial nuclear power yet - its first plant is planned for the early 2030s.</p>
       <p>Poland connects to Germany, the Czech Republic, Slovakia, Lithuania (via the LitPol Link) and Sweden (via the subsea SwePol Link), and has no direct electrical interconnector with Great Britain. It is included on this site purely for cross-country comparison via the Comparisons page, not because of any GB grid relationship.</p>
     </section>
+<!-- area:foldaclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldaclose:end -->
 
-    <section class="panel" aria-labelledby="records-heading">
+    <!-- area:foldbopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Records &amp; context</h2></summary>
+<!-- area:foldbopen:end -->
+<section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records &amp; context</h2>
       <div class="panel-grid panel-grid--2">
         <div>
@@ -406,8 +429,15 @@
       </div>
       <p class="chart-caption">Sources: <a href="https://www.pse.pl/-/rekord-zapotrzebowania-na-m-3">PSE (demand record)</a>, <a href="https://www.wnp.pl/energia/fotowoltaika-pobila-w-polsce-nowy-rekord,1064093.html">WNP.pl (PSE solar record)</a>, <a href="https://www.gov.pl/web/klimat/polska-osiaga-50-mocy-z-oze--historyczny-przelom">Ministry of Climate (gov.pl)</a>, <a href="https://www.forum-energii.eu/en/yearbook-energy-data-1">Forum Energii</a>, <a href="https://www.orlen.pl/en/about-the-company/media/press-releases/current/2026/July-2026/a-historic-milestone-the-wind-farm-in-the-baltic-sea-delivers-first-power-to-the-polish-grid">ORLEN (Baltic Power)</a>. Last checked: 2 October 2026.</p>
     </section>
+<!-- area:foldbclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldbclose:end -->
 
-    <section class="panel" id="pl-sources" aria-labelledby="pl-sources-heading">
+    <!-- area:foldcopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Data sources for Poland</h2></summary>
+<!-- area:foldcopen:end -->
+<section class="panel" id="pl-sources" aria-labelledby="pl-sources-heading">
       <h2 id="pl-sources-heading">Data sources for Poland</h2>
       <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are GB-specific and do not cover Poland, so this page draws on a different source instead:</p>
       <ul>
@@ -415,6 +445,9 @@
       </ul>
       <p>Two figures are not shown on this page at all: ENTSO-E does not publish emissions intensity (g/kWh), and its generation-per-type data does not include cross-border physical flow, so rather than show a permanently illustrative placeholder for either, they are left out until a real source exists. See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the other pages.</p>
     </section>
+<!-- area:foldcclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldcclose:end -->
 
   </div>
 </main>
@@ -426,9 +459,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
-<script src="../assets/areas.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   const COUNTRY_CODE = "PL";

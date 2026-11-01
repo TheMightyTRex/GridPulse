@@ -48,6 +48,7 @@ if (!isset($_GET['ajax'])) {
 }
 require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/ingest.php';
+require_once __DIR__ . '/../includes/refresh.php';
 require __DIR__ . '/_auth.php';
 
 error_reporting(E_ALL);
@@ -215,8 +216,12 @@ if (!empty($missingEntsoeCountries)) {
 }
 
 $expectedOnDemandSources = ['ELEXON', 'CARBON_INTENSITY', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE', 'OPENELECTRICITY', 'SEMO', 'BATTERY', 'WEATHER', 'CONSTRAINTS', 'NOTABLE_MOMENTS'];
-$intervalsCfg = $config['refresh']['intervals_minutes'] ?? [];
-$timeoutsCfg = $config['refresh']['timeouts_seconds'] ?? [];
+// Use the same schedule page loads use: ukgrid_refresh_schedule() fills in
+// built-in defaults for sources added after a config.php was written
+// (BATTERY, DAILY), so those are not reported as missing.
+[$intervalsCfg, $timeoutsCfg] = function_exists('ukgrid_refresh_schedule')
+    ? ukgrid_refresh_schedule($config)
+    : [$config['refresh']['intervals_minutes'] ?? [], $config['refresh']['timeouts_seconds'] ?? []];
 $missingOnDemand = array_unique(array_merge(
     array_diff($expectedOnDemandSources, array_keys($intervalsCfg)),
     array_diff($expectedOnDemandSources, array_keys($timeoutsCfg))

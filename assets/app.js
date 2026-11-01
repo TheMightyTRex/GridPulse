@@ -219,7 +219,7 @@
       // Keep the chosen range in the address (?range=week), so a copied
       // link or a reload reopens the same view. Only the first range
       // tablist on a page uses the address.
-      if (!document.querySelector("[data-tablist][data-url-range]")) {
+      if (!tablist.hasAttribute("data-url-range-off") && !document.querySelector("[data-tablist][data-url-range]")) {
         tablist.setAttribute("data-url-range", "");
         tablist.addEventListener("rangechange", (e) => {
           try {

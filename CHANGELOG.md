@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse3 - 1 November 2026 (dashboard layout for GB and every country)
+
+The GB home page and every country page are now shorter dashboards, with the detail on shared pages. Designed with Dave on a mockup first. Nothing shows a made-up figure.
+
+- **GB home page** went from 15 sections to 6: the hero and figures, the generation mix (with **Replay today** now inside it), four cards, the last 24 hours, and **Explore Great Britain** tiles. The tiles replace the big energy-type cards, the History link and the plug-in solar card, and still show live GW for each type.
+- **Four cards** on every page (GB and countries):
+  - **Today so far**: a demand curve with the low, peak and now marked, plus the day's figures.
+  - **Records**: four records with icons, and a bar showing how close today came to each.
+  - **Interconnectors / Borders**: a real map (home country white, neighbours grey, sea transparent) with animated amber and blue flow lines, thicker for more power, and the biggest flows listed. ENTSO-E pages say when the oldest border was last updated. Not shown for the USA, Ontario and Australia, which have no per-border flows.
+  - **This year so far**: renewable share with the change on last year (same dates), this year's mix against last year's, a month-by-month renewable column chart, total generated, best month, net imports, and (where the yearly source has been checked) a mini yearly mix.
+- **New page: Records** (`pages/records.html?area=XX`). "How the records have climbed" step chart (from 30 days after recording began), the records board with today's closeness bars, best of each year, records broken each month and the most recent breaks. For GB it also has the hand-checked all-time records, notable moments and the alerts, moved from the home page.
+- **New page: Borders** (`pages/borders.html?area=XX`): a larger map and one card per neighbour.
+- **Country pages** follow the same order: heading and intro, "X% renewable right now", figures, mix with Replay, the four cards, last 24 hours, **[country] and its neighbours right now** (European pages: renewable and zero-carbon shares side by side), history, long-term chart, Explore tiles, then the page's own About (open), Records and context, and data sources (folded).
+- **GB History page** now has the long-term yearly chart (NESO historic generation mix).
+- **Alerts** moved to `assets/alerts.js`. The settings are on the GB Records page; the home page still checks them while it is open.
+- New APIs: `api/year.php` (this year so far and the same dates last year) and `api/now_all.php` (every area's latest shares). `api/records.php?all=1` adds every record break.
+- Maps: `assets/maps/XX.json`, built from Natural Earth (public domain) by `tools/maps/build_maps.mjs`. Credited on the Sources page.
+- `tools/full-refresh.php` no longer warns that BATTERY is missing from config.php: it now uses the same built-in defaults as page loads. `config.php.example` lists BATTERY and DAILY.
+- Cache-busting version bumped to 20261101d.
+
 ## GridPulse2 - 1 November 2026 (country pages follow the Great Britain home page)
 
 Every country page now follows the Great Britain home page's order, as far as each country's data allows. Nothing shows a made-up figure: anything missing says so.

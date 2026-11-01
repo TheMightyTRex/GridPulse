@@ -16,7 +16,7 @@
 <meta property="og:title" content="Australia - the live status of Australia's National Electricity Market - Grid Pulse">
 <meta property="og:description" content="A live dashboard for Australia's National Electricity Market (NEM) - demand, spot price and generation mix, live from the Open Electricity API.">
 <meta property="og:url" content="https://gridpulse.info/pages/australia.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -287,25 +287,27 @@
         <canvas id="mix-bar" role="img" aria-label="Bar chart comparing Australia NEM generation by source"></canvas>
       </div>
       <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
       </section>
-      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h">Records</h2>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
         <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -353,25 +355,39 @@
 <!-- area:later:start (written by tools/apply_areas.py) -->
     <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
       <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
     </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=AU">Browse every day in the archive</a></p>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore Australia</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" data-area-records-link href="records.html?area=AU"><strong>Records</strong><span>Since this site started recording Australia</span></a>
+        <a class="gp-tile" href="#history-heading"><strong>History</strong><span>A day to 10 years, and yearly</span></a>
+        <a class="gp-tile" data-area-archive-link href="archive.html?area=AU"><strong>Day archive</strong><span>Any day, shaded by renewables</span></a>
+        <a class="gp-tile" href="comparisons.html"><strong>Compare</strong><span>Australia against other grids</span></a>
+      </div>
     </section>
 <!-- area:later:end -->
 
-    <section class="panel" aria-labelledby="about-heading">
+    <!-- area:foldaopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold" open>
+      <summary><h2 class="gp-fold__h">About the National Electricity Market</h2></summary>
+<!-- area:foldaopen:end -->
+<section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the National Electricity Market</h2>
       <p>AEMO operates the NEM as a single interconnected wholesale market spanning five separate physical grids (New South Wales including the ACT, Queensland, Victoria, South Australia and Tasmania, the last linked in via the Basslink and Marinus Link subsea cables), each setting its own regional 5-minute spot price that can diverge sharply from its neighbours' during congestion. Western Australia runs its own entirely separate, much smaller market (the WEM, around the South West Interconnected System) and the Northern Territory is not part of either - neither is covered by this page.</p>
       <p>Coal - a mix of black coal in NSW/QLD and brown coal (lignite) in Victoria - still supplies the single largest share of NEM generation, though several major coal plants have closed or announced closure dates through the early 2030s. Australia has no nuclear power at all (a moratorium has been in place since 1998), and wind and utility-scale solar have grown to a substantial share of generation - on top of which a very large amount of rooftop solar sits behind the meter, invisible to this page's wholesale-market figures (see <a href="#au-sources">data sources</a>). The NEM is also home to some of the world's largest grid-scale batteries, including the Hornsdale Power Reserve in South Australia and the Victorian Big Battery.</p>
       <p>Australia has no electrical interconnection with Great Britain at all - it is included on this site purely for cross-country comparison via the Comparisons page.</p>
     </section>
+<!-- area:foldaclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldaclose:end -->
 
-    <section class="panel" aria-labelledby="records-heading">
+    <!-- area:foldbopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Records &amp; context</h2></summary>
+<!-- area:foldbopen:end -->
+<section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records &amp; context</h2>
       <div class="panel-grid panel-grid--2">
         <div>
@@ -401,8 +417,15 @@
       </div>
       <p class="chart-caption">Sources: <a href="https://www.aemo.com.au/-/media/files/major-publications/qed/2025/qed-q4-2025.pdf">AEMO Quarterly Energy Dynamics Q4 2025</a>, <a href="https://www.pv-magazine-australia.com/2026/09/28/waratah-super-battery-reaches-full-commercial-operations/">pv magazine Australia (Waratah)</a>, <a href="https://www.abc.net.au/news/2026-09-23/coalition-energy-plan-scrap-renewables-climate-laws/107184376">ABC (nuclear ban)</a>, <a href="https://www.abc.net.au/news/2026-01-20/eraring-coal-fired-power-station-to-stay-open-until-2029/106247568">ABC (Eraring)</a>. Last checked: 2 October 2026.</p>
     </section>
+<!-- area:foldbclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldbclose:end -->
 
-    <section class="panel" id="au-sources" aria-labelledby="au-sources-heading">
+    <!-- area:foldcopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Data sources for Australia</h2></summary>
+<!-- area:foldcopen:end -->
+<section class="panel" id="au-sources" aria-labelledby="au-sources-heading">
       <h2 id="au-sources-heading">Data sources for Australia</h2>
       <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are GB-specific and do not cover Australia at all. This page uses one source only: the <a href="https://openelectricity.org.au/">Open Electricity API</a> (formerly OpenNEM), which powers demand, spot price, the generation mix (including the 24-hour stack and this page's History section) above and below, all for AEMO's National Electricity Market.</p>
       <p>Scope and limitations, worth knowing before comparing this page to others on the site:</p>
@@ -414,6 +437,9 @@
       </ul>
       <p><strong>Licence:</strong> Open Electricity's data is published under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> (non-commercial use, with attribution) - a stricter term than every other source this site uses, all of which are free for any use. See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the other pages, and <a href="about.html">About</a> for the full licence disclosure.</p>
     </section>
+<!-- area:foldcclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldcclose:end -->
 
   </div>
 </main>
@@ -425,9 +451,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
-<script src="../assets/areas.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   const METRICS = {

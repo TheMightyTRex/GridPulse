@@ -1,0 +1,11 @@
+{
+  "name": "gridpulse-maps",
+  "private": true,
+  "description": "Builds assets/maps/*.json from Natural Earth (world-atlas). Run: npm install, then node build_maps.mjs",
+  "type": "module",
+  "dependencies": {
+    "d3-geo": "3.1.1",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2"
+  }
+}

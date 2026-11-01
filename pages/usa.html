@@ -16,7 +16,7 @@
 <meta property="og:title" content="USA - an overview of the US electricity grid - Grid Pulse">
 <meta property="og:description" content="An overview of the US electricity grid's demand, generation, generation mix and history - live from the EIA (typically about a day behind). Wholesale price and emissions are not published by the EIA and are shown as not available rather than a placeholder.">
 <meta property="og:url" content="https://gridpulse.info/pages/usa.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -289,25 +289,27 @@
         <canvas id="mix-bar" role="img" aria-label="Bar chart comparing USA generation by source"></canvas>
       </div>
       <p class="chart-caption">Generation by source, ranked highest to lowest.</p>
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
       </section>
-      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h">Records</h2>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
         <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -357,25 +359,39 @@
 <!-- area:later:start (written by tools/apply_areas.py) -->
     <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
       <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
     </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=US">Browse every day in the archive</a></p>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore the USA</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" data-area-records-link href="records.html?area=US"><strong>Records</strong><span>Since this site started recording the USA</span></a>
+        <a class="gp-tile" href="#history-heading"><strong>History</strong><span>A day to 10 years, and yearly</span></a>
+        <a class="gp-tile" data-area-archive-link href="archive.html?area=US"><strong>Day archive</strong><span>Any day, shaded by renewables</span></a>
+        <a class="gp-tile" href="comparisons.html"><strong>Compare</strong><span>The USA against other grids</span></a>
+      </div>
     </section>
 <!-- area:later:end -->
 
-    <section class="panel" aria-labelledby="about-heading">
+    <!-- area:foldaopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold" open>
+      <summary><h2 class="gp-fold__h">About the US grid</h2></summary>
+<!-- area:foldaopen:end -->
+<section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the US grid</h2>
       <p>Unlike Great Britain or Ireland's single all-island system, the US mainland is split into three asynchronous interconnections that do not share a common frequency reference: the Eastern Interconnection (most of the country east of the Rockies), the Western Interconnection (the Pacific states, the Rockies and the desert Southwest), and ERCOT, which covers most of Texas and deliberately stays outside the other two - and largely outside federal FERC jurisdiction - specifically to avoid being classified as interstate commerce.</p>
       <p>Within those three, day-to-day balancing is handled by around 66 separate balancing authorities, ranging from huge regional grid operators like PJM (spanning 13 states and DC) and MISO, to Independent System Operators like CAISO, ERCOT, NYISO and ISO-NE that also run competitive wholesale markets, down to small municipal and cooperative utilities that balance their own patch directly. There is no single "US demand" figure the way there is a single GB or Ireland one - EIA's Hourly Electric Grid Monitor is the closest thing, summing the lower-48 states' balancing authorities together.</p>
       <p>Demand, generation, total interchange and the generation mix above and below are all live from the EIA's own API - the closest thing to a single "USA" figure. Wholesale price and emissions genuinely are not published anywhere for the lower-48 aggregate, which is why those two are shown as not available rather than a number from a different, incompatible source - see <a href="#usa-sources">data sources</a> below.</p>
     </section>
+<!-- area:foldaclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldaclose:end -->
 
-    <section class="panel" aria-labelledby="records-heading">
+    <!-- area:foldbopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Records &amp; context</h2></summary>
+<!-- area:foldbopen:end -->
+<section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records &amp; context</h2>
       <div class="panel-grid panel-grid--2">
         <div>
@@ -404,8 +420,15 @@
       </div>
       <p class="chart-caption">Sources: <a href="https://www.eia.gov/todayinenergy/detail.php?id=65864">EIA (2025 demand record)</a>, <a href="https://www.eia.gov/todayinenergy/detail.php?id=67906">EIA (ERCOT 2026 peak)</a>, <a href="https://insidelines.pjm.com/pjm-serves-load-through-record-breaking-july-heat/">PJM</a>, <a href="https://www.eia.gov/todayinenergy/detail.php?id=67367">EIA (2025 wind and solar)</a>, <a href="https://www.ferc.gov/news-events/news/final-report-february-2021-freeze-underscores-winterization-recommendations">FERC (February 2021)</a>. Last checked: 2 October 2026.</p>
     </section>
+<!-- area:foldbclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldbclose:end -->
 
-    <section class="panel" id="usa-sources" aria-labelledby="usa-sources-heading">
+    <!-- area:foldcopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Data sources for USA</h2></summary>
+<!-- area:foldcopen:end -->
+<section class="panel" id="usa-sources" aria-labelledby="usa-sources-heading">
       <h2 id="usa-sources-heading">Data sources for USA</h2>
       <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are UK-specific and do not cover the US at all - and unlike GB or Ireland, there is no single US operator to point a live feed at either. This page uses one source only: the <a href="https://www.eia.gov/opendata/">US Energy Information Administration's own free API</a>, specifically its Hourly Electric Grid Monitor (EIA-930), which powers demand, generation, total interchange and the generation mix (including the 24-hour stack and this page's History section) above and below.</p>
       <p>Why it is limited, and why this page deliberately sticks to that one source rather than stitching several together:</p>
@@ -417,6 +440,9 @@
       </ul>
       <p>Faster, more granular USA data does exist - <a href="https://www.gridstatus.io/">gridstatus.io</a> normalises near-real-time feeds from CAISO, ERCOT, PJM, MISO, SPP, NYISO and ISO-NE, and each of those ISOs also publishes its own feed directly. This page deliberately does not use them: they each cover a specific region rather than a national figure, which would mean showing seven-plus separate numbers instead of the single lower-48 total EIA already provides in one call. See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the GB and Ireland pages.</p>
     </section>
+<!-- area:foldcclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldcclose:end -->
 
   </div>
 </main>
@@ -428,9 +454,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
-<script src="../assets/areas.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   // demand/generation/transfers have real bucketed history via

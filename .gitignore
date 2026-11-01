@@ -25,3 +25,4 @@ includes/battery_units.json
 
 # Docker scheduler secrets
 docker/.env
+tools/maps/node_modules/

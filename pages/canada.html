@@ -16,7 +16,7 @@
 <meta property="og:title" content="Canada - the live status of Ontario's electricity grid - Grid Pulse">
 <meta property="og:description" content="A live dashboard for Ontario's electricity grid - demand and generation mix, live from IESO. Covers Ontario only, not all of Canada. Wholesale price, emissions and transfers are not available and are shown as not available rather than a placeholder.">
 <meta property="og:url" content="https://gridpulse.info/pages/canada.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -289,25 +289,27 @@
         <canvas id="mix-bar" role="img" aria-label="Bar chart comparing Ontario generation by source"></canvas>
       </div>
       <p class="chart-caption">Generation by source, ranked highest to lowest.</p>
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
       </section>
-      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h">Records</h2>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
         <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -357,25 +359,39 @@
 <!-- area:later:start (written by tools/apply_areas.py) -->
     <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
       <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
     </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=CA">Browse every day in the archive</a></p>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore Ontario</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" data-area-records-link href="records.html?area=CA"><strong>Records</strong><span>Since this site started recording Ontario</span></a>
+        <a class="gp-tile" href="#history-heading"><strong>History</strong><span>A day to 10 years, and yearly</span></a>
+        <a class="gp-tile" data-area-archive-link href="archive.html?area=CA"><strong>Day archive</strong><span>Any day, shaded by renewables</span></a>
+        <a class="gp-tile" href="comparisons.html"><strong>Compare</strong><span>Ontario against other grids</span></a>
+      </div>
     </section>
 <!-- area:later:end -->
 
-    <section class="panel" aria-labelledby="about-heading">
+    <!-- area:foldaopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold" open>
+      <summary><h2 class="gp-fold__h">About Ontario's grid, and why this page is not "Canada"</h2></summary>
+<!-- area:foldaopen:end -->
+<section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About Ontario's grid, and why this page is not "Canada"</h2>
       <p>Canada has no single national grid or national system operator - power is a provincial responsibility, and each province runs its own system. Several are synchronised with neighbouring US interconnections (Ontario and most of the rest of Canada sit inside the Eastern Interconnection, British Columbia inside the Western Interconnection, and Quebec runs its own separate asynchronous grid tied to the rest of North America only via HVDC links) rather than with each other directly.</p>
       <p>Ontario's system operator, the IESO, publishes a genuinely public, keyless, machine-readable set of real-time and historical reports - covering demand and generation by fuel type - which is what powers this page. Ontario's own generation mix is unusual for North America: nuclear typically supplies the largest single share, complemented by hydro, with a small and shrinking role for gas and very little coal (phased out entirely in 2014) or oil.</p>
       <p>Other provinces - Quebec (heavily hydro), British Columbia (heavily hydro), Alberta (gas and a fast-growing wind/solar fleet, with its own competitive market and a free-but-registered API) and the rest - are not covered here. Adding them would need separate research and ingestion work per operator, since Canada has no equivalent of the EIA or ENTSO-E to query once for the whole country.</p>
     </section>
+<!-- area:foldaclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldaclose:end -->
 
-    <section class="panel" aria-labelledby="records-heading">
+    <!-- area:foldbopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Records &amp; context</h2></summary>
+<!-- area:foldbopen:end -->
+<section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records &amp; context</h2>
       <div class="panel-grid panel-grid--2">
         <div>
@@ -404,8 +420,15 @@
       </div>
       <p class="chart-caption">Sources: <a href="https://www.ieso.ca/power-data/demand-overview/historical-demand">IESO historical demand</a>, <a href="https://www.ieso.ca/Learn/Ontario-Electricity-Grid/Supply-Mix-and-Generation">IESO supply mix</a>, <a href="https://www.cbc.ca/news/canada/thunder-bay/thunder-bay-generating-station-stops-burning-coal-1.2610782">CBC (Thunder Bay)</a>. Last checked: 2 October 2026.</p>
     </section>
+<!-- area:foldbclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldbclose:end -->
 
-    <section class="panel" id="ca-sources" aria-labelledby="ca-sources-heading">
+    <!-- area:foldcopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Data sources for Canada</h2></summary>
+<!-- area:foldcopen:end -->
+<section class="panel" id="ca-sources" aria-labelledby="ca-sources-heading">
       <h2 id="ca-sources-heading">Data sources for Canada</h2>
       <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages are GB-specific and do not cover Canada at all - and unlike GB, Ireland or the EU, there is no single Canadian source to point a live feed at either. This page uses one source only: <a href="https://www.ieso.ca/power-data/data-directory">IESO's public report repository</a>, which powers demand, generation and the generation mix (including the 24-hour stack and this page's History section) above and below - Ontario only.</p>
       <p>Why it is limited, and why this page deliberately sticks to that one source:</p>
@@ -418,6 +441,9 @@
       </ul>
       <p>See <a href="data-sources.html">the sitewide data sources page</a> for how this compares to the other pages.</p>
     </section>
+<!-- area:foldcclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldcclose:end -->
 
   </div>
 </main>
@@ -429,9 +455,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
-<script src="../assets/areas.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   // demand/generation have real bucketed history via api/canada_series.php
