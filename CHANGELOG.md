@@ -4,6 +4,9 @@ All notable changes to this project are documented here. Dates are when the chan
 
 ## GridPulse4 - 1 November 2026
 
+- The border and interconnector maps now scale with their card or page: full width, with the height set by the map's own shape. The big maps (Interconnectors page, Borders page) are capped at 80% of the window height so the whole map fits on screen.
+- Checked load times on the live site: after the first visit, pages and API calls answer in well under a second. The first visit after a quiet spell can take about 10 seconds, which is the host waking up, not the database.
+- Cache-busting version bumped to 20261101e.
 - Removed `pages/argentina.html`, `pages/brazil.html`, `pages/chile.html` and `pages/colombia.html`. Nothing linked to them: they were merged into `pages/south-america.html` long ago and the old repo had already deleted them. When uploading, delete these four files from the server too.
 
 ## GridPulse3 - 1 November 2026 (dashboard layout for GB and every country)
