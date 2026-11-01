@@ -16,7 +16,7 @@
 <meta property="og:title" content="Canada - the live status of Ontario's electricity grid - Grid Pulse">
 <meta property="og:description" content="A live dashboard for Ontario's electricity grid - demand and generation mix, live from IESO. Covers Ontario only, not all of Canada. Wholesale price, emissions and transfers are not available and are shown as not available rather than a placeholder.">
 <meta property="og:url" content="https://gridpulse.info/pages/canada.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
+<link rel="stylesheet" href="../assets/style.css?v=20261101c">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -233,13 +233,23 @@
 </div>
 <!-- shell:end -->
 
-<main id="main">
+<main id="main" data-area="CA">
   <div class="wrap">
 
     <section class="hero">
       <h1>Canada: the live status of Ontario's electricity grid</h1>
       <p>Canada does not run one national grid - each province operates its own system, several synchronised with the US Eastern or Western Interconnections rather than with each other. This page covers Ontario only, run by the IESO (Independent Electricity System Operator), which publishes a fully public, keyless real-time feed - the only Canadian jurisdiction found to do so during research for this page. Demand and generation mix below are live from IESO. Wholesale price, emissions and interchange/transfers are not available from this source and are shown as not available rather than a placeholder. See <a href="#ca-sources">data sources</a> for the full picture.</p>
     </section>
+
+<!-- area:now:start (written by tools/apply_areas.py) -->
+    <section class="home-hero area-now" data-area-now aria-label="Right now">
+      <div class="home-hero__main">
+        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data...</span></p>
+        <p class="area-now__big"><span class="home-hero__share"><span data-area-now-share>-</span>%</span> <span class="home-hero__lead">of Ontario's power is renewable right now</span></p>
+      </div>
+      <div class="home-hero__card"><p data-area-now-summary>Loading live data...</p></div>
+    </section>
+<!-- area:now:end -->
 
     <p class="data-status-banner is-loading" id="ca-status-banner"><span class="dot" aria-hidden="true"></span>Connecting to live data…</p>
 
@@ -252,6 +262,10 @@
       <div class="stat stat--unavailable"><dt>Transfers</dt><dd id="stat-transfers">Not available</dd><dd class="stat__extra"><p class="chart-caption" style="margin:.35rem 0 0;">Not wired up on this install yet</p></dd></div>
     </dl>
     <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Loading live data from IESO…</p>
+
+<!-- area:figures:start (written by tools/apply_areas.py) -->
+    <p class="download-row" data-area-figures></p>
+<!-- area:figures:end -->
 
     <section class="panel" aria-labelledby="mix-heading">
       <h2 id="mix-heading">Generation mix</h2>
@@ -276,6 +290,27 @@
       </div>
       <p class="chart-caption">Generation by source, ranked highest to lowest.</p>
     </section>
+
+<!-- area:replay:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="replay-heading">
+      <h2 id="replay-heading">Replay today</h2>
+      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
+      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+    </section>
+<!-- area:replay:end -->
+
+<!-- area:cards:start (written by tools/apply_areas.py) -->
+    <div class="home-cards">
+      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h">Today so far</h2>
+        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+      </section>
+      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h">Records</h2>
+        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+    </div>
+<!-- area:cards:end -->
 
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
@@ -318,6 +353,20 @@
       <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
       <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
     </section>
+
+<!-- area:later:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="annual-heading">
+      <h2 id="annual-heading">Long-term history</h2>
+      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
+      <h2 id="area-records-heading">Records</h2>
+      <p class="chart-caption" data-area-records-since></p>
+      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
+      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=CA">Browse every day in the archive</a></p>
+    </section>
+<!-- area:later:end -->
 
     <section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About Ontario's grid, and why this page is not "Canada"</h2>
@@ -380,8 +429,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101b"></script>
-<script src="../assets/data.js?v=20261101b"></script>
+<script src="../assets/app.js?v=20261101c"></script>
+<script src="../assets/data.js?v=20261101c"></script>
+<script src="../assets/areas.js?v=20261101c"></script>
 <script>
 (function () {
   // demand/generation have real bucketed history via api/canada_series.php

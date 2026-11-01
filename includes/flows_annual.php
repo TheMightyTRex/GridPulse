@@ -203,10 +203,10 @@ function ukgrid_annual_sources(): array
 {
     $eu = function (string $geo, string $scope) {
         return ['kind' => 'eurostat', 'geo' => $geo, 'scope' => $scope,
-                'credit' => 'Eurostat, nrg_bal_peh (gross electricity production)', 'url' => 'https://ec.europa.eu/eurostat/databrowser/view/nrg_bal_peh/default/table'];
+                'credit' => 'Eurostat, nrg_bal_peh (gross electricity production)', 'checked' => '1 November 2026', 'url' => 'https://ec.europa.eu/eurostat/databrowser/view/nrg_bal_peh/default/table'];
     };
     return [
-        'GB' => ['kind' => 'neso', 'scope' => 'Great Britain', 'credit' => 'NESO Data Portal, Historic generation mix', 'url' => 'https://www.neso.energy/data-portal/historic-generation-mix'],
+        'GB' => ['kind' => 'neso', 'scope' => 'Great Britain', 'credit' => 'NESO Data Portal, Historic generation mix', 'checked' => '1 November 2026', 'url' => 'https://www.neso.energy/data-portal/historic-generation-mix'],
         'IE' => $eu('IE', 'Republic of Ireland (the live page covers the whole island)'),
         'FR' => $eu('FR', 'France'), 'NL' => $eu('NL', 'Netherlands'), 'BE' => $eu('BE', 'Belgium'),
         'NO' => $eu('NO', 'the whole of Norway (the live page shows the NO2 price zone)'),
@@ -215,7 +215,7 @@ function ukgrid_annual_sources(): array
         'SE' => $eu('SE', 'the whole of Sweden (the live page shows the SE3 price zone)'),
         'PT' => $eu('PT', 'Portugal'), 'PL' => $eu('PL', 'Poland'),
         'US' => ['kind' => 'eia', 'scope' => 'the whole USA, all sectors', 'credit' => 'U.S. EIA, Electric power operational data', 'url' => 'https://www.eia.gov/electricity/data/browser/'],
-        'CA' => ['kind' => 'ieso', 'scope' => 'Ontario', 'credit' => 'IESO, Generator output by fuel type (yearly reports)', 'url' => 'https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/'],
+        'CA' => ['kind' => 'ieso', 'scope' => 'Ontario', 'credit' => 'IESO, Generator output by fuel type (yearly reports)', 'checked' => '1 November 2026', 'url' => 'https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/'],
         'AU' => ['kind' => 'openelectricity', 'scope' => 'the National Electricity Market (not Western Australia)', 'credit' => 'Open Electricity (CC BY-NC 4.0)', 'url' => 'https://openelectricity.org.au/'],
     ];
 }
@@ -541,8 +541,11 @@ function ukgrid_annual_ieso(PDO $pdo, int $timeout): array
             break;
         }
     }
+    // Every past year stored: refresh this year's file (IESO publishes the
+    // current year so far as PUB_GenOutputbyFuelHourly_<year>.xml too -
+    // checked in the folder listing on 1 November 2026).
     if ($year === null) {
-        return ['ok' => true, 'years' => [], 'keep_old' => true];
+        $year = $lastYear + 1;
     }
     $url = 'https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/PUB_GenOutputbyFuelHourly_' . $year . '.xml';
     $body = ukgrid_http_get_raw($url, max($timeout, 20));

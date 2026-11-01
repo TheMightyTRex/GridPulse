@@ -679,3 +679,76 @@ html.nav-compact .site-nav { flex: 0 0 0; width: 0; min-width: 0; }
 .moved-notice__inner p { margin: 0; }
 .moved-notice__close { font: inherit; font-weight: 700; padding: .35rem .9rem; border-radius: 6px; border: 2px solid var(--text); background: transparent; color: var(--text); cursor: pointer; }
 .moved-notice__close:hover, .moved-notice__close:focus-visible { background: var(--brand); color: var(--brand-ink); border-color: var(--brand-ink); }
+
+/* ==========================================================================
+   Country features (assets/areas.js): renewable now, today so far, replay,
+   records, flows, yearly history, day archive and day pages.
+   ========================================================================== */
+.area-now { margin-top: .5rem; }
+.area-now__big { margin: 0; display: flex; flex-direction: column; gap: 14px; font-weight: 800; font-stretch: 112%; font-size: clamp(1.35rem, 1rem + 1vw, 1.7rem); line-height: 1.1; }
+.area-empty { color: var(--text-muted); margin: .25rem 0; }
+.area-note { color: var(--text-muted); font-size: .92rem; margin: .75rem 0 0; }
+.area-note .swatch, .area-flows + .area-note .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin: 0 4px 0 8px; }
+.area-sub, .panel .area-sub, main .area-sub { margin: 2rem 0 .75rem; font-size: 1.1rem; }
+
+.home-card--today { background: var(--panel); color: var(--text); }
+.home-card--today h2 { margin: 0; font-size: .85rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-stretch: 100%; }
+.home-card--records .area-note { color: inherit; opacity: .85; }
+.home-card--records .area-empty { color: inherit; opacity: .85; }
+.area-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px 18px; margin: 0; }
+.area-facts div { display: flex; flex-direction: column; }
+.area-facts dt { order: 2; font-size: .9rem; color: var(--text-muted); }
+.area-facts dd { order: 1; margin: 0; font-weight: 800; font-size: 1.15rem; }
+
+.area-reclist { list-style: none; margin: 0; padding: 0; }
+.area-reclist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.home-card--records .area-reclist li { border-color: color-mix(in srgb, currentColor 25%, transparent); }
+.area-reclist li strong { font-weight: 800; text-align: right; }
+.area-reclist li small { grid-column: 1 / -1; color: var(--text-muted); font-size: .88rem; }
+.home-card--records .area-reclist li small { color: inherit; opacity: .8; }
+.area-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px 28px; }
+.area-board h3 { margin: .75rem 0 .25rem; font-size: 1rem; }
+
+.area-table-scroll { overflow-x: auto; max-width: 100%; }
+.area-years { border-collapse: collapse; font-size: .9rem; min-width: 100%; }
+.area-years th, .area-years td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+.area-years td.num, .area-years th.num { text-align: right; }
+.area-years td[style] { background: color-mix(in srgb, var(--accent) calc(var(--close) * 40%), transparent); }
+.area-years td.area-years__rec { outline: 3px solid var(--brand); outline-offset: -3px; border-radius: 4px; font-weight: 800; }
+.area-years__none { color: var(--text-muted); }
+
+.area-replay__label { display: block; font-weight: 700; margin-bottom: .25rem; }
+.area-replay__slider { width: 100%; accent-color: var(--accent); margin: .25rem 0 .5rem; min-height: 32px; }
+.area-replay__share { margin: 0 0 1rem; color: var(--text-muted); }
+
+.area-flows { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.area-flow { background: var(--panel); border-radius: var(--radius); padding: 16px; }
+.area-flow h3 { margin: 0 0 .25rem; font-size: 1.05rem; }
+.area-flow__cables { margin: 0 0 .5rem; color: var(--text-muted); font-size: .88rem; }
+.area-flow__live { margin: 0; font-weight: 800; }
+.area-flow__today { margin: .25rem 0 .5rem; font-size: .92rem; }
+.area-flow__chart { height: 70px; }
+.area-flow .area-note { margin-top: .5rem; font-size: .85rem; }
+
+.area-daynav { display: flex; justify-content: space-between; gap: 1rem; margin: 0 0 1rem; font-weight: 700; flex-wrap: wrap; }
+.area-years-nav { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 1rem; }
+.area-years-nav a, .area-years-nav span { padding: .35rem .8rem; border-radius: 999px; border: 2px solid var(--ink); font-weight: 700; text-decoration: none; }
+.area-years-nav span[aria-current] { background: var(--ink); color: var(--bg); }
+.area-cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; margin: 1rem 0; }
+.area-cal__month h3 { margin: 0 0 .4rem; font-size: 1rem; }
+.area-cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.area-cal__day, .area-cal__pad { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: .78rem; border-radius: 4px; text-decoration: none; }
+.area-cal__day { text-decoration: none !important; background: color-mix(in srgb, #1f9d5a calc(var(--ren, 0) * 100%), var(--panel)); color: var(--text); }
+a.area-cal__day:hover, a.area-cal__day:focus-visible { outline: 2px solid var(--ink); }
+.area-cal__day.is-partial { opacity: .55; }
+.area-cal__day.is-empty { background: transparent; color: var(--text-muted); border: 1px dashed var(--border); }
+.area-month { margin: .5rem 0; border-bottom: 1px solid var(--border); padding-bottom: .5rem; }
+.area-month summary { cursor: pointer; font-weight: 800; padding: .35rem 0; }
+.area-daylist { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.area-daylist th, .area-daylist td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.area-daylist .num { text-align: right; }
+@media (max-width: 700px) {
+  .home-cards { grid-template-columns: minmax(0, 1fr); }
+  .area-cal { grid-template-columns: minmax(0, 1fr); }
+}
+.home-cards--one { grid-template-columns: minmax(0, 1fr); }

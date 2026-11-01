@@ -16,7 +16,7 @@
 <meta property="og:title" content="Sources - Grid Pulse">
 <meta property="og:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
 <meta property="og:url" content="https://gridpulse.info/pages/data-sources.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
+<link rel="stylesheet" href="../assets/style.css?v=20261101c">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -507,6 +507,68 @@
       </section>
     </div>
 
+    <section class="panel" aria-labelledby="longterm-sources-heading" style="margin-top:1.25rem;">
+      <h2 id="longterm-sources-heading" style="font-size:1.05rem;margin-bottom:0;">Long-term history and cross-border flows</h2>
+      <p>The "Long-term history" chart on each country page uses each country's official yearly statistics. The "Cross-border flows" cards on the European pages use ENTSO-E's physical flows. The site's scheduler fetches these slowly, one country or border at a time.</p>
+      <p>"Today so far", the day archive, the day pages and the "Records" boards are worked out from this site's own stored readings from the live sources above. So they only go back to when this site started recording each country.</p>
+    </section>
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-eurostat">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">ES</span>
+          <h2 id="src-eurostat"><a href="https://ec.europa.eu/eurostat/databrowser/view/nrg_bal_peh/default/table">Eurostat (nrg_bal_peh)</a></h2>
+        </div>
+        <p>The EU statistics office. Table nrg_bal_peh gives gross electricity production by fuel, per country and year. It covers whole countries, so Norway, Sweden and Denmark are the whole country, not just the price zone on the live page. Ireland is the Republic of Ireland only.</p>
+        <div class="source-card__meta"><span>JSON-stat</span><span>Yearly, about 1 to 2 years behind</span><span>Free, no key. Reuse allowed with "Source: Eurostat"</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the long-term history on the European country pages and Ireland. Format and totals checked against the live API on 1 November 2026. See <a href="https://ec.europa.eu/eurostat/about-us/policies/copyright">Eurostat's copyright and reuse policy</a>.</p>
+      </section>
+      <section class="panel source-card" aria-labelledby="src-neso-historic">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">NE</span>
+          <h2 id="src-neso-historic"><a href="https://www.neso.energy/data-portal/historic-generation-mix">NESO Historic generation mix</a></h2>
+        </div>
+        <p>Great Britain's generation mix every half hour since 2009, from the National Energy System Operator. The site adds it up into yearly totals. Imports are left out.</p>
+        <div class="source-card__meta"><span>CKAN datastore (SQL)</span><span>Half-hourly, from 2009</span><span>NESO Open Data Licence</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the long-term history on the Great Britain home page. Column names and yearly totals checked on 1 November 2026.</p>
+      </section>
+      <section class="panel source-card" aria-labelledby="src-eia-annual">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EI</span>
+          <h2 id="src-eia-annual"><a href="https://www.eia.gov/electricity/data/browser/">EIA electric power operational data</a></h2>
+        </div>
+        <p>Yearly US generation by fuel, all sectors, from the U.S. Energy Information Administration.</p>
+        <div class="source-card__meta"><span>JSON (API v2)</span><span>Yearly</span><span>Public domain. Needs the site's free EIA key</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the long-term history on the USA page. Not shown yet: the figures still need checking against EIA's own published totals.</p>
+      </section>
+      <section class="panel source-card" aria-labelledby="src-ieso-annual">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">IE</span>
+          <h2 id="src-ieso-annual"><a href="https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/">IESO Generator output by fuel type (yearly reports)</a></h2>
+        </div>
+        <p>One XML report per year, with Ontario's hourly output by fuel. The site adds up each year, one file per run. The current year's file is the year so far.</p>
+        <div class="source-card__meta"><span>XML</span><span>Hourly, from 2015</span><span>IESO terms of use for public reports</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the long-term history on the Canada (Ontario) page. File names and format checked on 1 November 2026.</p>
+      </section>
+      <section class="panel source-card" aria-labelledby="src-oe-annual">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">OE</span>
+          <h2 id="src-oe-annual"><a href="https://openelectricity.org.au/">Open Electricity (yearly energy)</a></h2>
+        </div>
+        <p>Yearly energy by fuel for the National Electricity Market (not Western Australia).</p>
+        <div class="source-card__meta"><span>JSON (API v4)</span><span>Yearly</span><span>CC BY-NC 4.0, non-commercial use only</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the long-term history on the Australia page. Not shown yet: the figures still need checking against Open Electricity's own published totals.</p>
+      </section>
+      <section class="panel source-card" aria-labelledby="src-entsoe-flows">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EN</span>
+          <h2 id="src-entsoe-flows"><a href="https://transparency.entsoe.eu/">ENTSO-E cross-border physical flows (A11)</a></h2>
+        </div>
+        <p>Measured electricity across each border, in each direction. The site fetches one border per scheduler run, so each border updates every few hours.</p>
+        <div class="source-card__meta"><span>XML</span><span>Hourly</span><span>ENTSO-E Transparency Platform terms. Needs the site's free ENTSO-E token</span></div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the cross-border flow cards and net imports on the European country pages. Great Britain's cards use Elexon's interconnector figures, and Ireland's use EirGrid's.</p>
+      </section>
+    </div>
+
     <section class="panel" aria-labelledby="attribution-heading" style="margin-top:1.25rem;">
       <h2 id="attribution-heading">Full attribution statement</h2>
       <p>Shown in the footer of every Great Britain-focused page on this site - every other country page (Ireland, USA, Canada, Australia, and all eleven European pages) cites its own sources instead, in its own footer:</p>
@@ -526,6 +588,6 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101b"></script>
+<script src="../assets/app.js?v=20261101c"></script>
 </body>
 </html>

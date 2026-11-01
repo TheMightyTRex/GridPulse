@@ -2,6 +2,31 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse2 - 1 November 2026 (country pages follow the Great Britain home page)
+
+Every country page now follows the Great Britain home page's order, as far as each country's data allows. Nothing shows a made-up figure: anything missing says so.
+
+- **"X% of [country]'s power is renewable right now"** at the top of each country page, with a live "updated" pill and a one-line summary (largest source, demand, price, net imports).
+- **Copy as text, Download CSV and Download snapshot (PNG)** under each country's figures.
+- **Replay today**: a slider under the mix that redraws the donut and bars at any half hour (or hour) so far today.
+- **Today so far** card on every country and on the GB home page: peak, low and average demand with times, renewable and zero-carbon share, net imports or exports, share made at home, average price and largest source.
+- **Records** on every country: a board grouped by type (each with its value, time and the record it beat), a "best of each year" grid shaded by closeness to the record with the record ringed, and a "broken most recently" list. All labelled "since this site started recording [country] on [date]". Whole-day records need 90% of the day. Breaks only count from 30 days after recording started.
+- **Day archive** (`pages/archive.html?area=FR`): a calendar for each year, each day shaded by renewable share, plus a month-by-month list. **Day page** (`pages/day.html?area=FR&date=2026-10-25`): stacked generation, demand, price, carbon where available, net imports, summary, records set that day, previous and next day, and a CSV of the day. Clock-change days (23 and 25 hours) are handled.
+- **Cross-border flow cards**: for GB one per country with the cables named, for Ireland the flow with GB, for each European country one per neighbour. Each shows the live flow and direction, today's energy in and out, a small in/out chart on a shared scale, and when the border was last updated.
+- **Long-term history**: a yearly stacked chart by fuel (share or GWh), with the source credited and what it covers. The current year is labelled "so far". USA and Australia figures are stored but not shown until they have been checked against the source's own totals.
+- **Copy link** on every chart toolbar. Range tabs now keep the range in the address (`?range=week`), so a copied link or a reload opens the same view.
+- **CSV attribution**: every CSV now starts with source and licence lines. Australian data carries Open Electricity's CC BY-NC 4.0 note.
+- Chart y-axis labels no longer get cut off on the left (for example "€110/MWh").
+- New backend (written in the last chat, tested here against local test data): `includes/areas.php`, `includes/flows_annual.php`, `api/day.php`, `api/archive.php`, `api/records.php`, `api/flows.php`, `api/annual.php`, `api/areas.php` and `tools/data-jobs.php`. New jobs DAILY, FLOWS and ANNUAL (see README-DEPLOY.md). New tables `daily_summary`, `readings_flow`, `annual_mix` and `fetch_state` (created on first use, also in `sql/schema.sql`).
+- **Outside formats checked on 1 November 2026**, through a browser because the build sandbox can't reach them:
+  - Eurostat nrg_bal_peh: no `CF_R`, `RA110`/`RA120` or `RA400` codes, so bioenergy now uses `BIOE`. France's totals match Eurostat's own TOTAL row.
+  - NESO historic generation mix: the portal refuses `EXTRACT()`, so the yearly query now uses `date_part()`. Columns confirmed. GENERATION includes imports, which are left out.
+  - IESO yearly reports: file names confirmed (`PUB_GenOutputbyFuelHourly_<year>.xml`, 2015 onwards, plus the current year so far, which is now fetched too).
+  - Not checked (they need the site's keys): EIA fuel type IDs, Open Electricity `interval=1y`, and whether ENTSO-E accepts the Italy control area for flows. Check these on `tools/data-jobs.php` after upload.
+- `tools/apply_areas.py` (new) writes the shared sections into all 16 country pages and the GB home page between `<!-- area:... -->` markers, keeping each page's own intro, About, "Records & context" and sources. Run it after `tools/apply_shell.py`.
+- `pages/data-sources.html`: Eurostat, NESO historic mix, EIA yearly, IESO yearly, Open Electricity yearly and ENTSO-E flows, each with licence and attribution.
+- Cache-busting version bumped to 20261101c.
+
 ## GridPulse1 - 1 November 2026 (UK Grid: Live+ is now Grid Pulse)
 
 - **New name and address.** The site is now Grid Pulse, at https://gridpulse.info. Page titles, descriptions, the header, the footer, the README, the docs, snapshot card titles and download file names (`gridpulse-...` instead of `ukgridlive-...`) all use the new name. The PHP `ukgrid_` function prefix and the `UKGRID_` secret names stay the same, so nothing breaks.

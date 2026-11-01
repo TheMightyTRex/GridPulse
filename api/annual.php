@@ -33,7 +33,10 @@ $state = ukgrid_fetch_state_get($pdo, 'ANNUAL')[$area['code']] ?? null;
 
 echo json_encode([
     'ok' => true, 'area' => ukgrid_area_public($area),
-    'source' => $src ? ['credit' => $src['credit'], 'url' => $src['url'], 'scope' => $src['scope']] : null,
+    // 'checked' is the date the parser was checked against the source's own
+    // format and totals. Until a source has been checked, the page says so
+    // and does not draw its figures.
+    'source' => $src ? ['credit' => $src['credit'], 'url' => $src['url'], 'scope' => $src['scope'], 'checked' => $src['checked'] ?? null] : null,
     'years' => $yearList, 'groups' => (object) $series,
     'current_year' => (int) gmdate('Y'),
     'updated' => $state ? ukgrid_iso($state['fetched_at']) : null,
