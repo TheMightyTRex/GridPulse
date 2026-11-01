@@ -262,6 +262,8 @@ return [
       'WEATHER' => 60,
       'CONSTRAINTS' => 1440,
       'NOTABLE_MOMENTS' => 1440,
+      'BATTERY' => 30,
+      'DAILY' => 30, // daily summaries for the day pages, archive and records (database only)
     ],
 
     // Per-source request timeout when refreshing on-demand (kept shorter
@@ -294,6 +296,8 @@ return [
       'WEATHER' => 8,
       'CONSTRAINTS' => 10, // two sequential CKAN calls (resolve resource, then fetch it) - same shape as NESO above
       'NOTABLE_MOMENTS' => 12, // a handful of MAX()/MIN() queries against this site's own tables, no external call
+      'BATTERY' => 8,
+      'DAILY' => 8,
     ],
   ],
 

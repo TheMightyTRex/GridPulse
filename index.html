@@ -16,7 +16,7 @@
 <meta property="og:title" content="Grid Pulse - the live status of Great Britain's electricity grid">
 <meta property="og:description" content="A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.">
 <meta property="og:url" content="https://gridpulse.info/">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261101c">
-<link rel="stylesheet" href="assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="assets/style.css?v=20261101d">
+<link rel="stylesheet" href="assets/design-c.css?v=20261101d">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -308,39 +308,31 @@
       </table>
       <p class="chart-caption" id="battery-line" hidden></p>
 
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
-
-    <div class="home-cards">
-      <a class="home-card home-card--solar" href="pages/plugin-solar.html">
-        <span class="home-card__eyebrow">New</span>
-        <span class="home-card__title">Read the plug-in solar guide</span>
-        <span>What it is, how to fit it safely and how to register it</span>
-      </a>
-      <section class="home-card home-card--records" aria-labelledby="home-records-h">
-        <h2 id="home-records-h">Records</h2>
-        <dl class="home-records">
-          <div><dt>Highest wind, 25 March 2026</dt><dd>23,880MW</dd></div>
-          <div><dt>Highest solar, 12 July 2026</dt><dd>15,427MW</dd></div>
-          <div><dt>Lowest carbon, 7 April 2026</dt><dd>20g/kWh</dd></div>
-          <div><dt>Winter peak, 5 January 2026</dt><dd>47.3GW</dd></div>
-        </dl>
-        <a href="#records-heading">All records, with sources</a>
-      </section>
-    </div>
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards home-cards--one">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+      </section>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
+        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-borders aria-labelledby="borders-h">
+        <h2 id="borders-h" class="gp-card__h">Interconnectors</h2>
+        <div data-area-borders-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -354,224 +346,23 @@
       <p class="chart-caption">Renewable, non-renewable and storage generation stacked to show how the overall mix shifts through the day, from the Elexon Insights Solution.</p>
     </section>
 
-    <section class="panel" aria-labelledby="history-heading">
-      <h2 id="history-heading">History</h2>
-      <p>Demand, generation, price, emissions, transfers and the generation mix, from the past day to the past decade - now on its own dashboard with more charts, the current UK season, and data you can copy to the clipboard.</p>
-      <p><a href="pages/history.html">Open the History dashboard →</a></p>
-    </section>
-
-<!-- area:later:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="flows-heading">
-      <h2 id="flows-heading">Cross-border flows</h2>
-      <p class="chart-caption">Electricity through each of Great Britain's interconnectors today, grouped by country, from Elexon.</p>
-      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
-    </section>
-    <section class="panel" aria-labelledby="annual-heading">
-      <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
-      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
-    </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records since we started recording</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="pages/archive.html?area=GB">Browse every day in the archive</a></p>
-    </section>
-<!-- area:later:end -->
-
-    <section aria-labelledby="types-heading">
-      <h2 id="types-heading">Explore by energy type</h2>
-      <div class="type-grid">
-        <a class="type-card" href="pages/fossil-fuels.html" style="border-left-color:var(--fossil)">
-          <h3>Fossil fuels</h3>
-          <span class="type-card__value" id="type-value-fossil">7.58GW</span>
-          <p>Gas generation, current share and long-term decline since coal's closure.</p>
-          <span class="type-card__cta">Read more →</span>
-        </a>
-        <a class="type-card" href="pages/renewables.html" style="border-left-color:var(--renewable)">
-          <h3>Renewables</h3>
-          <span class="type-card__value" id="type-value-renewables">14.73GW</span>
-          <p>Solar, wind and hydro - including embedded generation estimates.</p>
-          <span class="type-card__cta">Read more →</span>
-        </a>
-        <a class="type-card" href="pages/nuclear-biomass.html" style="border-left-color:var(--other)">
-          <h3>Nuclear &amp; biomass</h3>
-          <span class="type-card__value" id="type-value-nuclear-biomass">6.38GW</span>
-          <p>Steady baseload generation from nuclear and biomass plants.</p>
-          <span class="type-card__cta">Read more →</span>
-        </a>
-        <a class="type-card" href="pages/interconnectors.html" style="border-left-color:var(--interconnector)">
-          <h3>Interconnectors</h3>
-          <span class="type-card__value" id="type-value-interconnectors">0.20GW</span>
-          <p>Imports and exports with Belgium, Denmark, France, Ireland, the Netherlands and Norway.</p>
-          <span class="type-card__cta">Read more →</span>
-        </a>
-        <a class="type-card" href="pages/storage.html" style="border-left-color:var(--storage)">
-          <h3>Storage</h3>
-          <span class="type-card__value" id="type-value-storage">0.79GW</span>
-          <p>Pumped hydro and battery storage charging and discharging.</p>
-          <span class="type-card__cta">Read more →</span>
-        </a>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore Great Britain</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" href="pages/electricity-prices.html"><strong>Prices</strong><span>Wholesale prices today</span></a>
+        <a class="gp-tile" href="pages/history.html"><strong>History</strong><span>From a day to 2009</span></a>
+        <a class="gp-tile" href="pages/records.html?area=GB"><strong>Records</strong><span>Every record, with dates</span></a>
+        <a class="gp-tile" href="pages/archive.html?area=GB"><strong>Day archive</strong><span>Any day since recording began</span></a>
+        <a class="gp-tile" href="pages/renewables.html"><strong>Renewables</strong><span><span id="type-value-renewables">-</span> now</span></a>
+        <a class="gp-tile" href="pages/fossil-fuels.html"><strong>Fossil fuels</strong><span><span id="type-value-fossil">-</span> now</span></a>
+        <a class="gp-tile" href="pages/nuclear-biomass.html"><strong>Nuclear and biomass</strong><span><span id="type-value-nuclear-biomass">-</span> now</span></a>
+        <a class="gp-tile" href="pages/storage.html"><strong>Storage</strong><span><span id="type-value-storage">-</span> now</span></a>
+        <a class="gp-tile" href="pages/interconnectors.html"><strong>Interconnectors</strong><span><span id="type-value-interconnectors">-</span> net now</span></a>
+        <a class="gp-tile" href="pages/renewables-plans.html"><strong>2030 plans</strong><span>Clean Power 2030 progress</span></a>
+        <a class="gp-tile gp-tile--brand" href="pages/plugin-solar.html"><strong>Plug-in solar guide</strong><span>New</span></a>
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="records-heading">
-      <h2 id="records-heading">Records</h2>
-      <p class="chart-caption">The figures on this panel are real, sourced records. They are currently hand-entered and checked periodically against the sources below, rather than computed automatically from stored history - each record's "last checked" date shows when it was last verified.</p>
-
-      <div class="range-tabs" role="tablist" data-tablist id="records-tablist" aria-label="Record category">
-        <button role="tab" id="rtab-wind" aria-controls="rpanel-wind" aria-selected="true" tabindex="0" data-range="wind">Wind</button>
-        <button role="tab" id="rtab-solar" aria-controls="rpanel-solar" aria-selected="false" tabindex="-1" data-range="solar">Solar</button>
-        <button role="tab" id="rtab-emissions" aria-controls="rpanel-emissions" aria-selected="false" tabindex="-1" data-range="emissions">Emissions</button>
-        <button role="tab" id="rtab-demand" aria-controls="rpanel-demand" aria-selected="false" tabindex="-1" data-range="demand">Demand</button>
-      </div>
-
-      <div id="rpanel-wind" role="tabpanel" aria-labelledby="rtab-wind" tabindex="0">
-        <ul class="records-list" id="records-list-wind">
-          <li><span>Highest wind generation ever</span><strong>23,880MW - 25 March 2026, 1.30pm to 2pm</strong></li>
-          <li><span>Wind curtailed, Q1 2026</span><strong>3.6TWh (about 11% of potential wind output), due to transmission constraints - Montel EnAppSys estimate</strong></li>
-          <li><span>Previous record</span><strong>23,825MW - 5 Dec 2025, 5.30pm</strong></li>
-        </ul>
-        <p class="download-row">
-          <button type="button" class="copy-btn" data-copy-list="records-list-wind" data-copy-title="Wind records - Grid Pulse">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
-            <span data-copy-label aria-live="polite">Copy as text</span>
-          </button>
-          <button type="button" class="copy-btn" data-csv-list="records-list-wind" data-csv-title="records-list-wind">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <span data-copy-label aria-live="polite">Download CSV</span>
-          </button>
-        </p>
-        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-wind" role="img" aria-label="Bar chart of the two most recent wind generation records"></canvas></div>
-        <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a>, reported by <a href="https://www.edie.net/uk-soars-past-wind-power-generation-record-for-second-time-in-two-months/">Edie</a> and <a href="https://www.renewableuk.com/news-and-resources/press-releases/new-british-wind-energy-record-set-as-gas-generation-falls-to-two-year-low/">RenewableUK</a>, March 2026; curtailment from Montel EnAppSys via <a href="https://www.energyvoice.com/renewables-energy-transition/wind/uk-wind/595979/wind-power-sets-new-generation-record-in-great-britain/">Energy Voice</a>. Last checked: 2 October 2026.</p>
-      </div>
-
-      <div id="rpanel-solar" role="tabpanel" aria-labelledby="rtab-solar" tabindex="0" hidden>
-        <ul class="records-list" id="records-list-solar">
-          <li><span>Highest solar generation ever</span><strong>15,427MW - 12 July 2026, late morning</strong></li>
-          <li><span>Solar's share of the mix at that moment</span><strong>44%</strong></li>
-          <li><span>First time above 9.5GW</span><strong>9,550MW - 14 May 2019</strong></li>
-          <li><span>Different dataset, different answer</span><strong>Carbon Brief's analysis puts the record at ~15.2GW on 23 April 2026, with no new peak over summer 2026 - estimates of GB solar vary by source</strong></li>
-        </ul>
-        <p class="download-row">
-          <button type="button" class="copy-btn" data-copy-list="records-list-solar" data-copy-title="Solar records - Grid Pulse">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
-            <span data-copy-label aria-live="polite">Copy as text</span>
-          </button>
-          <button type="button" class="copy-btn" data-csv-list="records-list-solar" data-csv-title="records-list-solar">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <span data-copy-label aria-live="polite">Download CSV</span>
-          </button>
-        </p>
-        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-solar" role="img" aria-label="Bar chart of solar generation records rising from 9.55GW in 2019 to 15.4GW in 2026"></canvas></div>
-        <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a>, reported by <a href="https://www.solarpowerportal.co.uk/solar-installations/summer-sun-boosted-uk-s-solar-generation-record-in-july">Solar Power Portal</a>, July 2026; <a href="https://www.neso.energy/news/eso-data-shows-record-breaking-year-britains-electricity">NESO</a> (2019); <a href="https://www.carbonbrief.org/analysis-uk-solar-power-hits-record-high-over-summer-2026">Carbon Brief</a> (alternative estimate). Last checked: 2 October 2026.</p>
-      </div>
-
-      <div id="rpanel-emissions" role="tabpanel" aria-labelledby="rtab-emissions" tabindex="0" hidden>
-        <ul class="records-list" id="records-list-emissions">
-          <li><span>Lowest carbon intensity reported</span><strong>20g/kWh - 1.30pm, 7 April 2026</strong></li>
-          <li><span>Earlier 2026 low</span><strong>26g/kWh - 3pm, 25 March 2026</strong></li>
-          <li><span>Previous headline record</span><strong>39g/kWh - Easter Monday, 5 April 2021</strong></li>
-          <li><span>Average intensity, 2014 vs 2025</span><strong>419g → 126g/kWh</strong></li>
-        </ul>
-        <p class="download-row">
-          <button type="button" class="copy-btn" data-copy-list="records-list-emissions" data-copy-title="Emissions records - Grid Pulse">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
-            <span data-copy-label aria-live="polite">Copy as text</span>
-          </button>
-          <button type="button" class="copy-btn" data-csv-list="records-list-emissions" data-csv-title="records-list-emissions">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <span data-copy-label aria-live="polite">Download CSV</span>
-          </button>
-        </p>
-        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-emissions" role="img" aria-label="Bar chart of carbon intensity falling from 419 grams per kilowatt hour on average in 2014 to 126 in 2025, with a low of 20 in April 2026"></canvas></div>
-        <p class="chart-caption">Source: NESO monthly electricity reports for <a href="https://www.neso.energy/document/381591/download">March 2026</a> and <a href="https://www.neso.energy/document/382556/download">April 2026</a>, <a href="https://www.carbonintensity.org.uk/">Carbon Intensity API</a>, and <a href="https://www.carbonbrief.org/analysis-uk-renewables-enjoy-record-year-in-2025-but-gas-power-still-rises">Carbon Brief</a> (annual averages). Last checked: 2 October 2026.</p>
-      </div>
-
-      <div id="rpanel-demand" role="tabpanel" aria-labelledby="rtab-demand" tabindex="0" hidden>
-        <ul class="records-list" id="records-list-demand">
-          <li><span>Winter 2025/26 peak demand</span><strong>47.3GW - 5 Jan 2026, the highest since March 2018</strong></li>
-          <li><span>Winter 2025/26 operating margin</span><strong>6.1GW (10.0%) - highest since 2019/20</strong></li>
-          <li><span>Winter 2026/27, early view</span><strong>5.5GW (8.8%) expected margin - full Winter Outlook due October 2026</strong></li>
-        </ul>
-        <p class="download-row">
-          <button type="button" class="copy-btn" data-copy-list="records-list-demand" data-copy-title="Demand records - Grid Pulse">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
-            <span data-copy-label aria-live="polite">Copy as text</span>
-          </button>
-          <button type="button" class="copy-btn" data-csv-list="records-list-demand" data-csv-title="records-list-demand">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <span data-copy-label aria-live="polite">Download CSV</span>
-          </button>
-        </p>
-        <div class="chart-wrap" style="height:200px;"><canvas id="records-bar-demand" role="img" aria-label="Bar chart contrasting a typical summer demand trough with the winter 2025/26 peak"></canvas></div>
-        <p class="chart-caption">Source: <a href="https://www.neso.energy/neso-sets-out-expectations-strongest-winter-electricity-margins-six-years">NESO Winter Outlook 2025/26</a>, <a href="https://www.neso.energy/document/383456/download">NESO winter review</a> and <a href="https://www.neso.energy/publications/winter-watch">NESO Winter Early View 2026/27</a>. The "summer low" bar is a rough comparison, not a specific sourced figure. Last checked: 2 October 2026.</p>
-      </div>
-    </section>
-
-    <section class="panel" aria-labelledby="moments-heading">
-      <h2 id="moments-heading">Notable moments</h2>
-      <p class="chart-caption" id="moments-caption">Loading…</p>
-      <ul class="records-list" id="moments-list" hidden></ul>
-      <p class="download-row" id="moments-download-row" hidden>
-        <button type="button" class="copy-btn" data-copy-list="moments-list" data-copy-title="Notable moments - Grid Pulse">
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
-          <span data-copy-label aria-live="polite">Copy as text</span>
-        </button>
-        <button type="button" class="copy-btn" data-csv-list="moments-list" data-csv-title="notable-moments">
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-          <span data-copy-label aria-live="polite">Download CSV</span>
-        </button>
-      </p>
-      <p class="chart-caption" id="moments-unavailable" hidden>Not available</p>
-    </section>
-
-    <section class="panel" aria-labelledby="alerts-heading">
-      <h2 id="alerts-heading">Alerts</h2>
-      <p class="chart-caption">Get a browser notification when price or carbon intensity crosses a threshold you set. <strong>This only works while this page stays open in a browser tab</strong> - this site has no server that sends push or email notifications, so closing the tab (or the browser) turns alerts off until you reopen it.</p>
-
-      <p id="alerts-permission-row">
-        <button type="button" class="copy-btn" id="alerts-enable-btn">
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5a3 3 0 0 0-3 3v2.2c0 .5-.2 1-.5 1.4L3.5 10.6c-.4.5 0 1.2.6 1.2h7.8c.6 0 1-.7.6-1.2l-1-1.5c-.3-.4-.5-.9-.5-1.4V5.5a3 3 0 0 0-3-3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.5 12.3a1.6 1.6 0 0 0 3 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span id="alerts-enable-label" aria-live="polite">Enable browser notifications</span>
-        </button>
-        <span id="alerts-permission-status" style="font-size:.85rem;color:var(--text-muted);margin-left:.6rem;"></span>
-      </p>
-
-      <div class="alert-rules">
-        <div class="alert-rule">
-          <label class="toggle-row">
-            <span class="switch">
-              <input type="checkbox" id="alert-price-enabled">
-              <span class="switch__track"><span class="switch__thumb"></span></span>
-            </span>
-            <span>Notify when price goes
-              <select id="alert-price-direction" aria-label="Price alert direction">
-                <option value="below">below</option>
-                <option value="above">above</option>
-              </select>
-              £<input type="number" id="alert-price-threshold" inputmode="decimal" step="1" style="width:5.5em;" aria-label="Price threshold in pounds per megawatt hour"> /MWh
-            </span>
-          </label>
-        </div>
-        <div class="alert-rule">
-          <label class="toggle-row">
-            <span class="switch">
-              <input type="checkbox" id="alert-emissions-enabled">
-              <span class="switch__track"><span class="switch__thumb"></span></span>
-            </span>
-            <span>Notify when carbon intensity goes
-              <select id="alert-emissions-direction" aria-label="Carbon intensity alert direction">
-                <option value="below">below</option>
-                <option value="above">above</option>
-              </select>
-              <input type="number" id="alert-emissions-threshold" inputmode="decimal" step="1" style="width:5.5em;" aria-label="Carbon intensity threshold in grams per kilowatt hour"> g/kWh
-            </span>
-          </label>
-        </div>
-      </div>
-      <p class="chart-caption">Checked against live data roughly every 5 minutes while this page is open, plus once whenever it first loads. Your thresholds are saved in this browser only (not sent anywhere) and only fire once per crossing, so you will not get repeated notifications while a value stays past your threshold.</p>
-    </section>
 
   </div>
 </main>
@@ -589,9 +380,10 @@
   </div>
 </footer>
 
-<script src="assets/app.js?v=20261101c"></script>
-<script src="assets/data.js?v=20261101c"></script>
-<script src="assets/areas.js?v=20261101c"></script>
+<script src="assets/app.js?v=20261101d"></script>
+<script src="assets/data.js?v=20261101d"></script>
+<script src="assets/areas.js?v=20261101d"></script>
+<script src="assets/alerts.js?v=20261101d"></script>
 <script>
 (function () {
 
@@ -837,137 +629,6 @@
     el.hidden = false;
   })();
 
-  // Alerts: browser notifications when price/carbon-intensity cross a
-  // user-set threshold. Deliberately NOT a push/email system - there is no
-  // server component here that could send one while the browser is
-  // closed, only client-side polling while this tab stays open (see the
-  // panel's own caption). Rules are stored in localStorage; "already
-  // notified for this crossing" state is stored in sessionStorage so a
-  // rule fires once per crossing per browsing session rather than
-  // repeatedly every 5 minutes while a value stays past its threshold.
-  const ALERTS_STORAGE_KEY = "ukgl-alerts";
-  const ALERT_RULES = [
-    { key: "price", field: "price_gbp_mwh", label: "Price", format: (v) => "£" + v.toFixed(2) + "/MWh" },
-    { key: "emissions", field: "emissions_gco2", label: "Carbon intensity", format: (v) => Math.round(v) + "g/kWh" },
-  ];
-
-  function loadAlertRules() {
-    try {
-      return JSON.parse(localStorage.getItem(ALERTS_STORAGE_KEY)) || {};
-    } catch (e) {
-      return {};
-    }
-  }
-  function saveAlertRules(rules) {
-    try {
-      localStorage.setItem(ALERTS_STORAGE_KEY, JSON.stringify(rules));
-    } catch (e) {}
-  }
-
-  (function () {
-    const enableBtn = document.getElementById("alerts-enable-btn");
-    const enableLabel = document.getElementById("alerts-enable-label");
-    const statusEl = document.getElementById("alerts-permission-status");
-    const supported = typeof Notification !== "undefined";
-
-    function refreshPermissionUi() {
-      if (!supported) {
-        if (statusEl) statusEl.textContent = "Notifications are not supported in this browser.";
-        if (enableBtn) enableBtn.disabled = true;
-        return;
-      }
-      if (Notification.permission === "granted") {
-        if (enableLabel) enableLabel.textContent = "Notifications enabled";
-        if (statusEl) statusEl.textContent = "";
-        if (enableBtn) enableBtn.classList.add("is-copied");
-      } else if (Notification.permission === "denied") {
-        if (statusEl) statusEl.textContent = "Notifications are blocked for this site in your browser settings.";
-        if (enableBtn) enableBtn.disabled = true;
-      }
-    }
-    refreshPermissionUi();
-
-    if (enableBtn && supported) {
-      enableBtn.addEventListener("click", () => {
-        Notification.requestPermission().then(refreshPermissionUi);
-      });
-    }
-
-    const rules = loadAlertRules();
-    ALERT_RULES.forEach(({ key }) => {
-      const enabledEl = document.getElementById("alert-" + key + "-enabled");
-      const directionEl = document.getElementById("alert-" + key + "-direction");
-      const thresholdEl = document.getElementById("alert-" + key + "-threshold");
-      if (!enabledEl || !directionEl || !thresholdEl) return;
-
-      const saved = rules[key] || {};
-      enabledEl.checked = !!saved.enabled;
-      directionEl.value = saved.direction || "below";
-      thresholdEl.value = saved.threshold != null ? saved.threshold : "";
-
-      const persist = () => {
-        const current = loadAlertRules();
-        current[key] = {
-          enabled: enabledEl.checked,
-          direction: directionEl.value,
-          threshold: thresholdEl.value === "" ? null : parseFloat(thresholdEl.value),
-        };
-        saveAlertRules(current);
-      };
-      enabledEl.addEventListener("change", persist);
-      directionEl.addEventListener("change", persist);
-      thresholdEl.addEventListener("change", persist);
-    });
-  })();
-
-  /** Checks the current live snapshot against every enabled alert rule and
-      fires a browser Notification for any rule that has just crossed its
-      threshold (not already firing before this check). Safe to call as
-      often as you like - a no-op whenever notifications are not supported,
-      permission has not been granted, or no rule is enabled. */
-  function checkAlerts(current) {
-    if (!current || typeof Notification === "undefined" || Notification.permission !== "granted") return;
-    const rules = loadAlertRules();
-    ALERT_RULES.forEach(({ key, field, label, format }) => {
-      const rule = rules[key];
-      const value = current[field];
-      if (!rule || !rule.enabled || value == null || rule.threshold == null || !isFinite(rule.threshold)) return;
-
-      const crossed = rule.direction === "below" ? value < rule.threshold : value > rule.threshold;
-      const sideKey = "ukgl-alert-side-" + key;
-      let wasCrossed = false;
-      try {
-        wasCrossed = sessionStorage.getItem(sideKey) === "1";
-      } catch (e) {}
-
-      if (crossed && !wasCrossed) {
-        try {
-          new Notification("Grid Pulse", {
-            body: label + " is now " + rule.direction + " " + format(rule.threshold) + " - currently " + format(value),
-            icon: "assets/logo.svg",
-            tag: "ukgl-alert-" + key, // replaces any earlier notification for the same rule rather than piling up
-          });
-        } catch (e) {
-          // Notification constructor can throw on some mobile browsers
-          // that only support notifications via a service worker - fail
-          // silently rather than breaking the rest of the page over a
-          // best-effort feature.
-        }
-      }
-      try {
-        sessionStorage.setItem(sideKey, crossed ? "1" : "0");
-      } catch (e) {}
-    });
-  }
-
-  // Re-checks roughly every 5 minutes while this page stays open (see the
-  // Alerts panel's own caption for why this cannot work once the tab is
-  // closed). Independent of the status strip's own single page-load
-  // fetch below - this is what makes "alerts" mean something more than
-  // "checked once when you happened to load the page".
-  setInterval(() => {
-    (window.GridData ? window.GridData.fetchCurrent() : Promise.resolve(null)).then(checkAlerts);
-  }, 5 * 60 * 1000);
 
   async function initStatusStrip() {
     const caption = document.getElementById("stat-caption");
@@ -1000,7 +661,7 @@
       GridPreview.setStatBand("stat-price-band", GridPreview.priceBand(current.price_gbp_mwh), " wholesale price (rough guide, not an official banding)");
       GridPreview.setStatBand("stat-emissions-band", GridPreview.carbonBand(current.emissions_gco2), " carbon intensity (NESO bands)");
       latestSnapshot = buildSnapshot(current, summary, isCached);
-      if (!isCached) checkAlerts(current); // only check confirmed-live data, not a stale cached first-paint
+      if (!isCached) (window.GPAlerts ? window.GPAlerts.check : function () {})(current); // only check confirmed-live data, not a stale cached first-paint
       setStat("stat-demand", current.demand_mw != null ? (current.demand_mw / 1000).toFixed(1) : "-");
       setStat("stat-generation", (summary.totalGenMw / 1000).toFixed(1));
       setStat("stat-transfers", (summary.interconnectorMw / 1000).toFixed(1));
@@ -1100,56 +761,6 @@
   // "Loading live data…".
   (GridPreview.autoRefresh || ((fn) => fn()))(initStatusStrip);
 
-  // "Notable moments" - this install's own recorded highs/lows (see
-  // api/notable_moments.php). Deliberately separate from the hand-typed,
-  // independently sourced "Records" panel above: that one is real all-time
-  // GB records, checked against NESO/press reporting; this one only ever
-  // reflects however much history this particular install has stored,
-  // which for a fresh install could be a few days or weeks - "recorded
-  // since" below exists specifically to make that limitation visible
-  // rather than let a small/recent "highest" figure look like a genuine
-  // record.
-  async function initNotableMoments() {
-    const listEl = document.getElementById("moments-list");
-    const captionEl = document.getElementById("moments-caption");
-    const unavailableEl = document.getElementById("moments-unavailable");
-    const downloadRowEl = document.getElementById("moments-download-row");
-    if (!window.GridData) return;
-
-    const data = await window.GridData.fetchNotableMoments();
-    if (!data) {
-      if (captionEl) captionEl.hidden = true;
-      if (unavailableEl) unavailableEl.hidden = false;
-      if (downloadRowEl) downloadRowEl.hidden = true;
-      return;
-    }
-
-    const dateOpts = { day: "numeric", month: "short", year: "numeric" };
-    const sinceStr = data.recorded_since ? new Date(data.recorded_since).toLocaleDateString([], dateOpts) : "an unknown date";
-    if (captionEl) {
-      captionEl.textContent = `The highest/lowest value this site has itself recorded since ${sinceStr} - not the same as the sourced all-time "Records" panel above. A short recording window (this is only as old as this install's own stored history) means these can be far short of the real UK record.`;
-    }
-
-    if (listEl) {
-      listEl.hidden = false;
-      listEl.innerHTML = "";
-      data.moments.forEach((m) => {
-        const dt = new Date(m.ts);
-        const dtStr = dt.toLocaleDateString([], dateOpts) + ", " + GridPreview.fmtTime12(dt);
-        const valueStr = m.unit === "GBP/MWh" ? "£" + m.value.toFixed(2) + "/MWh"
-          : m.unit === "gCO2/kWh" ? Math.round(m.value) + "g/kWh"
-          : Math.round(m.value).toLocaleString() + "MW";
-        const li = document.createElement("li");
-        li.innerHTML = `<span>${m.label}</span><strong>${valueStr} - ${dtStr}</strong>`;
-        listEl.appendChild(li);
-      });
-    }
-    if (unavailableEl) unavailableEl.hidden = true;
-    if (downloadRowEl) downloadRowEl.hidden = !(data.moments && data.moments.length);
-  }
-
-  initNotableMoments();
-
   // Stacked area: generation mix over the last 24 hours. Live from the same
   // series.php?metric=mix feed the History page's equivalent chart uses
   // (window.GridData.fetchMixSeries), rather than a fixed random-walk
@@ -1170,42 +781,6 @@
       { name: "Non-renewable", color: window.GridData.colorFor("Non-renewable"), values: mix.nonRenewable },
       { name: "Storage", color: window.GridData.colorFor("Battery"), values: mix.storage },
     ], { unit: "GW", legendTarget: "mix-stack-legend" });
-  })();
-
-  // Records tabs: draw the chart for each category once, lazily on first view
-  (function () {
-    const recordsDrawn = {};
-    function drawRecords(category) {
-      if (recordsDrawn[category]) return;
-      recordsDrawn[category] = true;
-      if (category === "wind") {
-        GridPreview.renderBarChart(
-          document.getElementById("records-bar-wind"),
-          ["5 Dec 2025", "25 Mar 2026"], [23.825, 23.880], "#1f9d5a",
-          { unit: "GW", horizontal: false, thickness: 60 }
-        );
-      } else if (category === "solar") {
-        GridPreview.renderBarChart(
-          document.getElementById("records-bar-solar"),
-          ["May 2019", "May 2020", "Jul 2026"], [9.55, 9.7, 15.427], "#e0a800",
-          { unit: "GW", horizontal: false, thickness: 44 }
-        );
-      } else if (category === "emissions") {
-        GridPreview.renderBarChart(
-          document.getElementById("records-bar-emissions"),
-          ["2014 (avg.)", "2025 (avg.)", "7 Apr 2026 (low)"], [419, 126, 20], "#8a5a3c",
-          { unit: "g", horizontal: false, thickness: 44 }
-        );
-      } else if (category === "demand") {
-        GridPreview.renderBarChart(
-          document.getElementById("records-bar-demand"),
-          ["Summer low (typical)", "Winter 2025/26 peak"], [20, 47.32], "#1d6fe0",
-          { unit: "GW", horizontal: false, thickness: 60 }
-        );
-      }
-    }
-    drawRecords("wind");
-    document.getElementById("records-tablist").addEventListener("rangechange", (e) => drawRecords(e.detail.range));
   })();
 
 })();

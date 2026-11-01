@@ -194,6 +194,8 @@ Added for Grid Pulse in November 2026. Nothing to set up: the tables are created
 - The first runs of `DAILY` backfill every stored day. With a year or more of readings this takes a few hours of scheduler runs.
 - The USA and Australia yearly figures are stored but not shown until they have been checked against EIA's and Open Electricity's own totals. To show them, check a few years on `tools/data-jobs.php`, then add a `checked` date to that source in `ukgrid_annual_sources()` (`includes/flows_annual.php`).
 - Pages: `pages/archive.html?area=FR` (calendar of every stored day) and `pages/day.html?area=FR&date=2026-10-25` (one day). Area codes: GB, IE, FR, NL, BE, NO, DK, DE, ES, IT, SE, PT, PL, US, CA, AU.
+- New shared pages: `pages/records.html?area=FR` (records, with GB's hand-checked records, notable moments and alerts) and `pages/borders.html?area=FR` (every border, with a map). GB's borders link goes to `pages/interconnectors.html`.
+- The border maps are files in `assets/maps/` (one per country), built from Natural Earth by `tools/maps/build_maps.mjs` (`cd tools/maps`, `npm install`, `node build_maps.mjs`). Only needed if a country or border is added. Don't upload `tools/maps/node_modules`.
 - The shared sections on the country pages are written by `python3 tools/apply_areas.py` (run it after `tools/apply_shell.py`) and filled in by `assets/areas.js`.
 
 ## Security notes

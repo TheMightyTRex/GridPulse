@@ -264,7 +264,7 @@
     if (s.home_share != null) rows.push(["Made at home", pct(s.home_share, 1)]);
     if (s.price_avg != null) rows.push(["Average price", money(s.price_avg, area)]);
     if (s.largest) rows.push(["Largest source", groupLabel(s.largest, area) + " (" + energy(s.energy_mwh[s.largest]) + ")"]);
-    body.innerHTML = '<dl class="area-facts">' + rows.map((r) => "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>").join("") + "</dl>" +
+    body.innerHTML = demandCurve(area, day) + '<dl class="area-facts">' + rows.map((r) => "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>").join("") + "</dl>" +
       '<p class="area-note">' + (s.coverage < 0.98 ? "So far today (" + Math.round(s.coverage * 100) + "% of the day). " : "") +
       'Times are ' + esc(area.name.replace(/\s*\(.*\)$/, "")) + ' time. <a href="' + dayLink(area.code, s.day) + '">See the whole day</a> · <a href="' + archiveLink(area.code) + '">Day archive</a></p>';
   }
@@ -613,6 +613,404 @@
     host.innerHTML = html;
   }
 
+  /* ==========================================================================
+     Dashboard cards (Records, Borders, This year so far, neighbours) and the
+     shared Records and Borders pages. Added for the dashboard layout,
+     November 2026. Every card says plainly when a figure isn't available.
+     ========================================================================== */
+  const ICONS = {
+    wind: "M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8",
+    solar: "M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8",
+    leaf: "M5 19c8 0 14-6 14-14C11 5 5 11 5 19ZM5 19l7-7",
+    bolt: "M13 3 5 14h6l-1 7 8-11h-6l1-7Z",
+    coin: "M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16M9 10h5M9 14h5M11 8v8",
+    atom: "M12 10a2 2 0 1 0 0 4a2 2 0 1 0 0-4M4 12c0-2 3.6-4 8-4s8 2 8 4-3.6 4-8 4-8-2-8-4Z",
+  };
+  const REC_STYLE = {
+    wind_peak_mw: ["wind", "#2fa876"], wind_day_mwh: ["wind", "#2fa876"], solar_peak_mw: ["solar", "#c49000"],
+    solar_day_mwh: ["solar", "#c49000"], renewable_share_high: ["leaf", "#1f9d5a"], renewable_day_share: ["leaf", "#1f9d5a"],
+    zero_carbon_share_high: ["atom", "#6a5acd"], fossil_share_low: ["leaf", "#4f8a3a"], demand_high_mw: ["bolt", "#1d6fe0"],
+    demand_low_mw: ["bolt", "#1d6fe0"], price_high: ["coin", "#6a5acd"], price_low: ["coin", "#6a5acd"],
+    carbon_low: ["leaf", "#4f8a3a"], carbon_high: ["leaf", "#8a5a3c"],
+  };
+  const icon = (name) => '<span class="gp-ico gp-ico--' + name + '"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="' + ICONS[name] + '"/></svg></span>';
+  const recordsLink = (code) => ROOT + "pages/records.html?area=" + encodeURIComponent(code);
+  const bordersLink = (code) => code === "GB" ? ROOT + "pages/interconnectors.html" : ROOT + "pages/borders.html?area=" + encodeURIComponent(code);
+  const shortName = (area) => area.name.replace(/\s*\(.*\)$/, "");
+
+  /** How close today's best came to the record, 0-1 (null when today has no such figure). */
+  function closeness(r, todayVal) {
+    if (todayVal == null || r.value == null) return null;
+    if (r.direction === "high") return r.value > 0 ? Math.max(0, Math.min(1, todayVal / r.value)) : null;
+    if (todayVal <= 0 || r.value <= 0) return todayVal === r.value ? 1 : null;
+    return Math.max(0, Math.min(1, r.value / todayVal));
+  }
+
+  /* ---------- Demand curve for Today so far ---------- */
+  function demandCurve(area, day) {
+    const d = day && day.series && day.series.demand;
+    if (!d) return "";
+    const pts = d.map((v, i) => [i, v]).filter((p) => p[1] != null);
+    if (pts.length < 3) return "";
+    const W = 300, H = 90, n = day.series.times.length;
+    const hours = (new Date(day.to) - new Date(day.from)) / 3600000;
+    const slots = Math.round(hours * 60 / (day.area.bucket_minutes || 60));
+    const vals = pts.map((p) => p[1]);
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const x = (i) => 4 + (i / Math.max(1, slots - 1)) * (W - 8);
+    const y = (v) => hi === lo ? H / 2 : 12 + (1 - (v - lo) / (hi - lo)) * (H - 30);
+    const line = pts.map((p, k) => (k ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(p[1]).toFixed(1)).join(" ");
+    const iHi = pts[vals.indexOf(hi)], iLo = pts[vals.indexOf(lo)], last = pts[pts.length - 1];
+    const dot = (p, cls, fill, label, dy) => '<circle cx="' + x(p[0]).toFixed(1) + '" cy="' + y(p[1]).toFixed(1) + '" r="4" fill="' + fill + '"' + (cls ? ' class="' + cls + '"' : "") + '/><text x="' + x(p[0]).toFixed(1) + '" y="' + (y(p[1]) + dy).toFixed(1) + '" font-size="11" text-anchor="middle" class="gp-curve__label">' + label + "</text>";
+    return '<svg class="gp-curve" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Demand so far today, from " + gw(lo) + " GW at its lowest to " + gw(hi) + " GW at its peak") + '">' +
+      '<path d="' + line + '" fill="none" class="gp-curve__line" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<circle cx="' + x(iHi[0]).toFixed(1) + '" cy="' + y(iHi[1]).toFixed(1) + '" r="3" fill="none" stroke="#4fd18b" stroke-width="2" class="gp-ping"/>' +
+      dot(iHi, "", "#4fd18b", "Peak", -8) + dot(iLo, "", "#ffd54a", "Low", 15) +
+      (last !== iHi && last !== iLo ? dot(last, "", "currentColor", "Now", 15) : "") + "</svg>";
+  }
+
+  /* ---------- Records card ---------- */
+  function renderRecCard(host, area, rec, day) {
+    const body = host.querySelector("[data-area-recsum-body]") || host;
+    if (!rec || !rec.board.length) {
+      body.innerHTML = '<p class="area-empty">No records yet. They appear once a few days have been recorded.</p><a class="gp-card__link" href="' + recordsLink(area.code) + '">Records page →</a>';
+      return;
+    }
+    const want = ["wind_peak_mw", "solar_peak_mw", area.has_carbon ? "carbon_low" : "renewable_share_high", "demand_high_mw"];
+    const pick = want.map((k) => rec.board.find((r) => r.key === k)).filter(Boolean);
+    const ex = day && day.summary ? day.summary.extremes || {} : {};
+    let newest = rec.recent && rec.recent[0];
+    body.innerHTML = pick.map((r) => {
+      const st = REC_STYLE[r.key] || ["bolt", "#1d6fe0"];
+      const t = ex[r.key] ? ex[r.key].value : null;
+      const c = closeness(r, t);
+      return '<div class="gp-rec"><div class="gp-rec__top">' + icon(st[0]) + '<span class="gp-rec__label">' + esc(r.label) +
+        '<small>Record ' + esc(when(r.ts, area)) + '</small></span><strong>' + esc(fmtRecord(r, area)) + "</strong></div>" +
+        (c != null
+          ? '<div class="gp-bar" aria-hidden="true"><span class="gp-bar__fill" style="width:' + (c * 100).toFixed(1) + "%;background:" + st[1] + '"></span></div>' +
+            '<small class="gp-rec__today">Today\'s best: ' + esc(fmtPrev(r, t)) + ", " + Math.round(c * 100) + "% of the record</small>"
+          : '<small class="gp-rec__today">No reading for this today yet.</small>') + "</div>";
+    }).join("") +
+      (newest ? '<p class="area-note">Newest: ' + esc(newest.label.toLowerCase()) + ", " + esc(longDate(newest.day)) + ".</p>" : "") +
+      '<p class="area-note">' + sinceLine(rec, area) + "</p>" +
+      '<a class="gp-card__link" href="' + recordsLink(area.code) + '">All records' + (area.code === "GB" ? " and notable moments" : "") + " →</a>";
+  }
+
+  /* ---------- Border map ---------- */
+  const mapCache = {};
+  async function getMap(code) {
+    if (!(code in mapCache)) {
+      mapCache[code] = fetch(ROOT + "assets/maps/" + code + ".json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    }
+    return mapCache[code];
+  }
+  /** SVG map: home country white, neighbours grey, sea transparent, one animated line per neighbour. */
+  function mapSvg(map, area, flowsBy, opts) {
+    opts = opts || {};
+    const h = map.pts[map.home];
+    let lines = "", dashes = "", tags = "";
+    let max = 0;
+    map.neighbours.forEach((c) => { const f = flowsBy[c]; if (f && f.latest_mw != null) max = Math.max(max, Math.abs(f.latest_mw)); });
+    map.neighbours.forEach((c) => {
+      const p = map.pts[c];
+      if (!p) return;
+      const f = flowsBy[c];
+      const mx = (h[0] + p[0]) / 2, my = (h[1] + p[1]) / 2;
+      const dx = p[0] - h[0], dy = p[1] - h[1];
+      const d = "M" + h[0] + "," + h[1] + " Q" + (mx - dy * 0.15).toFixed(1) + "," + (my + dx * 0.15).toFixed(1) + " " + p[0] + "," + p[1];
+      const v = f && f.latest_mw != null ? f.latest_mw : null;
+      if (v == null || Math.abs(v) < 1) {
+        lines += '<path d="' + d + '" class="gpmap-idle"/>';
+      } else {
+        const w = 2 + (max ? (Math.abs(v) / max) * 5 : 0);
+        lines += '<path d="' + d + '" class="' + (v > 0 ? "gpmap-in" : "gpmap-out") + '" stroke-width="' + w.toFixed(1) + '"/>';
+        dashes += '<path d="' + d + '" class="gpmap-dash' + (v > 0 ? " is-in" : "") + '"/>';
+      }
+      const lab = c;
+      const tw = 10 + lab.length * 8;
+      tags += '<g class="gpmap-tag"><rect x="' + (p[0] - tw / 2) + '" y="' + (p[1] - 10) + '" width="' + tw + '" height="20" rx="10"/><text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="middle">' + esc(lab) + "</text></g>";
+    });
+    const land = map.land.map((l) => '<path d="' + l[0] + '" class="' + (l[1] ? "gpmap-home" : "gpmap-land") + '"/>').join("");
+    const label = '<text x="' + h[0] + '" y="' + (h[1] + 5) + '" text-anchor="middle" class="gpmap-homelabel">' + esc(shortName(area)) + "</text>";
+    return '<svg class="gpmap' + (opts.big ? " gpmap--big" : "") + '" viewBox="0 0 ' + map.w + " " + map.h + '" role="img" aria-label="' + esc("Map of " + shortName(area) + " and its neighbours. Each line shows the flow across that border: amber into " + shortName(area) + ", blue out. Moving dashes show the direction. Grey dashed lines have no reading.") + '">' +
+      land + lines + dashes + tags + label + "</svg>";
+  }
+
+  function renderBordersCard(host, area, flows, map) {
+    const body = host.querySelector("[data-area-borders-body]") || host;
+    if (!map) {
+      body.innerHTML = '<p class="area-empty">No map for this country.</p>';
+      return;
+    }
+    const by = {};
+    (flows && flows.neighbours || []).forEach((n) => { by[n.code] = n; });
+    let net = null, latest = null;
+    Object.values(by).forEach((n) => {
+      if (n.latest_mw != null) { net = (net || 0) + n.latest_mw; if (!latest || n.latest_ts > latest) latest = n.latest_ts; }
+    });
+    let oldest = null;
+    Object.values(by).forEach((n) => { if (n.updated && (!oldest || n.updated < oldest.updated)) oldest = n; });
+    const head = net == null ? "No live border readings" : (Math.abs(net) < 1 ? "Balanced" : (net > 0 ? "Importing " : "Exporting ") + gw(Math.abs(net)) + " GW");
+    const rows = map.neighbours.filter((c) => by[c]).sort((a, b) => Math.abs(by[b].latest_mw || 0) - Math.abs(by[a].latest_mw || 0)).slice(0, 4).map((c) => {
+      const n = by[c];
+      const v = n.latest_mw;
+      const dir = v == null ? "No reading" : (Math.abs(v) < 1 ? "No flow" : (v > 0 ? "In " : "Out ") + gw(Math.abs(v)) + " GW");
+      return '<li><span>' + esc(n.label) + (n.cables && n.cables.length ? " <small>(" + esc(n.cables.join(", ")) + ")</small>" : "") + '</span><strong class="' + (v > 0 ? "is-in" : v < 0 ? "is-out" : "") + '">' + esc(dir) + "</strong></li>";
+    }).join("");
+    body.innerHTML = '<p class="gp-card__big">' + esc(head) + "</p>" + mapSvg(map, area, by) +
+      '<p class="gpmap-key"><span><i class="gpmap-key__in"></i>Into ' + esc(shortName(area)) + '</span><span><i class="gpmap-key__out"></i>Out of ' + esc(shortName(area)) + "</span><span>Thicker = more power</span></p>" +
+      (rows ? '<ul class="gp-list">' + rows + "</ul>" : "") +
+      '<p class="area-note">' + (latest ? "Latest reading " + clock(latest, area.tz) + ". " : "") +
+      (oldest && area.code !== "GB" && area.code !== "IE" ? "ENTSO-E borders update every few hours. Oldest: " + esc(oldest.label) + ", " + esc(ago(oldest.updated)) + "." : "") + "</p>" +
+      '<a class="gp-card__link" href="' + bordersLink(area.code) + '">' + (area.code === "GB" ? "Every cable, today in and out" : "Every border, today in and out") + " →</a>";
+  }
+  function ago(iso) {
+    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    return mins < 90 ? mins + " minutes ago" : Math.round(mins / 60) + " hours ago";
+  }
+
+  /* ---------- This year so far ---------- */
+  function shareBar(energy, keys, area, faded) {
+    const tot = keys.reduce((s, k) => s + (energy[k] || 0), 0) || 1;
+    return '<div class="gp-sbar' + (faded ? " is-faded" : "") + '" aria-hidden="true">' + keys.map((k) => energy[k] > 0 ? '<span style="flex:' + (energy[k] / tot * 100).toFixed(2) + ";background:" + groupColor(k) + '"></span>' : "").join("") + "</div>";
+  }
+  function renderYearCard(host, area, yr, ann) {
+    const body = host.querySelector("[data-area-year-body]") || host;
+    const ty = yr && yr.this_year, ly = yr && yr.last_year;
+    if (!ty) {
+      body.innerHTML = '<p class="area-empty">No days recorded this year yet.</p>';
+      return;
+    }
+    const keys = sortGroups(Object.keys(Object.assign({}, ty.energy_mwh, ly ? ly.energy_mwh : {})));
+    const tot = Object.values(ty.energy_mwh).reduce((a, b) => a + b, 0) || 1;
+    let badge = "";
+    if (ly) {
+      const diff = ty.renewable_share - ly.renewable_share;
+      badge = '<span class="gp-badge ' + (diff >= 0 ? "is-up" : "is-down") + '"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="' + (diff >= 0 ? "M6 2 10 8H2Z" : "M6 10 10 4H2Z") + '" fill="currentColor"/></svg>' +
+        Math.abs(diff).toFixed(1) + " points " + (diff >= 0 ? "up" : "down") + " on " + (yr.year - 1) + "</span>";
+    }
+    // Months
+    const months = ty.months;
+    const W = 240, H = 70, base = 58;
+    const maxShare = Math.max(1, ...months.map((m) => m.renewable_share), ly ? ly.renewable_share : 0);
+    const sy = (v) => base - (v / maxShare) * 48;
+    const nowMonth = Number(yr.today.slice(5, 7));
+    let cols = "";
+    for (let m = 1; m <= 12; m++) {
+      const rec = months.find((x) => x.month === m);
+      const x = 4 + (m - 1) * 19.6;
+      if (rec) {
+        const partial = m === nowMonth;
+        cols += '<rect x="' + x.toFixed(1) + '" y="' + sy(rec.renewable_share).toFixed(1) + '" width="13" height="' + (base - sy(rec.renewable_share)).toFixed(1) + '" rx="2" class="' + (partial ? "gp-col is-partial" : "gp-col") + '"><title>' + esc(new Date(Date.UTC(2000, m - 1, 15)).toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + ": " + rec.renewable_share + "% renewable" + (partial ? " so far" : "")) + "</title></rect>";
+      }
+      cols += '<text x="' + (x + 6.5).toFixed(1) + '" y="69" font-size="8" text-anchor="middle" class="gp-axis">' + "JFMAMJJASOND"[m - 1] + "</text>";
+    }
+    const avg = ly ? '<line x1="0" x2="' + W + '" y1="' + sy(ly.renewable_share).toFixed(1) + '" y2="' + sy(ly.renewable_share).toFixed(1) + '" class="gp-avg"/><text x="' + (W - 2) + '" y="' + (sy(ly.renewable_share) - 3).toFixed(1) + '" font-size="8" text-anchor="end" class="gp-axis">' + (yr.year - 1) + " so far</text>" : "";
+    const monthsSvg = '<svg class="gp-months" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Renewable share in each month this year. The current month is so far.">' +
+      '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" class="gp-base"/>' + avg + cols + "</svg>";
+    const best = ty.best_month ? new Date(Date.UTC(2000, ty.best_month.month - 1, 15)).toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + " " + ty.best_month.renewable_share + "%" : "-";
+    // Long-term mini chart (only when the yearly source has been checked)
+    let yearly = "";
+    if (ann && ann.years.length && ann.source && ann.source.checked) {
+      const ys = ann.years.slice(-6);
+      const gk = sortGroups(Object.keys(ann.groups));
+      const yW = 240, yH = 80, cw = Math.min(30, (yW - 10) / ys.length - 8);
+      let svg = "";
+      ys.forEach((y, j) => {
+        const i = ann.years.indexOf(y);
+        const t = gk.reduce((s, k) => s + (ann.groups[k][i] || 0), 0) || 1;
+        let top = 6;
+        const x = 6 + j * ((yW - 10) / ys.length);
+        gk.forEach((k) => {
+          const h = (ann.groups[k][i] || 0) / t * 62;
+          if (h > 0) svg += '<rect x="' + x.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + cw.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + groupColor(k) + '"/>';
+          top += h;
+        });
+        svg += '<text x="' + (x + cw / 2).toFixed(1) + '" y="78" font-size="8" text-anchor="middle" class="gp-axis">' + (y === ann.current_year ? y + "*" : y) + "</text>";
+      });
+      yearly = '<div class="gp-sub"><span>Yearly mix, from ' + esc(ann.source.credit.split(",")[0]) + '</span><svg class="gp-months" viewBox="0 0 ' + yW + " " + yH + '" role="img" aria-label="' + esc("Share of each source in " + shortName(area) + "'s yearly generation, " + ys[0] + " to " + ys[ys.length - 1]) + '">' + svg + "</svg></div>";
+    }
+    body.innerHTML =
+      '<div class="gp-yr-head"><p class="gp-card__big">' + pct(ty.renewable_share, 1) + " renewable</p>" + badge + "</div>" +
+      (area.code !== "GB" ? '<p class="gp-pill">' + pct(ty.zero_carbon_share, 1) + " zero-carbon</p>" : "") +
+      '<div class="gp-sbars"><span>' + yr.year + "</span>" + shareBar(ty.energy_mwh, keys, area, false) +
+      (ly ? "<span>" + (yr.year - 1) + "</span>" + shareBar(ly.energy_mwh, keys, area, true) : "") + "</div>" +
+      '<ul class="gp-keys">' + keys.filter((k) => ty.energy_mwh[k] > 0).map((k) => '<li><i style="background:' + groupColor(k) + '"></i>' + esc(groupLabel(k, area)) + " " + pct(ty.energy_mwh[k] / tot * 100, 0) + "</li>").join("") + "</ul>" +
+      '<div class="gp-sub"><span>Renewable share by month</span>' + monthsSvg + "</div>" +
+      '<dl class="gp-mini"><div><dt>Generated</dt><dd>' + energy(ty.gen_mwh) + "</dd></div><div><dt>Best month</dt><dd>" + esc(best) + "</dd></div>" +
+      (ty.imports_net_mwh != null ? "<div><dt>" + (ty.imports_net_mwh >= 0 ? "Net imports" : "Net exports") + "</dt><dd>" + energy(Math.abs(ty.imports_net_mwh)) + "</dd></div>" : "") + "</dl>" +
+      yearly +
+      '<p class="area-note">This year from this site\'s readings, 1 January to today (' + ty.days + " days)." + (ly ? " " + (yr.year - 1) + " is the same dates." : " No figures for the same dates last year.") + (yearly ? " * = so far." : "") + "</p>" +
+      '<a class="gp-card__link" href="' + (area.code === "GB" ? ROOT + "pages/history.html#annual-heading" : "#annual-heading") + '">' + (area.code === "GB" ? "History and long-term chart" : "Long-term chart") + " →</a>";
+  }
+
+  /* ---------- [country] and its neighbours right now ---------- */
+  function renderCompare(host, area, all, map) {
+    const body = host.querySelector("[data-area-compare-body]") || host;
+    if (!all || !all.areas.length) {
+      body.innerHTML = '<p class="area-empty">No readings to compare right now.</p>';
+      return;
+    }
+    const wanted = [area.code].concat(map ? map.neighbours : []);
+    const rows = all.areas.filter((a) => wanted.indexOf(a.code) !== -1);
+    if (rows.length < 2) {
+      body.innerHTML = '<p class="area-empty">Not enough neighbours have readings right now.</p>';
+      return;
+    }
+    const block = (title, key, color) => {
+      const list = rows.slice().sort((a, b) => b[key] - a[key]);
+      return '<div class="gp-cmp"><h3>' + esc(title) + '</h3><ul class="gp-cmp__list">' + list.map((a) =>
+        '<li class="' + (a.code === area.code ? "is-me" : "") + '"><a href="' + ROOT + esc(a.page) + '">' + esc(a.name.replace(/\s*\(.*\)$/, "")) + '</a><span class="gp-bar" aria-hidden="true"><span class="gp-bar__fill" style="width:' + a[key] + "%;background:" + color + '"></span></span><strong>' + pct(a[key], 0) + "</strong></li>").join("") + "</ul></div>";
+    };
+    const gbNote = rows.some((a) => a.code === "GB") ? " Great Britain does not count biomass as renewable, the others do." : "";
+    body.innerHTML = '<div class="gp-cmp-wrap">' + block("Renewable share", "renewable_share", "#2fa876") + block("Zero-carbon share (with nuclear)", "zero_carbon_share", "#9d8fe8") + "</div>" +
+      '<p class="area-note">Each country\'s latest reading. Times can differ by up to an hour.' + gbNote + " Price zones (Norway, Denmark, Sweden) are the zone on each country's page.</p>";
+  }
+
+  /* ---------- Records page ---------- */
+  function stepChart(area, rec, key) {
+    const r = rec.board.find((b) => b.key === key);
+    if (!r) return '<p class="area-empty">No record of this kind yet.</p>';
+    // Start 30 days after recording began, as the "broken most recently"
+    // list does: in the first few weeks nearly every day sets a "record".
+    const first = rec.firsts && rec.firsts[key];
+    const all = [];
+    if (first) all.push({ day: first.day, value: first.value, ts: first.ts });
+    (rec.breaks || []).filter((b) => b.key === key).forEach((b) => all.push({ day: b.day, value: b.value, ts: b.ts }));
+    const settleD = new Date(rec.since + "T00:00:00Z"); settleD.setUTCDate(settleD.getUTCDate() + 30);
+    const settle = settleD.toISOString().slice(0, 10);
+    const before = all.filter((s) => s.day < settle);
+    const steps = [];
+    if (before.length) steps.push(Object.assign({}, before[before.length - 1], { day: settle, start: true }));
+    all.filter((s) => s.day >= settle).forEach((s) => steps.push(s));
+    if (steps.length < 2) return '<p class="area-empty">This record has not been broken since ' + esc(longDate(settle)) + ".</p>";
+    const W = 1000, H = 260, pl = 90, pr = 20, pt = 30, pb = 34;
+    const t0 = new Date(steps[0].day).getTime(), t1 = Date.now();
+    const vals = steps.map((s) => s.value);
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    if (hi === lo) { hi += 1; lo -= 1; }
+    const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
+    const x = (d) => pl + ((new Date(d).getTime() - t0) / Math.max(1, t1 - t0)) * (W - pl - pr);
+    const y = (v) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
+    let d = "M" + x(steps[0].day).toFixed(1) + "," + y(steps[0].value).toFixed(1);
+    for (let i = 1; i < steps.length; i++) d += " H" + x(steps[i].day).toFixed(1) + " V" + y(steps[i].value).toFixed(1);
+    d += " H" + (W - pr);
+    const st = REC_STYLE[key] || ["bolt", "#1d6fe0"];
+    let grid = "";
+    for (let k = 0; k <= 3; k++) {
+      const v = lo + ((hi - lo) * k) / 3;
+      grid += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '" class="gp-grid"/><text x="' + (pl - 8) + '" y="' + (y(v) + 4).toFixed(1) + '" font-size="13" text-anchor="end" class="gp-axis">' + esc(fmtPrev(r, v)) + "</text>";
+    }
+    const dots = steps.map((s, i) => '<circle cx="' + x(s.day).toFixed(1) + '" cy="' + y(s.value).toFixed(1) + '" r="5" fill="' + st[1] + '"><title>' + esc(when(s.ts, area) + ": " + fmtPrev(r, s.value) + (s.start ? " (the record on this date)" : "")) + "</title></circle>").join("");
+    const lastS = steps[steps.length - 1];
+    const years = [];
+    for (let yv = new Date(t0).getUTCFullYear() + 1; yv <= new Date(t1).getUTCFullYear(); yv++) years.push(yv);
+    const yl = years.map((yv) => '<text x="' + x(yv + "-01-01").toFixed(1) + '" y="' + (H - 10) + '" font-size="13" text-anchor="middle" class="gp-axis">' + yv + "</text>").join("");
+    return '<svg class="gp-step" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Step chart of the " + r.label.toLowerCase() + " record since recording started. It was broken " + (steps.length - 1) + " times.") + '">' + grid + yl +
+      '<path d="' + d + '" fill="none" stroke="' + st[1] + '" stroke-width="3" class="gp-draw"/>' + dots +
+      '<circle cx="' + x(lastS.day).toFixed(1) + '" cy="' + y(lastS.value).toFixed(1) + '" r="4" fill="none" stroke="' + st[1] + '" stroke-width="2" class="gp-ping"/></svg>' +
+      '<p class="area-note">From ' + esc(longDate(settle)) + ", 30 days after this site started recording. Each step is a new record (" + (steps.length - 1) + " since then). Hover a dot for its date. Current record: " + esc(fmtRecord(r, area)) + ", " + esc(when(r.ts, area)) + ".</p>";
+  }
+  function breaksByMonth(rec) {
+    const counts = {};
+    (rec.breaks || []).forEach((b) => { const m = b.day.slice(0, 7); counts[m] = (counts[m] || 0) + 1; });
+    const months = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+      const k = d.toISOString().slice(0, 7);
+      months.push({ k, n: counts[k] || 0, l: d.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }).slice(0, 1) });
+    }
+    const max = Math.max(1, ...months.map((m) => m.n));
+    return '<svg class="gp-months" viewBox="0 0 240 70" role="img" aria-label="' + esc("Records broken each month over the last 12 months: " + months.map((m) => m.n).join(", ")) + '"><line x1="0" x2="240" y1="58" y2="58" class="gp-base"/>' +
+      months.map((m, i) => '<rect x="' + (4 + i * 19.6).toFixed(1) + '" y="' + (58 - (m.n / max) * 48).toFixed(1) + '" width="13" height="' + ((m.n / max) * 48).toFixed(1) + '" rx="2" fill="#ffd54a"><title>' + m.k + ": " + m.n + "</title></rect>" +
+        '<text x="' + (10.5 + i * 19.6).toFixed(1) + '" y="69" font-size="8" text-anchor="middle" class="gp-axis">' + m.l + "</text>").join("") + "</svg>";
+  }
+  async function initRecordsPage(host) {
+    const q = new URLSearchParams(window.location.search);
+    const code = (q.get("area") || "GB").toUpperCase();
+    const [rec, day] = await Promise.all([getJSON("records.php?area=" + encodeURIComponent(code) + "&all=1"), getJSON("day.php?area=" + encodeURIComponent(code))]);
+    const h1 = document.querySelector("h1");
+    if (!rec) {
+      if (h1) h1.textContent = "Records";
+      host.innerHTML = '<p class="area-empty">That country is not covered. Pick one from the menu.</p>';
+      return;
+    }
+    const area = rec.area;
+    document.title = shortName(area) + " records - Grid Pulse";
+    if (h1) h1.textContent = shortName(area) + " records";
+    const crumb = document.querySelector("[data-day-crumb]");
+    if (crumb) crumb.innerHTML = '<a href="' + ROOT + area.page + '">' + esc(area.name) + "</a> › Records";
+    document.querySelectorAll("[data-only-area]").forEach((el) => { el.hidden = el.getAttribute("data-only-area") !== code; });
+    const intro = document.querySelector("[data-records-intro]");
+    if (intro) intro.textContent = code === "GB"
+      ? "The highest and lowest figures for Great Britain's grid. Official all-time records come first, with sources. Below them are records worked out from this site's own readings."
+      : "The highest and lowest figures for " + area.name + ", worked out from this site's own readings. Official records from the grid operator are on the " + shortName(area) + " page, under Records and context.";
+    const keys = rec.board.map((b) => b.key);
+    const chartKeys = ["wind_peak_mw", "solar_peak_mw", "renewable_share_high", "zero_carbon_share_high", "demand_high_mw", "carbon_low", "price_low"].filter((k) => keys.indexOf(k) !== -1);
+    let html = "";
+    if (rec.board.length) {
+      html += '<section class="panel" aria-labelledby="climb-h"><div class="gp-head"><h2 id="climb-h">How the records have climbed</h2>' +
+        '<div class="gp-pills" role="group" aria-label="Record to show">' + chartKeys.map((k, i) => '<button type="button" aria-pressed="' + (i === 0) + '" data-key="' + k + '">' + esc(rec.board.find((b) => b.key === k).label.replace(/^Highest |^Lowest /, (m) => m)) + "</button>").join("") + "</div></div>" +
+        '<div data-step></div></section>';
+      html += '<div class="gp-cols"><section class="panel" aria-labelledby="board-h"><h2 id="board-h">Since we started recording</h2><p class="chart-caption" data-area-records-since></p><div data-area-records-body></div></section>' +
+        '<section class="panel gp-dark" aria-labelledby="month-h"><h2 id="month-h">Records broken each month</h2>' + breaksByMonth(rec) + '<p class="area-note">Last 12 months. Only real breaks count, not the first values recorded.</p></section></div>';
+    } else {
+      html += '<p class="area-empty">No records yet. They appear once a few days have been recorded.</p>';
+    }
+    host.innerHTML = html;
+    if (!rec.board.length) return;
+    renderRecords(host.querySelector("[data-area-records-body]").parentNode, area, rec);
+    // Closeness bars on the board, from today's figures
+    const ex = day && day.summary ? day.summary.extremes || {} : {};
+    const stepBox = host.querySelector("[data-step]");
+    const show = (k) => { stepBox.innerHTML = stepChart(area, rec, k); };
+    host.querySelectorAll("[data-key]").forEach((b) => b.addEventListener("click", () => {
+      host.querySelectorAll("[data-key]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      show(b.dataset.key);
+    }));
+    if (chartKeys.length) show(chartKeys[0]);
+    host.querySelectorAll(".area-board .area-reclist li").forEach((li, i) => {
+      const r = rec.board[i];
+      if (!r) return;
+      const c = closeness(r, ex[r.key] ? ex[r.key].value : null);
+      if (c == null) return;
+      const st = REC_STYLE[r.key] || ["bolt", "#1d6fe0"];
+      const bar = document.createElement("span");
+      bar.className = "gp-bar gp-bar--row";
+      bar.setAttribute("aria-hidden", "true");
+      bar.innerHTML = '<span class="gp-bar__fill" style="width:' + (c * 100).toFixed(1) + "%;background:" + st[1] + '"></span>';
+      li.insertBefore(bar, li.querySelector("small"));
+      const sm = li.querySelector("small");
+      if (sm) sm.insertAdjacentText("beforeend", ". Today: " + Math.round(c * 100) + "% of the record");
+    });
+  }
+
+  /* ---------- Borders page ---------- */
+  async function initBordersPage(host) {
+    const q = new URLSearchParams(window.location.search);
+    const code = (q.get("area") || "FR").toUpperCase();
+    if (code === "GB") { window.location.replace(ROOT + "pages/interconnectors.html"); return; }
+    const [flows, map] = await Promise.all([getJSON("flows.php?area=" + encodeURIComponent(code)), getMap(code)]);
+    const h1 = document.querySelector("h1");
+    if (!flows) {
+      if (h1) h1.textContent = "Borders";
+      host.innerHTML = '<p class="area-empty">That country is not covered. Pick one from the menu.</p>';
+      return;
+    }
+    const area = flows.area;
+    document.title = shortName(area) + " borders - Grid Pulse";
+    if (h1) h1.textContent = shortName(area) + ": electricity across its borders";
+    const crumb = document.querySelector("[data-day-crumb]");
+    if (crumb) crumb.innerHTML = '<a href="' + ROOT + area.page + '">' + esc(area.name) + "</a> › Borders";
+    const by = {};
+    flows.neighbours.forEach((n) => { by[n.code] = n; });
+    host.innerHTML = (map ? '<section class="panel" aria-labelledby="bmap-h"><h2 id="bmap-h">Right now</h2>' + mapSvg(map, area, by, { big: true }) +
+      '<p class="gpmap-key"><span><i class="gpmap-key__in"></i>Into ' + esc(shortName(area)) + '</span><span><i class="gpmap-key__out"></i>Out of ' + esc(shortName(area)) + "</span><span>Thicker = more power</span><span>Grey dashes = no reading</span></p></section>" : "") +
+      '<section class="panel" aria-labelledby="flows-heading"><h2 id="flows-heading">Today, border by border</h2><div data-area-flows-body></div></section>';
+    renderFlows(host.querySelector("[data-area-flows-body]").parentNode, area, flows);
+  }
+
   /* ---------- Country page wiring ---------- */
   async function initArea(root) {
     const code = root.getAttribute("data-area");
@@ -625,10 +1023,15 @@
     const recsum = q("[data-area-recsum]");
     const records = q("[data-area-records]");
     const flowsBox = q("[data-area-flows]");
+    const borders = q("[data-area-borders]");
+    const yearBox = q("[data-area-year]");
+    const compare = q("[data-area-compare]");
     const annual = q("[data-area-annual]");
-    const archiveLinkEl = q("[data-area-archive-link]");
-    if (archiveLinkEl) archiveLinkEl.setAttribute("href", archiveLink(code));
+    document.querySelectorAll("[data-area-archive-link]").forEach((a) => a.setAttribute("href", archiveLink(code)));
+    document.querySelectorAll("[data-area-records-link]").forEach((a) => a.setAttribute("href", recordsLink(code)));
+    document.querySelectorAll("[data-area-borders-link]").forEach((a) => a.setAttribute("href", bordersLink(code)));
 
+    let rec = null;
     async function refreshDay() {
       const d = await getJSON("day.php?area=" + encodeURIComponent(code));
       if (d) day = d;
@@ -637,18 +1040,34 @@
       if (nowBox) renderNow(nowBox, area, day);
       if (today) renderToday(today, area, day);
       if (replay) renderReplay(replay, area, day);
+      if (recsum && rec) renderRecCard(recsum, area, rec, day);
       return area;
     }
     const area = await refreshDay();
     setInterval(refreshDay, 5 * 60 * 1000);
 
+    const jobs = [];
     if (recsum || records) {
-      const rec = await getJSON("records.php?area=" + encodeURIComponent(code));
-      if (recsum) renderRecSummary(recsum, area, rec);
-      if (records) renderRecords(records, area, rec);
+      jobs.push(getJSON("records.php?area=" + encodeURIComponent(code)).then((r) => {
+        rec = r;
+        if (recsum) renderRecCard(recsum, area, rec, day);
+        if (records) renderRecords(records, area, rec);
+      }));
     }
-    if (flowsBox) renderFlows(flowsBox, area, await getJSON("flows.php?area=" + encodeURIComponent(code)));
-    if (annual) renderAnnual(annual, area, await getJSON("annual.php?area=" + encodeURIComponent(code)));
+    if (borders || compare) {
+      jobs.push(Promise.all([borders ? getJSON("flows.php?area=" + encodeURIComponent(code)) : null, getMap(code), compare ? getJSON("now_all.php") : null]).then(([fl, map, all]) => {
+        if (borders) renderBordersCard(borders, area, fl, map);
+        if (compare) renderCompare(compare, area, all, map);
+      }));
+    }
+    if (flowsBox) jobs.push(getJSON("flows.php?area=" + encodeURIComponent(code)).then((fl) => renderFlows(flowsBox, area, fl)));
+    if (yearBox || annual) {
+      jobs.push(Promise.all([yearBox ? getJSON("year.php?area=" + encodeURIComponent(code)) : null, getJSON("annual.php?area=" + encodeURIComponent(code))]).then(([yr, ann]) => {
+        if (yearBox) renderYearCard(yearBox, area, yr, ann);
+        if (annual) renderAnnual(annual, area, ann);
+      }));
+    }
+    await Promise.all(jobs);
   }
 
   function init() {
@@ -656,6 +1075,10 @@
     if (dayHost) { initDayPage(dayHost); return; }
     const arcHost = document.querySelector("[data-area-archive]");
     if (arcHost) { initArchivePage(arcHost); return; }
+    const recHost = document.querySelector("[data-area-records-page]");
+    if (recHost) { initRecordsPage(recHost); return; }
+    const bHost = document.querySelector("[data-area-borders-page]");
+    if (bHost) { initBordersPage(bHost); return; }
     const root = document.querySelector("[data-area]");
     if (root) initArea(root);
   }

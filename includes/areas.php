@@ -616,6 +616,7 @@ function ukgrid_area_records(PDO $pdo, array $area, bool $allBreaks = false): ar
     $years = [];
     $grid = [];
     $breaks = [];
+    $firsts = [];
     $first = null;
     $dailyKinds = ['wind_day_mwh', 'solar_day_mwh', 'renewable_day_share'];
     foreach ($st as $row) {
@@ -644,6 +645,9 @@ function ukgrid_area_records(PDO $pdo, array $area, bool $allBreaks = false): ar
                     $prev[$key] = $best[$key];
                     $breaks[] = ['key' => $key, 'label' => $label, 'unit' => $unit, 'value' => $v, 'ts' => $ts, 'day' => $row['day'],
                                  'previous' => $best[$key]['value'], 'previous_ts' => $best[$key]['ts']];
+                }
+                if (!isset($best[$key])) {
+                    $firsts[$key] = ['value' => $v, 'ts' => $ts, 'day' => $row['day']];
                 }
                 $best[$key] = ['value' => $v, 'ts' => $ts, 'day' => $row['day']];
             }
@@ -675,6 +679,12 @@ function ukgrid_area_records(PDO $pdo, array $area, bool $allBreaks = false): ar
     sort($yearList);
     $out = ['since' => $first, 'board' => $board, 'years' => $yearList, 'grid' => $grid, 'recent' => $recent];
     if ($allBreaks) {
+        // The first value of each kind, so a chart of how each record has
+        // climbed can start from it.
+        $out['firsts'] = array_map(function ($f) use ($iso) {
+            $f['ts'] = $iso($f['ts']);
+            return $f;
+        }, $firsts);
         $out['breaks'] = array_map(function ($b) use ($iso) {
             $b['ts'] = $iso($b['ts']);
             $b['previous_ts'] = $iso($b['previous_ts']);

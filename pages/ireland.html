@@ -16,7 +16,7 @@
 <meta property="og:title" content="Ireland: Live - the live status of the all-island electricity system">
 <meta property="og:description" content="A live dashboard for the island of Ireland's Single Electricity Market, with generation mix, history and records.">
 <meta property="og:url" content="https://gridpulse.info/pages/ireland.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -294,25 +294,31 @@
         <canvas id="fuel24-bar" role="img" aria-label="Bar chart of the island of Ireland's fuel mix over the last 24 hours, as a share of the total"></canvas>
       </div>
       <p class="chart-caption" id="fuel24-caption">EirGrid's own fuel mix for the last 24 hours. Figures appear here when the next reading arrives.</p>
-    </section>
-
-<!-- area:replay:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="replay-heading">
-      <h2 id="replay-heading">Replay today</h2>
-      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
-      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
-    </section>
+    <!-- area:replay:start (written by tools/apply_areas.py) -->
+      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
+        <h3 id="replay-heading">Replay today</h3>
+        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+      </div>
 <!-- area:replay:end -->
+    </section>
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
-    <div class="home-cards">
-      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h">Today so far</h2>
+    <div class="gp-cards">
+      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h" class="gp-card__h">Today so far</h2>
         <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
       </section>
-      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h">Records</h2>
+      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h" class="gp-card__h">Records</h2>
         <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-borders aria-labelledby="borders-h">
+        <h2 id="borders-h" class="gp-card__h">Borders</h2>
+        <div data-area-borders-body><p class="area-empty">Loading...</p></div>
+      </section>
+      <section class="gp-card" data-area-year aria-labelledby="year-h">
+        <h2 id="year-h" class="gp-card__h">This year so far</h2>
+        <div data-area-year-body><p class="area-empty">Loading...</p></div>
       </section>
     </div>
 <!-- area:cards:end -->
@@ -325,6 +331,13 @@
       <ul class="chart-legend" id="mix-stack-legend" style="justify-content:center;"></ul>
       <p class="chart-caption">Wind so often dominates Ireland's mix that gas output usually moves in the opposite direction, hour by hour. From EirGrid's Smart Grid Dashboard. Gas and other (calculated) is total generation minus wind and solar.</p>
     </section>
+
+<!-- area:compare:start (written by tools/apply_areas.py) -->
+    <section class="panel gp-dark" data-area-compare aria-labelledby="compare-heading">
+      <div class="gp-head"><h2 id="compare-heading">Ireland and its neighbours right now</h2><a href="comparisons.html">Compare any countries →</a></div>
+      <div data-area-compare-body><p class="area-empty">Loading...</p></div>
+    </section>
+<!-- area:compare:end -->
 
     <section class="panel" aria-labelledby="history-heading">
       <h2 id="history-heading">History</h2>
@@ -361,32 +374,42 @@
     </section>
 
 <!-- area:later:start (written by tools/apply_areas.py) -->
-    <section class="panel" aria-labelledby="flows-heading">
-      <h2 id="flows-heading">Cross-border flows</h2>
-      <p class="chart-caption">The net flow between the island of Ireland and Great Britain today, from EirGrid.</p>
-      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
-    </section>
     <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
-      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
       <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
     </section>
-    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
-      <h2 id="area-records-heading">Records</h2>
-      <p class="chart-caption" data-area-records-since></p>
-      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
-      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=IE">Browse every day in the archive</a></p>
+    <section aria-labelledby="explore-heading" class="gp-explore">
+      <h2 id="explore-heading">Explore Ireland</h2>
+      <div class="gp-tiles">
+        <a class="gp-tile" data-area-records-link href="records.html?area=IE"><strong>Records</strong><span>Since this site started recording Ireland</span></a>
+        <a class="gp-tile" data-area-borders-link href="borders.html?area=IE"><strong>Borders</strong><span>Every neighbour, in and out</span></a>
+        <a class="gp-tile" href="#history-heading"><strong>History</strong><span>A day to 10 years, and yearly</span></a>
+        <a class="gp-tile" data-area-archive-link href="archive.html?area=IE"><strong>Day archive</strong><span>Any day, shaded by renewables</span></a>
+        <a class="gp-tile" href="comparisons.html"><strong>Compare</strong><span>Ireland against other grids</span></a>
+      </div>
     </section>
 <!-- area:later:end -->
 
-    <section class="panel" aria-labelledby="about-heading">
+    <!-- area:foldaopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold" open>
+      <summary><h2 class="gp-fold__h">About the all-island system</h2></summary>
+<!-- area:foldaopen:end -->
+<section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the all-island system</h2>
       <p>Ireland and Northern Ireland share a single synchronous electricity system, kept in step at 50Hz across the border since before partition. Since 2018 the two jurisdictions have traded through the Integrated Single Electricity Market (I-SEM), aligned with EU-wide market coupling.</p>
       <p>Because the island is a relatively small, isolated synchronous area with no large neighbouring grid to lean on, EirGrid manages a constraint unique among Europe's major systems: System Non-Synchronous Penetration (SNSP), the instantaneous share of demand that can be met by wind, solar and interconnectors (all "non-synchronous" sources) without risking system stability. That limit has been raised in stages from 50% a decade ago to the current 75% (reached in March 2022, as the "DS3" programme's goal), and EirGrid is now working to gradually raise it further to a 95% target, adding synchronous condensers and faster reserves along the way to keep the system stable at high wind penetration.</p>
       <p>Ireland closed its ESB peat-fired power stations in 2020, with the last peat-fired generation (Edenderry) ending in 2023 - well ahead of most of Europe's coal phase-out, and Moneypoint - once the country's largest fossil fuel plant - has been retained only for emergency winter backup while it is redeveloped as a green energy hub.</p>
     </section>
+<!-- area:foldaclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldaclose:end -->
 
-    <section class="panel" aria-labelledby="records-heading">
+    <!-- area:foldbopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Records</h2></summary>
+<!-- area:foldbopen:end -->
+<section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records</h2>
       <div class="panel-grid panel-grid--2">
         <div>
@@ -416,8 +439,15 @@
       </div>
       <p class="chart-caption">Sources: EirGrid - <a href="https://www.eirgrid.ie/news/multiple-renewable-energy-records-ireland-first-half-2026">records in the first half of 2026</a>, <a href="https://www.eirgrid.ie/news/new-electricity-demand-records-set-during-cold-snap">demand records</a>, <a href="https://www.eirgrid.ie/news/renewables-provided-44-electricity-december">December 2025</a> and <a href="https://www.eirgrid.ie/ds3-programme-delivering-secure-sustainable-electricity-system">DS3/SNSP</a>; <a href="https://www.bordnamona.ie/successful-brown-to-green-transformation-sees-bord-na-mona-deliver-the-highest-operating-profit-in-companys-history/">Bord na Móna</a> (peat). Last checked: 2 October 2026.</p>
     </section>
+<!-- area:foldbclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldbclose:end -->
 
-    <section class="panel" id="ie-sources" aria-labelledby="ie-sources-heading">
+    <!-- area:foldcopen:start (written by tools/apply_areas.py) -->
+    <details class="gp-fold">
+      <summary><h2 class="gp-fold__h">Data sources for Ireland</h2></summary>
+<!-- area:foldcopen:end -->
+<section class="panel" id="ie-sources" aria-labelledby="ie-sources-heading">
       <h2 id="ie-sources-heading">Data sources for Ireland</h2>
       <p>The Elexon Insights Solution, NESO Data Portal and Carbon Intensity API that power the Great Britain pages only cover the GB transmission system, so they cannot be reused here. This page instead draws on:</p>
       <ul>
@@ -428,6 +458,9 @@
       </ul>
       <p>EirGrid publishes total generation, wind and solar in real time, but not gas, oil or batteries separately. The mix adds ENTSO-E's hydro and peat figures (left out if they are more than 6 hours older than EirGrid's) and shows what is left of EirGrid's total as one calculated "gas and other" figure. GB interconnection is EirGrid's net figure across Moyle, EWIC and Greenlink. Each chart shows "not enough recorded history yet" rather than a placeholder if this install has not collected enough history for a given range.</p>
     </section>
+<!-- area:foldcclose:start (written by tools/apply_areas.py) -->
+    </details>
+<!-- area:foldcclose:end -->
 
   </div>
 </main>
@@ -439,9 +472,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
-<script src="../assets/areas.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   // demand/generation/emissions/transfers come from EirGrid via

@@ -16,7 +16,7 @@
 <meta property="og:title" content="History - Grid Pulse">
 <meta property="og:description" content="Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.">
 <meta property="og:url" content="https://gridpulse.info/pages/history.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
+<link rel="stylesheet" href="../assets/style.css?v=20261101d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101d">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -234,7 +234,7 @@
 </div>
 <!-- shell:end -->
 
-<main id="main">
+<main id="main" data-area="GB">
   <div class="wrap">
 
     <section class="hero">
@@ -408,6 +408,12 @@
     </section>
 
 
+      <section class="panel" aria-labelledby="annual-heading">
+      <h2 id="annual-heading">Long-term history</h2>
+      <p class="chart-caption">Electricity generated in Great Britain each year since 2009, by source, from NESO's historic generation mix.</p>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+
   </div>
 </main>
 
@@ -418,8 +424,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101c"></script>
-<script src="../assets/data.js?v=20261101c"></script>
+<script src="../assets/app.js?v=20261101d"></script>
+<script src="../assets/data.js?v=20261101d"></script>
+<script src="../assets/areas.js?v=20261101d"></script>
 <script>
 (function () {
   const METRICS = {
