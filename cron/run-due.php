@@ -60,6 +60,10 @@ $caller = preg_replace('/[^a-z0-9_-]/i', '', (string) ($_GET['caller'] ?? ($isCl
 // NESO needs several discovery calls, so page loads leave it out; a
 // scheduler can afford it.
 if (!isset($intervals['NESO'])) $intervals['NESO'] = 30;
+// Cross-border flows (one border per call) and yearly history (one area
+// per call) - see includes/flows_annual.php.
+if (!isset($intervals['FLOWS'])) $intervals['FLOWS'] = 4;
+if (!isset($intervals['ANNUAL'])) $intervals['ANNUAL'] = 120;
 
 $due = ukgrid_refresh_overdue($pdo, $intervals);
 ukgrid_file_log('run-due (' . $caller . '): ' . (count($due) ? implode(', ', array_keys($due)) . ' due' : 'nothing due'));
@@ -77,7 +81,7 @@ usort($order, function ($a, $b) {
     return ($b === 'ENTSOE') <=> ($a === 'ENTSOE');
 });
 // Worst case = timeout x the most requests the source makes in one run.
-$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2];
+$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1];
 
 $lock = $pdo->prepare('SELECT GET_LOCK(?, 0)');
 $release = $pdo->prepare('SELECT RELEASE_LOCK(?)');

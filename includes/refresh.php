@@ -27,6 +27,8 @@
  */
 
 require_once __DIR__ . '/ingest.php';
+require_once __DIR__ . '/areas.php';
+require_once __DIR__ . '/flows_annual.php';
 
 /**
  * Public entry point - called on every API request (see api/_bootstrap.php).
@@ -145,6 +147,14 @@ function ukgrid_refresh_schedule(array $config): array
     // intervals list predates it) still picks it up.
     if (!isset($intervals['BATTERY'])) $intervals['BATTERY'] = 30;
     if (!isset($timeouts['BATTERY'])) $timeouts['BATTERY'] = 8;
+    // Added 1 November 2026: daily summaries for the day pages, archive and
+    // records. Database only, so page loads can run it too.
+    if (!isset($intervals['DAILY'])) $intervals['DAILY'] = 30;
+    if (!isset($timeouts['DAILY'])) $timeouts['DAILY'] = 8;
+    // Cross-border flows and yearly history make several slow outside
+    // requests, so only the scheduler runs them (see cron/run-due.php).
+    if (!isset($timeouts['FLOWS'])) $timeouts['FLOWS'] = 10;
+    if (!isset($timeouts['ANNUAL'])) $timeouts['ANNUAL'] = 15;
 
     return [$intervals, $timeouts];
 }
@@ -226,6 +236,15 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
             $scheduled
                 ? ukgrid_ingest_battery($pdo, $config, $timeoutSeconds, 8, 12)
                 : ukgrid_ingest_battery($pdo, $config, $timeoutSeconds, 2, 3);
+            break;
+        case 'DAILY':
+            ukgrid_compute_daily($pdo, $config, $timeoutSeconds);
+            break;
+        case 'FLOWS':
+            ukgrid_ingest_flows($pdo, $config, $timeoutSeconds);
+            break;
+        case 'ANNUAL':
+            ukgrid_ingest_annual($pdo, $config, $timeoutSeconds);
             break;
         case 'NOTABLE_MOMENTS':
             // Pure re-aggregation of data already in this database (see

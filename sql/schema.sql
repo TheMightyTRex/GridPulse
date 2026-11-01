@@ -461,3 +461,64 @@ CREATE TABLE IF NOT EXISTS readings_au_price (
   UNIQUE KEY uq_ts (ts),
   KEY idx_ts (ts)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------------
+-- Added for Grid Pulse (country-page features). The site also creates these
+-- itself on first use (includes/areas.php and includes/flows_annual.php), so
+-- running this part by hand is optional.
+-- ---------------------------------------------------------------------------
+
+-- One row per area per local day: shares, totals and that day's extremes
+-- (summary_json). Written by the DAILY job (ukgrid_compute_daily). Used by
+-- the day pages, the archive, "Today so far" and the records. It can be
+-- deleted at any time - the DAILY job rebuilds it from the readings tables.
+CREATE TABLE IF NOT EXISTS daily_summary (
+  area VARCHAR(4) NOT NULL,
+  day DATE NOT NULL COMMENT 'local day in the area''s own time zone',
+  coverage DECIMAL(4,3) NOT NULL COMMENT 'share of the day with readings, 0-1',
+  gen_mwh DECIMAL(14,1) NOT NULL,
+  renewable_share DECIMAL(5,2) NOT NULL,
+  zero_carbon_share DECIMAL(5,2) NOT NULL,
+  fossil_share DECIMAL(5,2) NOT NULL,
+  largest VARCHAR(20) NULL,
+  demand_avg_mw DECIMAL(10,1) NULL,
+  price_avg DECIMAL(9,2) NULL,
+  carbon_avg DECIMAL(7,1) NULL,
+  imports_net_mwh DECIMAL(12,1) NULL,
+  summary_json TEXT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (area, day)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ENTSO-E cross-border physical flows (document A11), one direction per row.
+-- Written by the FLOWS job (one border per scheduler call).
+CREATE TABLE IF NOT EXISTS readings_flow (
+  ts DATETIME NOT NULL COMMENT 'UTC',
+  from_area VARCHAR(4) NOT NULL,
+  to_area VARCHAR(4) NOT NULL,
+  mw DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (ts, from_area, to_area),
+  KEY idx_to (to_area, ts),
+  KEY idx_from (from_area, ts)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Yearly generation by fuel group, from each area's official yearly source
+-- (Eurostat, NESO, EIA, IESO, Open Electricity). Written by the ANNUAL job.
+CREATE TABLE IF NOT EXISTS annual_mix (
+  area VARCHAR(4) NOT NULL,
+  year SMALLINT NOT NULL,
+  grp VARCHAR(20) NOT NULL,
+  gwh DECIMAL(12,1) NOT NULL,
+  source VARCHAR(20) NOT NULL,
+  PRIMARY KEY (area, year, grp)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- When each FLOWS border and ANNUAL area was last fetched, and how it went.
+CREATE TABLE IF NOT EXISTS fetch_state (
+  job VARCHAR(10) NOT NULL,
+  item VARCHAR(20) NOT NULL,
+  fetched_at DATETIME NOT NULL,
+  status VARCHAR(10) NOT NULL,
+  message TEXT NULL,
+  PRIMARY KEY (job, item)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
