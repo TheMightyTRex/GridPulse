@@ -6,6 +6,7 @@ All notable changes to this project are documented here. Dates are when the chan
 
 - "Loading live data…" inside the black "Live, updated" pill was grey on black in light mode (and grey on white in dark mode). Loading text inside dark pills and cards now uses the pill's own text colour.
 - The new sections say "Loading…" with a proper ellipsis, the same as the rest of the site.
+- **Ireland's replay no longer drops to wind only in the evening.** EirGrid publishes wind before total generation, so the latest half hours had wind and nothing else, which also made "right now" look like 100% renewable. Those half hours are now left out until EirGrid's total arrives. More generally, for every country, half-published readings at the end of the day (fewer than half the usual fuel types, or a sudden drop because some types haven't arrived yet) are left out of "right now", the replay, Today so far and the day's shares until the rest arrive.
 - Cache-busting version bumped to 20261101l.
 
 ## GridPulse7 - 1 November 2026 (speed, accessibility and Matomo)

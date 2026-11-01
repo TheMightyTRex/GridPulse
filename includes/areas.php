@@ -193,6 +193,15 @@ function ukgrid_area_buckets(PDO $pdo, array $area, string $fromUtc, string $toU
                 $known = ($out[$ts]['g']['wind'] ?? 0) + ($out[$ts]['g']['solar'] ?? 0);
                 $add($ts, 'g', 'other', max(0, $mw - $known));
             }
+            // EirGrid publishes wind before total generation, so the latest
+            // half hours can have wind and nothing else. Without the total
+            // there is no "gas and other" figure, and the mix would look
+            // 100% wind: leave those half hours out until the total arrives.
+            foreach (array_keys($out) as $ts) {
+                if (!isset($tot[$ts])) {
+                    $out[$ts]['g'] = [];
+                }
+            }
             foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_ie_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
             foreach ($q("SELECT {$bucketExpr} b, AVG(price_eur_mwh) FROM readings_entsoe_price WHERE {$range} AND country_code = 'IE' GROUP BY b") as [$ts, $v]) $add($ts, 'price', null, $v);
             foreach ($q("SELECT {$bucketExpr} b, AVG(gco2_per_kwh) FROM readings_ie_co2 WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'carbon', null, $v);
@@ -255,6 +264,39 @@ function ukgrid_area_buckets(PDO $pdo, array $area, string $fromUtc, string $toU
         }
     }
     ksort($out);
+    return ukgrid_area_trim_partial($out);
+}
+
+/**
+ * Sources publish their fuel types at slightly different times, so the
+ * newest bucket or two can hold only some of them (wind but not gas, say).
+ * That would make "right now", the replay and the day's shares jump. Drops
+ * buckets at the END whose generation is less than 80% of the bucket before
+ * it, or that have fewer than half the usual number of fuel groups. Gaps
+ * earlier in the day are left alone.
+ */
+function ukgrid_area_trim_partial(array $out): array
+{
+    if (count($out) < 3) {
+        return $out;
+    }
+    $counts = array_map(function ($r) { return count($r['g']); }, $out);
+    $sorted = array_values($counts);
+    sort($sorted);
+    $typical = $sorted[intdiv(count($sorted), 2)];
+    $keys = array_keys($out);
+    while (count($keys) > 1) {
+        $last = end($keys);
+        $prev = $keys[count($keys) - 2];
+        $tot = array_sum($out[$last]['g']);
+        $prevTot = array_sum($out[$prev]['g']);
+        if (count($out[$last]['g']) * 2 < $typical || ($prevTot > 0 && $tot < 0.8 * $prevTot && count($out[$last]['g']) < count($out[$prev]['g']))) {
+            unset($out[$last]);
+            array_pop($keys);
+            continue;
+        }
+        break;
+    }
     return $out;
 }
 
