@@ -803,7 +803,8 @@ html[data-theme="dark"] .gp-card--dark { border: 2px solid var(--border); }
 .gp-rec__top { display: flex; align-items: center; gap: 10px; }
 .gp-rec__label { flex: 1; line-height: 1.25; min-width: 0; }
 .gp-rec__label small { display: block; color: var(--text-muted); font-size: .82rem; }
-.gp-rec__top strong { font-size: 1.05rem; white-space: nowrap; }
+.gp-rec__top { flex-wrap: wrap; }
+.gp-rec__top strong { font-size: 1.05rem; }
 .gp-rec__today { color: var(--text-muted); font-size: .85rem; }
 .gp-bar { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--text) 14%, transparent); overflow: hidden; }
 .gp-bar__fill { display: block; height: 100%; border-radius: 4px; transform-origin: left center; animation: gpGrow .9s cubic-bezier(.2,.8,.2,1) both; }
@@ -915,3 +916,15 @@ html.pref-calm .gp-ping { opacity: 0; }
 .gp-months { max-width: 440px; }
 .gp-curve { max-width: 440px; }
 .gp-avg-label { paint-order: stroke; stroke: var(--panel); stroke-width: 3px; }
+.gp-steps { margin-top: .5rem; }
+.gp-steps summary { cursor: pointer; font-weight: 700; }
+.gp-steps ol { margin: .5rem 0 0; padding-left: 1.25rem; columns: 2 260px; font-size: .9rem; }
+/* Larger text and narrow screens: nothing pushes the page sideways. */
+.gp-cols > *, .gp-cards__col > *, .gp-card > * { min-width: 0; }
+.area-table-scroll:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.gp-list li { flex-wrap: wrap; }
+.toast { max-width: calc(100vw - 32px); box-sizing: border-box; }
+/* Wide tables scroll inside their own box (which can take keyboard focus),
+   and hidden labels inside them can't push the page sideways. */
+.area-table-scroll { position: relative; }
+.area-table-scroll > table { display: table; overflow: visible; }

@@ -14,3 +14,38 @@ ErrorDocument 403 /errors/403.html
 ErrorDocument 404 /errors/404.html
 ErrorDocument 500 /errors/500.html
 ErrorDocument 503 /errors/503.html
+
+# Speed: let browsers keep the site's files instead of asking for them on
+# every visit. CSS and JS are loaded with ?v=<version>, which changes with
+# every release (VERSION in tools/apply_shell.py), so they can be kept for
+# a year. Images, fonts and the border maps for a week. Pages and the API
+# are not cached here (the API sets its own 60-second cache). Each block
+# only runs if the host has that Apache module, so it can't break the site.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 week"
+  ExpiresByType image/png "access plus 1 week"
+  ExpiresByType font/woff2 "access plus 1 week"
+  ExpiresByType application/json "access plus 1 week"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(svg|png|json|woff2)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+# Compress text files (the host already does this in front of Apache;
+# this covers it if that ever changes).
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml
+</IfModule>
