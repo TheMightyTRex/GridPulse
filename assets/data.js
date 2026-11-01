@@ -3,7 +3,7 @@
    Talks to the PHP/MySQL backend (api/current.php, api/series.php). Every
    function resolves to `null` (never throws past its own boundary) if the
    API is unreachable, mis-configured, or simply has no data yet - callers
-   are expected to fall back to GridPreview's placeholder generators in that
+   show an empty state in that
    case. That fallback is what makes it safe to load this site before
    ingestion has run for the first time.
    ========================================================================== */
@@ -35,8 +35,8 @@
   // Cached per page load - api/status.php has more than one caller (the
   // footer's data-pipeline pill in initIngestStatusPill(), plus the
   // per-page "one of this page's sources is having trouble" banners on
-  // index.html/pages/ireland.html), and there's no reason for each to fire
-  // its own HTTP request for what's the same read within the same page
+  // index.html/pages/ireland.html), and there is no reason for each to fire
+  // its own HTTP request for what is the same read within the same page
   // load. Not invalidated/refreshed - a page reload is what refreshes it,
   // same as every other fetch* function here.
   let statusPromise = null;
@@ -44,7 +44,7 @@
   /** Data-pipeline health: per-source (ELEXON/CARBON_INTENSITY/NESO/EIRGRID/
       EIA/ENTSOE) last-ingest-attempt status, straight from api/status.php.
       Returns null if the endpoint itself is unreachable - callers should
-      treat that as "can't tell" rather than "something's broken", same as
+      treat that as "cannot tell" rather than "something's broken", same as
       every other fetch* function's null-on-failure convention. */
   function fetchStatus(apiBase) {
     if (!statusPromise) {
@@ -67,11 +67,19 @@
   /** Historical series for one metric+range, shaped like GridPreview.buildSeries's return value.
       seasonOffset (optional): only meaningful when range === "season" - shifts
       the season back this many whole years, e.g. -1 for "the same season last
-      year". Used by the History page's "compare seasons" checkbox. */
-  async function fetchSeries(metric, range, apiBase, seasonOffset) {
+      year". Used by the History page's "compare seasons" checkbox.
+      periodOffset (optional): meaningful for any OTHER range (week, month,
+      etc) - shifts that range's whole rolling window back this many whole
+      window-lengths, e.g. periodOffset=-1 with range="week" returns the
+      7-day window immediately before the current one ("last week"),
+      periodOffset=-2 the one before that ("2 weeks ago"). Used by
+      pages/comparisons.html's Time periods tab "Compare against" options
+      that are not season-based. */
+  async function fetchSeries(metric, range, apiBase, seasonOffset, periodOffset) {
     try {
       let url = (apiBase || DEFAULT_API_BASE) + "series.php?metric=" + encodeURIComponent(metric) + "&range=" + encodeURIComponent(range);
       if (range === "season" && seasonOffset) url += "&season_offset=" + encodeURIComponent(seasonOffset);
+      if (range !== "season" && periodOffset) url += "&period_offset=" + encodeURIComponent(periodOffset);
       const data = await fetchJSON(url);
       if (!data.points || !data.points.length) return null;
       const cfg = (window.GridPreview && window.GridPreview.RANGE_CONFIG[range]) || { fmt: "date" };
@@ -120,8 +128,8 @@
       "Wind speed & cloud cover" card - one representative GB point, see
       readings_weather in sql/schema.sql. Refreshes with zero cron access
       like every other source (includes/refresh.php). Returns null only if
-      it genuinely hasn't been ingested yet on this install (e.g. its very
-      first refresh hasn't happened, or on_demand is off and no cron job
+      it genuinely has not been ingested yet on this install (e.g. its very
+      first refresh has not happened, or on_demand is off and no cron job
       is set up either). */
   async function fetchWeatherSeries(range, apiBase) {
     try {
@@ -147,7 +155,7 @@
       TYPES - thermal/voltage/inertia - not generation technologies; there
       is no wind-specific figure here). Refreshes with zero cron access
       like every other source. Returns null if genuinely unavailable (its
-      first refresh hasn't happened yet on this install). */
+      first refresh has not happened yet on this install). */
   async function fetchConstraintsSummary(apiBase) {
     try {
       const data = await fetchJSON((apiBase || DEFAULT_API_BASE) + "constraints_summary.php");
@@ -166,7 +174,7 @@
       days or weeks behind it. NOT the same thing as the separate,
       hand-typed "Records" panel elsewhere on the page. Refreshes with zero
       cron access like every other source. Returns null if genuinely
-      unavailable (its first computation hasn't happened yet on this
+      unavailable (its first computation has not happened yet on this
       install). */
   async function fetchNotableMoments(apiBase) {
     try {
@@ -178,7 +186,17 @@
     }
   }
 
-  /** Latest all-island Ireland snapshot: demand/generation/wind/interconnection/emissions. Returns null if unavailable. */
+  /** Latest all-island Ireland snapshot: demand/generation/wind/interconnection/emissions (EirGrid), plus semo_imbalance_price_eur_mwh/semo_ts (SEMO, independently null if that half is not live - see api/ireland_current.php's docblock). Returns null if unavailable. */
+  /** GB battery storage (api/battery.php): notified now + 24h, metered 7 days. Null if unavailable. */
+  async function fetchBattery(apiBase) {
+    try {
+      const data = await fetchJSON((apiBase || DEFAULT_API_BASE) + "battery.php");
+      return data && data.ok ? data : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async function fetchIrelandCurrent(apiBase) {
     try {
       const data = await fetchJSON((apiBase || DEFAULT_API_BASE) + "ireland_current.php");
@@ -189,7 +207,7 @@
     }
   }
 
-  /** Historical series for one Ireland metric+range. Same shape as fetchSeries's return value. No "price" metric - see api/ireland_current.php. */
+  /** Historical series for one Ireland metric+range. Same shape as fetchSeries's return value. metric can be demand/generation/wind/transfers/emissions (EirGrid) or semo_price (SEMO, EUR/MWh) - see api/ireland_series.php. */
   async function fetchIrelandSeries(metric, range, apiBase) {
     try {
       const url = (apiBase || DEFAULT_API_BASE) + "ireland_series.php?metric=" + encodeURIComponent(metric) + "&range=" + encodeURIComponent(range);
@@ -242,7 +260,7 @@
       shape as fetchMixSeries's GB equivalent, for pages/usa.html's 24-hour
       stacked-area chart. "other" here means nuclear plus EIA's own
       leftover OTH/UNK categories - see api/usa_series.php's metric=mix
-      comment for why the US split doesn't line up one-for-one with GB's
+      comment for why the US split does not line up one-for-one with GB's
       renewable/non_renewable/storage groups. */
   async function fetchUsaMixSeries(range, apiBase) {
     try {
@@ -270,6 +288,13 @@
   const USA_FUEL_LABELS = {
     NG: "Natural gas", COL: "Coal", NUC: "Nuclear", WND: "Wind", SUN: "Solar",
     WAT: "Hydro", OIL: "Oil", OTH: "Other", UNK: "Unknown",
+    // Newer EIA-930 energy-source codes. api/usa_current.php now returns
+    // every fuel category it has stored (not just the original nine), so
+    // any of these the EIA reports shows up in the mix table and donut
+    // together rather than being silently left out of both - which also
+    // made the fuel-type total fall short of the headline generation total.
+    BAT: "Battery storage", PS: "Pumped storage", GEO: "Geothermal",
+    SNB: "Solar with battery", OES: "Other energy storage", UES: "Unknown energy storage",
   };
 
   /**
@@ -280,6 +305,83 @@
   function summarizeUsaMix(mixMw) {
     const entries = Object.keys(mixMw || {})
       .map((code) => ({ label: USA_FUEL_LABELS[code] || code, mw: mixMw[code] }))
+      .filter((e) => e.mw != null)
+      .sort((a, b) => b.mw - a.mw);
+    const totalMw = entries.reduce((sum, e) => sum + e.mw, 0);
+    return { entries, totalMw };
+  }
+
+  /** Latest Australia (AEMO NEM) snapshot: demand/generation/price + fueltech-group mix. Returns null if unavailable. See api/australia_current.php's docblock for the NEM-only (no WEM/Western Australia) scope. */
+  async function fetchAustraliaCurrent(apiBase) {
+    try {
+      const data = await fetchJSON((apiBase || DEFAULT_API_BASE) + "australia_current.php");
+      if (!data.live) return null;
+      return data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Historical series for one Australia metric+range. Same shape as fetchSeries's return value. See api/australia_series.php's docblock for the full metric list, including why "oil" and "nuclear" are accepted (mapped to distillate, and to an always-empty series, respectively). */
+  async function fetchAustraliaSeries(metric, range, apiBase) {
+    try {
+      const url = (apiBase || DEFAULT_API_BASE) + "australia_series.php?metric=" + encodeURIComponent(metric) + "&range=" + encodeURIComponent(range);
+      const data = await fetchJSON(url);
+      if (!data.points || !data.points.length) return null;
+      const cfg = (window.GridPreview && window.GridPreview.RANGE_CONFIG[range]) || { fmt: "date" };
+      const fmt = window.GridPreview && window.GridPreview.formatLabel ? window.GridPreview.formatLabel : (t) => new Date(t).toLocaleString();
+      return {
+        labels: data.points.map((p) => fmt(p.t, cfg.fmt)),
+        times: data.points.map((p) => p.t),
+        values: data.points.map((p) => p.v),
+        unit: data.unit,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Australia generation mix over time (fossil/renewable/other, bucketed) - same shape as fetchMixSeries's GB equivalent, for pages/australia.html's 24-hour stacked-area chart. "other" here means dispatchable storage (pumped hydro + battery discharging), not nuclear (the NEM has none) - see api/australia_series.php's metric=mix comment for the full group definitions. */
+  async function fetchAustraliaMixSeries(range, apiBase) {
+    try {
+      const url = (apiBase || DEFAULT_API_BASE) + "australia_series.php?metric=mix&range=" + encodeURIComponent(range);
+      const data = await fetchJSON(url);
+      if (!data.points || !data.points.length) return null;
+      const cfg = (window.GridPreview && window.GridPreview.RANGE_CONFIG[range]) || { fmt: "date" };
+      const fmt = window.GridPreview && window.GridPreview.formatLabel ? window.GridPreview.formatLabel : (t) => new Date(t).toLocaleString();
+      return {
+        labels: data.points.map((p) => fmt(p.t, cfg.fmt)),
+        times: data.points.map((p) => p.t),
+        fossil: data.points.map((p) => p.fossil),
+        renewable: data.points.map((p) => p.renewable),
+        other: data.points.map((p) => p.other),
+        unit: data.unit,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Open Electricity fueltech_group codes, mapped to display labels - keep
+  // in sync with includes/ingest.php's ukgrid_ingest_openelectricity() and
+  // api/australia_current.php's $generationGroups list. pumps (pumped-hydro
+  // pumping load) and battery_charging are loads, not generation - the
+  // page lists them in the mix table's "Consuming or exporting right now"
+  // group, never as donut slices (see pages/australia.html).
+  const AUSTRALIA_FUEL_LABELS = {
+    coal: "Coal", gas: "Gas", wind: "Wind", solar: "Solar", hydro: "Hydro",
+    distillate: "Distillate", bioenergy: "Bioenergy", pumps: "Pumped hydro (pumping)",
+    battery_discharging: "Battery storage", battery_charging: "Battery (charging)",
+  };
+
+  /**
+   * Turns api/australia_current.php's raw { fueltechGroup: MW } mix_mw
+   * object into the shape pages/australia.html's mix table/donut/bar need:
+   * sorted labelled pairs plus a total - same pattern as summarizeUsaMix().
+   */
+  function summarizeAustraliaMix(mixMw) {
+    const entries = Object.keys(mixMw || {})
+      .map((code) => ({ label: AUSTRALIA_FUEL_LABELS[code] || code, mw: mixMw[code] }))
       .filter((e) => e.mw != null)
       .sort((a, b) => b.mw - a.mw);
     const totalMw = entries.reduce((sum, e) => sum + e.mw, 0);
@@ -532,6 +634,7 @@
     Hydro: "#2a8fbd",
     "Hydro (run-of-river)": "#2a8fbd",
     "Hydro (reservoir)": "#1f6f94",
+    "Hydro & biomass": "#3f8fa0",
     Coal: "#4a4a4a",
     "Coal & lignite": "#4a4a4a",
     Biomass: "#7a8f3f",
@@ -581,11 +684,15 @@
     fetchWeatherSeries,
     fetchConstraintsSummary,
     fetchNotableMoments,
+    fetchBattery,
     fetchIrelandCurrent,
     fetchIrelandSeries,
     fetchUsaCurrent,
     fetchUsaSeries,
     fetchUsaMixSeries,
+    fetchAustraliaCurrent,
+    fetchAustraliaSeries,
+    fetchAustraliaMixSeries,
     fetchCanadaCurrent,
     fetchCanadaSeries,
     fetchCanadaMixSeries,
@@ -594,13 +701,18 @@
     fetchCountryMixSeries,
     summarizeGeneration,
     summarizeUsaMix,
+    summarizeAustraliaMix,
     summarizeEntsoeMix,
     FUEL_LABELS,
     INTERCONNECTOR_LABELS,
     USA_FUEL_LABELS,
+    AUSTRALIA_FUEL_LABELS,
     CANADA_FUEL_LABELS,
     ENTSOE_PSR_LABELS,
     ENTSOE_PSR_COLORS,
+    ENTSOE_RENEWABLE_PSR,
+    ENTSOE_NUCLEAR_PSR,
+    ENTSOE_FOSSIL_PSR,
     LABEL_COLORS,
     colorFor,
     colorsFor,

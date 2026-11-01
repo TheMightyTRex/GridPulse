@@ -55,6 +55,7 @@ if (!$latestTs) {
         'demand_mw' => null,
         'generation_mw' => null,
         'mix_mw' => new stdClass(),
+        'mix_ts' => null,
     ]);
     exit;
 }
@@ -72,23 +73,19 @@ $demandStmt->execute(['ts1' => $latestTs, 'window1' => $windowMinutes, 'ts2' => 
 $demandMw = $demandStmt->fetchColumn();
 
 $fuelTypes = ['NUCLEAR', 'GAS', 'HYDRO', 'WIND', 'SOLAR', 'BIOFUEL', 'OTHER'];
-$mix = [];
+// One coherent snapshot - see ukgrid_coherent_mix() in _bootstrap.php. Each
+// fuel used to be looked up independently as "nearest within +/- the
+// window", so one donut could mix readings from different hours.
+$snapshot = ukgrid_coherent_mix($pdo, 'readings_ca_generation', 'category', $fuelTypes, $latestTs, $windowMinutes);
+$mix = $snapshot['mix'];
+$mixTs = $snapshot['ts'];
 $generationTotal = 0.0;
 $haveAnyGen = false;
-foreach ($fuelTypes as $fuel) {
-    $stmt = $pdo->prepare(
-        'SELECT mw FROM readings_ca_generation
-         WHERE category = :cat
-           AND ts BETWEEN DATE_SUB(:ts1, INTERVAL :window1 MINUTE) AND DATE_ADD(:ts2, INTERVAL :window2 MINUTE)
-         ORDER BY ABS(TIMESTAMPDIFF(SECOND, ts, :ts3)) ASC LIMIT 1'
-    );
-    $stmt->execute(['cat' => $fuel, 'ts1' => $latestTs, 'window1' => $windowMinutes, 'ts2' => $latestTs, 'window2' => $windowMinutes, 'ts3' => $latestTs]);
-    $v = $stmt->fetchColumn();
-    if ($v !== false && $v !== null) {
-        $mix[$fuel] = (float) $v;
-        $generationTotal += (float) $v;
-        $haveAnyGen = true;
+foreach ($mix as $v) {
+    if ($v >= 0.5) {
+        $generationTotal += $v;
     }
+    $haveAnyGen = true;
 }
 
 echo json_encode([
@@ -99,4 +96,5 @@ echo json_encode([
     'demand_mw' => $demandMw !== false && $demandMw !== null ? (float) $demandMw : null,
     'generation_mw' => $haveAnyGen ? round($generationTotal, 1) : null,
     'mix_mw' => empty($mix) ? new stdClass() : $mix,
+    'mix_ts' => $mixTs !== null ? gmdate('Y-m-d\TH:i:s\Z', strtotime($mixTs)) : null,
 ]);

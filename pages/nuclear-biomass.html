@@ -7,9 +7,10 @@
 <meta name="description" content="Detailed live and historical data for nuclear & biomass generation on Great Britain's electricity grid.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=20261101a">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101a">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -28,98 +29,190 @@
 <!-- End Matomo Code -->
 </head>
 <body>
-<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
-
 <a class="skip-link" href="#main">Skip to content</a>
 
+<!-- shell:start (written by tools/apply_shell.py - edit the menu there, not here) -->
 <div class="site-head">
 <header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="../index.html">
-      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
-        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
-        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
-        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
-        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+  <div class="wrap site-header__bar">
+    <a class="brand ug-logo" href="../index.html" aria-label="UK Grid: Live+, home">
+      <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
+        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
+        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
+        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
       </svg>
-      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
-      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>
     </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul id="site-nav-list" data-nav-list>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-gb-btn" aria-expanded="false" aria-controls="navgroup-gb" data-nav-group data-active="true">
+            Great Britain
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--gb" id="navgroup-gb">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-0">Live now</p>
+              <ul aria-labelledby="navhead-gb-0">
+                <li><a href="../index.html"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
+                <li><a href="electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-1">By source</p>
+              <ul aria-labelledby="navhead-gb-1">
+                <li><a href="renewables.html"><span class="nav-panel__name">Renewables</span><span class="nav-panel__desc">Wind, solar and hydro</span></a></li>
+                <li><a href="fossil-fuels.html"><span class="nav-panel__name">Fossil fuels</span><span class="nav-panel__desc">Gas, coal and oil</span></a></li>
+                <li><a href="nuclear-biomass.html" aria-current="page"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
+                <li><a href="storage.html"><span class="nav-panel__name">Storage</span><span class="nav-panel__desc">Batteries and pumped hydro</span></a></li>
+                <li><a href="interconnectors.html"><span class="nav-panel__name">Interconnectors</span><span class="nav-panel__desc">Imports and exports by country</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-2">Over time</p>
+              <ul aria-labelledby="navhead-gb-2">
+                <li><a href="history.html"><span class="nav-panel__name">History</span><span class="nav-panel__desc">From the past day to the past decade</span></a></li>
+                <li><a href="price-history.html"><span class="nav-panel__name">Historic prices</span><span class="nav-panel__desc">Wholesale prices over the years</span></a></li>
+                <li><a href="renewables-plans.html"><span class="nav-panel__name">2030 plans</span><span class="nav-panel__desc">Clean Power 2030 targets and progress</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+            Europe
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--europe" id="navgroup-europe">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-0">Linked to Great Britain</p>
+              <ul aria-labelledby="navhead-europe-0">
+                <li><a href="ireland.html"><span class="nav-panel__name">Ireland</span></a></li>
+                <li><a href="france.html"><span class="nav-panel__name">France</span></a></li>
+                <li><a href="nl.html"><span class="nav-panel__name">Netherlands</span></a></li>
+                <li><a href="belgium.html"><span class="nav-panel__name">Belgium</span></a></li>
+                <li><a href="norway.html"><span class="nav-panel__name">Norway</span></a></li>
+                <li><a href="denmark.html"><span class="nav-panel__name">Denmark</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-1">Rest of Europe</p>
+              <ul aria-labelledby="navhead-europe-1">
+                <li><a href="germany.html"><span class="nav-panel__name">Germany</span></a></li>
+                <li><a href="spain.html"><span class="nav-panel__name">Spain</span></a></li>
+                <li><a href="italy.html"><span class="nav-panel__name">Italy</span></a></li>
+                <li><a href="sweden.html"><span class="nav-panel__name">Sweden</span></a></li>
+                <li><a href="portugal.html"><span class="nav-panel__name">Portugal</span></a></li>
+                <li><a href="poland.html"><span class="nav-panel__name">Poland</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-2">Europe-wide</p>
+              <ul aria-labelledby="navhead-europe-2">
+                <li><a href="eu.html"><span class="nav-panel__name">Europe overview</span><span class="nav-panel__desc">Every country on one page</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-world-btn" aria-expanded="false" aria-controls="navgroup-world" data-nav-group>
+            Rest of the world
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--world" id="navgroup-world">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-0">Americas</p>
+              <ul aria-labelledby="navhead-world-0">
+                <li><a href="usa.html"><span class="nav-panel__name">USA</span></a></li>
+                <li><a href="canada.html"><span class="nav-panel__name">Canada</span></a></li>
+                <li><a href="south-america.html"><span class="nav-panel__name">South America</span></a></li>
+                <li><a href="americas-interconnects.html"><span class="nav-panel__name">Americas interconnectors</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-1">Asia-Pacific</p>
+              <ul aria-labelledby="navhead-world-1">
+                <li><a href="australia.html"><span class="nav-panel__name">Australia</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-solar-btn" aria-expanded="false" aria-controls="navgroup-solar" data-nav-group>
+            Plug-in solar
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--solar" id="navgroup-solar">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-0">Get started</p>
+              <ul aria-labelledby="navhead-solar-0">
+                <li><a href="plugin-solar.html"><span class="nav-panel__name">What is plug-in solar</span></a></li>
+                <li><a href="plugin-solar-considerations.html"><span class="nav-panel__name">Considerations</span></a></li>
+                <li><a href="plugin-solar-calculator.html"><span class="nav-panel__name">Energy calculator</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-1">Fitting it</p>
+              <ul aria-labelledby="navhead-solar-1">
+                <li><a href="plugin-solar-safety.html"><span class="nav-panel__name">Safety</span></a></li>
+                <li><a href="plugin-solar-mounting.html"><span class="nav-panel__name">Mounting</span></a></li>
+                <li><a href="plugin-solar-battery.html"><span class="nav-panel__name">Battery power</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-2">The rules</p>
+              <ul aria-labelledby="navhead-solar-2">
+                <li><a href="plugin-solar-registration.html"><span class="nav-panel__name">Registration</span></a></li>
+                <li><a href="plugin-solar-certification.html"><span class="nav-panel__name">Certification</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-link"><a href="comparisons.html">Compare</a></li>
+        <li class="nav-link"><a href="data-sources.html">Sources</a></li>
+        <li class="nav-link"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
     <div class="header-controls">
-      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
-        <span data-theme-label>Auto mode</span>
+      <button type="button" class="display-btn" data-display-toggle aria-expanded="false" aria-controls="display-panel">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Display</span>
+      </button>
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        <span data-nav-toggle-label>Menu</span>
       </button>
     </div>
   </div>
 </header>
-
-<nav class="site-nav" aria-label="Main">
-  <div class="wrap">
-    <ul id="site-nav-list" data-nav-list>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
-          Great Britain
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-uk">
-          <li><a href="../index.html">GB: Overview</a></li>
-          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
-          <li><a href="renewables.html">GB: Renewables</a></li>
-          <li><a href="nuclear-biomass.html" aria-current="page">GB: Nuclear &amp; biomass</a></li>
-          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
-          <li><a href="storage.html">GB: Storage</a></li>
-          <li><a href="history.html">GB: History</a></li>
-          <li><a href="electricity-prices.html">GB: Prices</a></li>
-          <li><a href="price-history.html">GB: Historic prices</a></li>
-          <li><a href="renewables-plans.html">2030 GB plans</a></li>
-        </ul>
-      </li>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
-          Europe
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-europe">
-          <li><a href="ireland.html">Ireland</a></li>
-          <li><a href="france.html">France</a></li>
-          <li><a href="nl.html">Netherlands</a></li>
-          <li><a href="belgium.html">Belgium</a></li>
-          <li><a href="norway.html">Norway (NO2)</a></li>
-          <li><a href="denmark.html">Denmark (DK1)</a></li>
-          <li><a href="germany.html">Germany</a></li>
-          <li><a href="spain.html">Spain</a></li>
-          <li><a href="italy.html">Italy</a></li>
-          <li><a href="sweden.html">Sweden (SE3)</a></li>
-          <li><a href="portugal.html">Portugal</a></li>
-        </ul>
-      </li>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
-          Americas
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-americas">
-          <li><a href="usa.html">USA</a></li>
-          <li><a href="canada.html">Canada</a></li>
-          <li><a href="brazil.html">Brazil</a></li>
-          <li><a href="argentina.html">Argentina</a></li>
-          <li><a href="chile.html">Chile</a></li>
-          <li><a href="colombia.html">Colombia</a></li>
-          <li><a href="americas-interconnects.html">Interconnections</a></li>
-        </ul>
-      </li>
-      <li><a href="comparisons.html">Comparisons</a></li>
-      <li><a href="data-sources.html">Sources</a></li>
-      <li><a href="about.html">About</a></li>
-    </ul>
-    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
-      <span class="nav-toggle__icon" aria-hidden="true"></span>
-      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
-    </button>
-  </div>
-</nav>
+<aside class="preview-banner" aria-label="Site announcement"><span class="preview-banner__tag">New</span> <a href="plugin-solar.html">Read the plug-in solar guide</a></aside>
+<div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
+  <h2 id="display-panel-heading">Display and accessibility</h2>
+  <fieldset><legend>Theme</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-theme" value="system"><span>Auto</span></label>
+      <label><input type="radio" name="pref-theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="pref-theme" value="dark"><span>Dark</span></label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Text size</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-size" value="100"><span>100%</span></label>
+      <label><input type="radio" name="pref-size" value="125"><span>125%</span></label>
+      <label><input type="radio" name="pref-size" value="150"><span>150%</span></label>
+      <label><input type="radio" name="pref-size" value="175"><span>175%</span></label>
+    </div>
+  </fieldset>
+  <label class="pref-switch"><span>Low-vision font<small>Atkinson Hyperlegible Next, designed for low vision</small></span><input type="checkbox" data-pref="readable"></label>
+  <label class="pref-switch"><span>High contrast</span><input type="checkbox" data-pref="hc"></label>
+  <label class="pref-switch"><span>Reduce motion<small>Stops the logo and loading animations</small></span><input type="checkbox" data-pref="calm"></label>
+  <label class="pref-switch"><span>Underline links</span><input type="checkbox" data-pref="underline"></label>
+  <label class="pref-switch"><span>Wider text spacing</span><input type="checkbox" data-pref="spacing"></label>
+  <div class="display-panel__foot"><button type="button" class="btn" data-pref-reset>Reset</button><button type="button" class="btn btn--primary" data-pref-done>Done</button></div>
 </div>
+</div>
+<!-- shell:end -->
 
 <main id="main">
   <div class="wrap">
@@ -133,8 +226,8 @@
     </section>
 
     <dl class="status-grid" aria-label="Current nuclear & biomass status" style="grid-template-columns:repeat(2,1fr)">
-      <div class="stat"><dt>Current output</dt><dd>6.38GW</dd></div>
-      <div class="stat"><dt>Share of generation</dt><dd>22.1%</dd></div>
+      <div class="stat"><dt>Current output</dt><dd id="stat-output" class="is-loading-text">Loading live data…</dd></div>
+      <div class="stat"><dt>Share of generation</dt><dd id="stat-share" class="is-loading-text">Loading live data…</dd></div>
     </dl>
 
     <section class="panel">
@@ -142,9 +235,9 @@
       <table class="mix">
         <caption class="visually-hidden">Nuclear & biomass generation by source</caption>
         <thead><tr><th scope="col">Source</th><th scope="col" class="num">GW</th><th scope="col" class="num">%</th></tr></thead>
-        <tbody>
-            <tr><td>Nuclear</td><td class="num">3.86</td><td class="num">13.4</td></tr>
-            <tr><td>Biomass</td><td class="num">2.52</td><td class="num">8.7</td></tr>
+        <tbody id="mix-tbody">
+            <tr><td>Nuclear</td><td class="num" id="row-nuclear-gw">-</td><td class="num" id="row-nuclear-pct">-</td></tr>
+            <tr><td>Biomass</td><td class="num" id="row-biomass-gw">-</td><td class="num" id="row-biomass-pct">-</td></tr>
         </tbody>
       </table>
     </section>
@@ -200,12 +293,22 @@
     <section class="panel" aria-labelledby="records-heading">
       <h2 id="records-heading">Records</h2>
       <p class="chart-caption">Real, sourced figures - hand-checked periodically against the sources below (see "Last checked"), not computed live from this site's own stored history, which for a fresh install would only cover a few days or weeks rather than a full year.</p>
-      <ul class="records-list">
-        <li><span>Highest nuclear generation (this year)</span><strong>5.9GW - 3 February 2026</strong></li>
-        <li><span>Highest biomass generation (this year)</span><strong>3.1GW - 18 January 2026</strong></li>
-        <li><span>First grid-scale nuclear station</span><strong>Calder Hall, 1956</strong></li>
+      <ul class="records-list" id="records-list">
+        <li><span>Highest nuclear generation (past 12 months)</span><strong>5.9GW - 3 February 2026</strong></li>
+        <li><span>Highest biomass generation (past 12 months)</span><strong>3.1GW - 18 January 2026</strong></li>
+        <li><span>First grid-scale nuclear station</span><strong>Calder Hall, opened 17 October 1956</strong></li>
       </ul>
-      <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a> (Elexon BMRS for the "this year" figures) and <a href="https://world-nuclear.org/information-library/country-profiles/countries-o-s/united-kingdom">World Nuclear Association, UK country profile</a>. Last checked: 23 August 2026.</p>
+      <p class="download-row">
+        <button type="button" class="copy-btn" data-copy-list="records-list" data-copy-title="Nuclear & biomass records - UK Grid: Live+">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span data-copy-label aria-live="polite">Copy as text</span>
+        </button>
+        <button type="button" class="copy-btn" data-csv-list="records-list" data-csv-title="records-list">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span data-copy-label aria-live="polite">Download CSV</span>
+        </button>
+      </p>
+      <p class="chart-caption">Source: <a href="https://www.neso.energy/">National Energy System Operator</a> (Elexon BMRS for the "past 12 months" figures) and <a href="https://world-nuclear.org/information-library/country-profiles/countries-o-s/united-kingdom">World Nuclear Association, UK country profile</a>. Last checked: 2 October 2026.</p>
     </section>
 
   </div>
@@ -218,13 +321,49 @@
   </div>
 </footer>
 
-<script src="../assets/app.js"></script>
-<script src="../assets/data.js"></script>
+<script src="../assets/app.js?v=20261101a"></script>
+<script src="../assets/data.js?v=20261101a"></script>
 <script>
 (function () {
   const ranges = ["day", "week", "month", "season", "year", "5year", "10year"];
   const template = document.getElementById("range-panel-template");
   const drawn = {};
+
+  // "Current output" / "Share of generation" and the Breakdown table used
+  // to be a fixed, hand-typed snapshot with no indication it was not live -
+  // fixed to pull the same live api/current.php feed the homepage uses.
+  (async function initCurrentOutput() {
+    const outputEl = document.getElementById("stat-output");
+    const shareEl = document.getElementById("stat-share");
+    const setRow = (gwId, pctId, gw, pct) => {
+      const gwEl = document.getElementById(gwId), pctEl = document.getElementById(pctId);
+      if (gwEl) gwEl.textContent = gw;
+      if (pctEl) pctEl.textContent = pct;
+    };
+    const rows = ["nuclear", "biomass"];
+    function showNoData() {
+      if (outputEl) { outputEl.textContent = "Waiting for the next reading"; outputEl.classList.remove("is-loading-text"); }
+      if (shareEl) { shareEl.textContent = "Waiting for the next reading"; shareEl.classList.remove("is-loading-text"); }
+      rows.forEach((r) => setRow("row-" + r + "-gw", "row-" + r + "-pct", "-", "-"));
+    }
+    if (!window.GridData) { showNoData(); return; }
+    const current = await window.GridData.fetchCurrent();
+    if (!current) { showNoData(); return; }
+    const summary = window.GridData.summarizeGeneration(current.generation);
+    const bySource = summary.bySource || {};
+    // "Other" (a small catch-all fuel code) is folded into biomass here
+    // rather than given a third row - the table has always had just these
+    // two, and Other is normally negligible.
+    const nuclearMw = bySource.Nuclear || 0;
+    const biomassMw = (bySource.Biomass || 0) + (bySource.Other || 0);
+    const totalMw = summary.totalGenMw;
+    if (!totalMw) { showNoData(); return; }
+    const combinedMw = nuclearMw + biomassMw;
+    if (outputEl) { outputEl.textContent = (combinedMw / 1000).toFixed(2) + "GW"; outputEl.classList.remove("is-loading-text"); }
+    if (shareEl) { shareEl.textContent = (combinedMw / totalMw * 100).toFixed(1) + "%"; shareEl.classList.remove("is-loading-text"); }
+    setRow("row-nuclear-gw", "row-nuclear-pct", (nuclearMw / 1000).toFixed(2), (nuclearMw / totalMw * 100).toFixed(1));
+    setRow("row-biomass-gw", "row-biomass-pct", (biomassMw / 1000).toFixed(2), (biomassMw / totalMw * 100).toFixed(1));
+  })();
 
   function drawRange(range) {
     if (drawn[range]) return;
@@ -243,7 +382,7 @@
       if (outSeries) {
         GridPreview.renderLineChart(outputCanvas, outSeries, { label: "Nuclear & biomass", color: "#6a5acd", unit: "GW" });
       } else {
-        GridPreview.showChartError(outputCanvas, "Not enough recorded history yet for this range.");
+        GridPreview.showChartError(outputCanvas, "We do not have this much history yet. Choose a shorter range.");
       }
     });
 
@@ -253,7 +392,7 @@
       if (shareSeries) {
         GridPreview.renderLineChart(shareCanvas, shareSeries, { label: "Share", color: "#6a5acd", unit: "%" });
       } else {
-        GridPreview.showChartError(shareCanvas, "Not enough recorded history yet for this range.");
+        GridPreview.showChartError(shareCanvas, "We do not have this much history yet. Choose a shorter range.");
       }
     });
   }

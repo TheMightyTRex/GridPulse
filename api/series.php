@@ -2,7 +2,7 @@
 /**
  * GET api/series.php?metric=demand&range=week
  *
- * metric: demand | generation | price | emissions | transfers | mix | weather |
+ * metric: demand | generation | price | emissions | transfers | transfers_country | mix | weather |
  *         fossil | renewable | non_renewable | nuclear_biomass | storage |
  *         wind | solar | hydro | gas | coal | oil | nuclear | biomass
  *   (fossil/renewable/nuclear_biomass/storage power the "Explore by energy
@@ -40,6 +40,14 @@
  * same season last year instead of the one in progress now. Used by the
  * History page's "compare seasons" checkbox. Clamped to [-10, 0].
  *
+ * period_offset (optional, meaningful for any range OTHER than season):
+ * shifts that range's whole rolling window back by this many whole
+ * window-lengths - e.g. range=week&period_offset=-1 returns the 7-day
+ * window immediately before the current one ("last week") rather than the
+ * window ending now. Used by pages/comparisons.html's Time periods tab for
+ * its "Last week"/"2 weeks ago"/"Last month" compare-against options.
+ * Clamped to [-52, 0].
+ *
  * Buckets with no data are simply omitted rather than padded with zeroes -
  * the frontend (assets/data.js) draws whatever real points exist and falls
  * back to illustrative mock data only if there are none at all, so a
@@ -58,7 +66,7 @@ if (!isset($ranges[$range])) {
 }
 
 $allowedMetrics = [
-    'demand', 'generation', 'price', 'emissions', 'transfers', 'mix', 'weather',
+    'demand', 'generation', 'price', 'emissions', 'transfers', 'transfers_country', 'mix', 'weather',
     'fossil', 'renewable', 'nuclear_biomass', 'storage',
     'non_renewable', 'wind', 'solar', 'hydro', 'gas', 'coal', 'oil', 'nuclear', 'biomass',
 ];
@@ -81,8 +89,21 @@ if ($range === 'season') {
     $from = gmdate('Y-m-d H:i:s', $bounds['start']);
     $to = gmdate('Y-m-d H:i:s', $bounds['end']);
 } else {
-    $from = gmdate('Y-m-d H:i:s', time() - $cfg['points'] * $bucket);
-    $to = gmdate('Y-m-d H:i:s');
+    // period_offset: shifts this range's whole rolling window back this many
+    // whole window-lengths - e.g. range=week&period_offset=-1 returns the
+    // 7-day window immediately before the current one ("last week") rather
+    // than the one ending now, period_offset=-2 the one before that ("2
+    // weeks ago"). Same idea as season_offset above, generalised to any
+    // range rather than just the calendar-anchored season - used by
+    // pages/comparisons.html's Time periods tab. Clamped to a sane bound
+    // (52 windows back) since this walks back by a whole window each step,
+    // not a fixed calendar unit - 52 weeks is already a year, far more than
+    // that tab exposes in its UI.
+    $periodOffset = isset($_GET['period_offset']) ? (int) $_GET['period_offset'] : 0;
+    $periodOffset = max(-52, min(0, $periodOffset));
+    $windowSeconds = $cfg['points'] * $bucket;
+    $to = gmdate('Y-m-d H:i:s', time() + $periodOffset * $windowSeconds);
+    $from = gmdate('Y-m-d H:i:s', time() + $periodOffset * $windowSeconds - $windowSeconds);
 }
 
 $pdo = ukgrid_db();
@@ -100,6 +121,29 @@ function ukgrid_bucketed(PDO $pdo, string $sql, array $params): array
 // api/current.php's ukgrid_nearest() for the full story (this exact pattern
 // caused a 500 on every call once real data existed to query).
 $params = ['from' => $from, 'to' => $to, 'bucket1' => $bucket, 'bucket2' => $bucket];
+
+// Generation readings with NESO's embedded solar/wind spread onto every
+// Elexon timestamp. readings_generation holds Elexon FUELINST rows every 5
+// minutes but NESO's embedded solar/wind only every 30 (one row per
+// settlement-period start), so the "SUM per ts, then AVG per bucket"
+// queries below used to count embedded solar/wind at only 1 in every 6
+// timestamps - the solar series averaged about a sixth of the real figure,
+// and the generation, renewable, wind and mix series dipped the same way
+// (and jumped every half hour on the 3-hour sparklines). This derived table
+// gives each Elexon timestamp the embedded values of the settlement period
+// it falls in - the same pairing api/current.php now uses for the live
+// snapshot - so every per-timestamp sum is a complete one.
+$GEN_TABLE = '(
+    SELECT ts, fuel_type, mw FROM readings_generation
+     WHERE source <> "NESO" AND ts BETWEEN :from AND :to
+    UNION ALL
+    SELECT e.ts, n.fuel_type, n.mw
+      FROM (SELECT DISTINCT ts FROM readings_generation WHERE source = "ELEXON" AND ts BETWEEN :from2 AND :to2) e
+      JOIN readings_generation n
+        ON n.source = "NESO" AND n.ts = FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(e.ts) / 1800) * 1800)
+  ) g';
+$genParams = $params + ['from2' => $from, 'to2' => $to];
+
 $unit = 'GW';
 
 switch ($metric) {
@@ -116,8 +160,11 @@ switch ($metric) {
     case 'price':
         $rows = ukgrid_bucketed($pdo,
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(price) AS v
-             FROM readings_price WHERE provider = "APXMIDP" AND ts BETWEEN :from AND :to
+             FROM readings_price WHERE provider = "APXMIDP" AND volume > 0 AND ts BETWEEN :from AND :to
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
+            // volume > 0: zero-volume half-hours carry a placeholder price of
+            // exactly 0 (Elexon: below the liquidity threshold, the Market Index
+            // Price "will be set to zero"), which used to drag averages down.
             $params
         );
         $unit = '£';
@@ -138,12 +185,12 @@ switch ($metric) {
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(t.ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(t.total_mw)/1000 AS v
              FROM (
                SELECT ts, SUM(mw) AS total_mw
-               FROM readings_generation
-               WHERE ts BETWEEN :from AND :to AND fuel_type NOT LIKE "INT%"
+               FROM ' . $GEN_TABLE . '
+               WHERE fuel_type NOT LIKE "INT%" AND fuel_type <> "PS"
                GROUP BY ts
              ) t
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
-            $params
+            $genParams
         );
         $unit = 'GW';
         break;
@@ -178,12 +225,11 @@ switch ($metric) {
                  SUM(CASE WHEN fuel_type IN ("WIND","WIND_EMBEDDED","SOLAR_EMBEDDED","NPSHYD") THEN mw ELSE 0 END) AS renewable_mw,
                  SUM(CASE WHEN fuel_type IN ("CCGT","OCGT","COAL","OIL","NUCLEAR","BIOMASS","OTHER") THEN mw ELSE 0 END) AS non_renewable_mw,
                  SUM(CASE WHEN fuel_type = "PS" THEN mw ELSE 0 END) AS storage_mw
-               FROM readings_generation
-               WHERE ts BETWEEN :from AND :to
+               FROM ' . $GEN_TABLE . '
                GROUP BY ts
              ) t
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
-            $params
+            $genParams
         );
         $unit = 'GW';
         break;
@@ -215,12 +261,11 @@ switch ($metric) {
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(t.ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(t.renewable_mw)/1000 AS v
              FROM (
                SELECT ts, SUM(CASE WHEN fuel_type IN ("WIND","WIND_EMBEDDED","SOLAR_EMBEDDED","NPSHYD") THEN mw ELSE 0 END) AS renewable_mw
-               FROM readings_generation
-               WHERE ts BETWEEN :from AND :to
+               FROM ' . $GEN_TABLE . '
                GROUP BY ts
              ) t
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
-            $params
+            $genParams
         );
         $unit = 'GW';
         break;
@@ -285,10 +330,10 @@ switch ($metric) {
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(t.ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(t.v_mw)/1000 AS v
              FROM (
                SELECT ts, SUM(CASE WHEN fuel_type IN ("WIND","WIND_EMBEDDED") THEN mw ELSE 0 END) AS v_mw
-               FROM readings_generation WHERE ts BETWEEN :from AND :to GROUP BY ts
+               FROM ' . $GEN_TABLE . ' GROUP BY ts
              ) t
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
-            $params
+            $genParams
         );
         $unit = 'GW';
         break;
@@ -298,10 +343,10 @@ switch ($metric) {
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(t.ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(t.v_mw)/1000 AS v
              FROM (
                SELECT ts, SUM(CASE WHEN fuel_type = "SOLAR_EMBEDDED" THEN mw ELSE 0 END) AS v_mw
-               FROM readings_generation WHERE ts BETWEEN :from AND :to GROUP BY ts
+               FROM ' . $GEN_TABLE . ' GROUP BY ts
              ) t
              GROUP BY bucket_ts ORDER BY bucket_ts ASC',
-            $params
+            $genParams
         );
         $unit = 'GW';
         break;
@@ -384,6 +429,48 @@ switch ($metric) {
         $unit = 'GW';
         break;
 
+    // Interconnector flow broken down by the country each cable connects
+    // to, for pages/interconnectors.html's "Imports and exports by
+    // country" section. Cables are first summed per country per timestamp
+    // (so Ireland = Moyle + EWIC + Greenlink, France = IFA + IFA2 +
+    // ElecLink), then averaged per bucket three ways: the net flow (for the
+    // small-multiple charts) and its importing and exporting parts
+    // separately (for the energy totals - a net average alone would hide
+    // a bucket that imported in the morning and exported in the evening).
+    // Positive = importing into GB, negative = exporting, as everywhere
+    // else on the site. Keep the CASE below in sync with
+    // INTERCONNECTOR_LABELS in assets/data.js if a cable is ever added.
+    case 'transfers_country':
+        $rows = ukgrid_bucketed($pdo,
+            'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(c.ts)/:bucket1)*:bucket2) AS bucket_ts, c.country,
+                    AVG(c.net_mw) AS net_mw,
+                    AVG(GREATEST(c.net_mw, 0)) AS imp_mw,
+                    AVG(LEAST(c.net_mw, 0)) AS exp_mw,
+                    COUNT(*) AS n, UNIX_TIMESTAMP(MIN(c.ts)) AS first_ts, UNIX_TIMESTAMP(MAX(c.ts)) AS last_ts
+             FROM (
+               SELECT ts,
+                 CASE
+                   WHEN fuel_type IN ("INTFR","INTIFA2","INTELEC") THEN "france"
+                   WHEN fuel_type = "INTNEM" THEN "belgium"
+                   WHEN fuel_type = "INTNED" THEN "netherlands"
+                   WHEN fuel_type = "INTVKL" THEN "denmark"
+                   WHEN fuel_type = "INTNSL" THEN "norway"
+                   WHEN fuel_type IN ("INTIRL","INTEW","INTGRNL") THEN "ireland"
+                   ELSE NULL
+                 END AS country,
+                 SUM(mw) AS net_mw
+               FROM readings_generation
+               WHERE ts BETWEEN :from AND :to AND fuel_type LIKE "INT%"
+               GROUP BY ts, country
+             ) c
+             WHERE c.country IS NOT NULL
+             GROUP BY bucket_ts, c.country
+             ORDER BY bucket_ts ASC',
+            $params
+        );
+        $unit = 'GW';
+        break;
+
     // Wind speed + cloud cover for the History page's "Wind speed & cloud
     // cover" card. See readings_weather in sql/schema.sql - one
     // representative GB point, not a national average (see that table's
@@ -420,6 +507,46 @@ if ($metric === 'mix') {
             'cloud_cover' => $row['cloud_cover'] !== null ? round((float) $row['cloud_cover'], 1) : null,
         ];
     }, $rows);
+} elseif ($metric === 'transfers_country') {
+    // One point per bucket with each country's net flow in GW, plus
+    // period totals in GWh. Each bucket's energy is its average import/
+    // export MW times the part of the bucket that falls inside the
+    // requested window (the first and last buckets are usually partial),
+    // so a short range isn't over-counted. A bucket's hours are also
+    // capped at the span its readings actually cover (n readings at their
+    // own spacing - 5 minutes for Elexon FUELINST), so a bucket that only
+    // has data for part of its length isn't scaled up as if it were full.
+    // Buckets with no readings at all contribute nothing.
+    $countries = ['france', 'belgium', 'netherlands', 'denmark', 'norway', 'ireland'];
+    $fromTs = strtotime($from);
+    $toTs = strtotime($to);
+    $byBucket = [];
+    $totals = [];
+    foreach ($countries as $c) {
+        $totals[$c] = ['import_gwh' => 0.0, 'export_gwh' => 0.0];
+    }
+    foreach ($rows as $row) {
+        $c = $row['country'];
+        if (!isset($totals[$c])) {
+            continue;
+        }
+        $bStart = strtotime($row['bucket_ts']);
+        $n = (int) $row['n'];
+        $span = (int) $row['last_ts'] - (int) $row['first_ts'];
+        $covered = $n > 1 ? $span * $n / ($n - 1) : 300;
+        $hours = max(0, min(min($bStart + $bucket, $toTs) - max($bStart, $fromTs), $covered)) / 3600;
+        $totals[$c]['import_gwh'] += (float) $row['imp_mw'] * $hours / 1000;
+        $totals[$c]['export_gwh'] += -(float) $row['exp_mw'] * $hours / 1000;
+        $t = gmdate('Y-m-d\TH:i:s\Z', $bStart);
+        if (!isset($byBucket[$t])) {
+            $byBucket[$t] = ['t' => $t];
+        }
+        $byBucket[$t][$c] = round((float) $row['net_mw'] / 1000, 3);
+    }
+    foreach ($totals as $c => $v) {
+        $totals[$c] = ['import_gwh' => round($v['import_gwh'], 1), 'export_gwh' => round($v['export_gwh'], 1)];
+    }
+    $points = array_values($byBucket);
 } else {
     $points = array_map(function ($row) {
         return [
@@ -429,10 +556,16 @@ if ($metric === 'mix') {
     }, $rows);
 }
 
-echo json_encode([
+$response = [
     'ok' => true,
     'metric' => $metric,
     'range' => $range,
     'unit' => $unit,
     'points' => $points,
-]);
+];
+if ($metric === 'transfers_country') {
+    $response['from'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($from));
+    $response['to'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($to));
+    $response['totals'] = $totals;
+}
+echo json_encode($response);

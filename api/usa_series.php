@@ -140,8 +140,8 @@ switch ($metric) {
              FROM (
                SELECT ts,
                  SUM(CASE WHEN category IN ("NG","COL","OIL") THEN mw ELSE 0 END) AS fossil_mw,
-                 SUM(CASE WHEN category IN ("WND","SUN","WAT") THEN mw ELSE 0 END) AS renewable_mw,
-                 SUM(CASE WHEN category IN ("NUC","OTH","UNK") THEN mw ELSE 0 END) AS other_mw
+                 SUM(CASE WHEN category IN ("WND","SUN","WAT","GEO","SNB") THEN mw ELSE 0 END) AS renewable_mw,
+                 SUM(CASE WHEN category IN ("NUC","OTH","UNK") OR (category IN ("BAT","PS","OES","UES") AND mw > 0) THEN mw ELSE 0 END) AS other_mw
                FROM readings_us_generation
                WHERE ts BETWEEN :from AND :to AND category NOT IN ("TOTAL", "INTERCONNECTION")
                GROUP BY ts
@@ -160,7 +160,7 @@ switch ($metric) {
     case 'non_renewable':
     case 'fossil':
         $groupCodes = [
-            'renewable' => ['WND', 'SUN', 'WAT'],
+            'renewable' => ['WND', 'SUN', 'WAT', 'GEO', 'SNB'], // GEO/SNB: newer EIA-930 codes, matching pages/usa.html's mix groups
             'non_renewable' => ['NUC', 'OTH', 'UNK', 'NG', 'COL', 'OIL'],
             'fossil' => ['NG', 'COL', 'OIL'],
         ][$metric];
