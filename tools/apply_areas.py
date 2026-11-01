@@ -174,7 +174,7 @@ def apply(path, code, poss, flows, europe):
         m = re.search(r'<section class="hero">.*?</section>', text, re.S)
         now = block("now", f"""    <section class="home-hero area-now" data-area-now aria-label="Right now">
       <div class="home-hero__main">
-        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data…</span></p>
+        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated at:</span> <span data-area-now-time>Loading live data…</span></p>
         <p class="area-now__big"><span class="home-hero__share"><span data-area-now-share>-</span>%</span> <span class="home-hero__lead">of {poss} power is renewable right now</span></p>
       </div>
       <div class="home-hero__card"><p data-area-now-summary>Loading live data…</p></div>
