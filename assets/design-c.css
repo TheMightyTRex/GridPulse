@@ -450,6 +450,7 @@ html[data-theme="dark"] .home-card--records, html.pref-hc .home-card--records { 
 .mixchart__legend .mixchart__gbtn { display: flex; flex-direction: column; width: 100%; padding: 10px 0 6px; border-top: 6px solid var(--g); border-radius: 0; }
 .mixchart__gbtn strong { font-size: 1.05rem; color: var(--gi); }
 .mixchart__ibtn { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 8px; min-height: 36px; padding: 4px 0; min-width: 0; max-width: 100%; }
+.mixchart__ibtn strong { min-width: 0; overflow-wrap: anywhere; text-align: left; }
 .mixchart__sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 .mixchart__val { font-variant-numeric: tabular-nums; color: var(--text-muted); }
 .mixchart__note { margin: 0; font-size: .9rem; color: var(--text-muted); }

@@ -34,6 +34,9 @@ $add = function (string $key, string $label, string $ts, float $mw, ?string $cab
     if ($cable !== null && !in_array($cable, $neighbours[$key]['cables'], true)) {
         $neighbours[$key]['cables'][] = $cable;
     }
+    if ($cable !== null) {
+        $neighbours[$key]['by_cable'][$cable][$ts] = $mw;
+    }
 };
 $bucketHours = 1.0;
 
@@ -93,10 +96,18 @@ foreach ($neighbours as $n) {
         if ($mw > 0) $in += $mw * $bucketHours; else $outE -= $mw * $bucketHours;
     }
     $lastTs = $n['series'] ? array_key_last($n['series']) : null;
+    // Each cable's reading at the latest time (GB only: other areas publish one total per border).
+    $cableLatest = null;
+    if ($lastTs && count($n['by_cable'] ?? []) > 1) {
+        foreach ($n['by_cable'] as $c => $s) {
+            $cableLatest[$c] = isset($s[$lastTs]) ? round($s[$lastTs], 1) : null;
+        }
+    }
     $out[] = [
         'code' => $n['code'], 'label' => $n['label'], 'cables' => $n['cables'],
         'in_mwh' => round($in, 1), 'out_mwh' => round($outE, 1),
         'latest_mw' => $lastTs ? round($n['series'][$lastTs], 1) : null, 'latest_ts' => ukgrid_iso($lastTs),
+        'cable_latest_mw' => $cableLatest,
         'updated' => $n['updated'] ?? null, 'status' => $n['status'] ?? null,
         'times' => array_map('ukgrid_iso', array_keys($n['series'])),
         'values' => array_map(function ($v) { return round($v, 1); }, array_values($n['series'])),
