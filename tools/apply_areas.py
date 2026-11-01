@@ -78,19 +78,19 @@ def section_span(text, label):
 def cards(code, flows):
     today = """      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
         <h2 id="today-h" class="gp-card__h">Today so far</h2>
-        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+        <div data-area-today-body><p class="area-empty">Loading live data…</p></div>
       </section>"""
     records = """      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
         <h2 id="recsum-h" class="gp-card__h">Records</h2>
-        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+        <div data-area-recsum-body><p class="area-empty">Loading…</p></div>
       </section>"""
     borders = f"""      <section class="gp-card" data-area-borders aria-labelledby="borders-h">
         <h2 id="borders-h" class="gp-card__h">{"Interconnectors" if code == "GB" else "Borders"}</h2>
-        <div data-area-borders-body><p class="area-empty">Loading...</p></div>
+        <div data-area-borders-body><p class="area-empty">Loading…</p></div>
       </section>"""
     year = """      <section class="gp-card" data-area-year aria-labelledby="year-h">
         <h2 id="year-h" class="gp-card__h">This year so far</h2>
-        <div data-area-year-body><p class="area-empty">Loading...</p></div>
+        <div data-area-year-body><p class="area-empty">Loading…</p></div>
       </section>"""
     # Two columns that stack independently, so a short card never leaves a
     # gap beside a tall one: Today and the map on the left, Records and
@@ -113,7 +113,7 @@ def apply(path, code, poss, flows, europe):
 
     replay = block("replay", """      <div class="gp-replay" aria-labelledby="replay-heading" role="group">
         <h3 id="replay-heading">Replay today</h3>
-        <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+        <div data-area-replay><p class="area-empty">Loading live data…</p></div>
       </div>""")
 
     # Work from the bottom of the page up, so earlier positions stay valid.
@@ -142,7 +142,7 @@ def apply(path, code, poss, flows, europe):
         later.append(f"""    <section class="panel" aria-labelledby="annual-heading">
       <h2 id="annual-heading">Long-term history</h2>
       <p class="chart-caption">Electricity generated each year, by source, from the country's official yearly statistics.</p>
-      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading…</p></div></div>
     </section>""")
         later.append(f"""    <section aria-labelledby="explore-heading" class="gp-explore">
       <h2 id="explore-heading">Explore {name}</h2>
@@ -157,7 +157,7 @@ def apply(path, code, poss, flows, europe):
             cmp_title = name[0].upper() + name[1:]
             compare = block("compare", f"""    <section class="panel gp-dark" data-area-compare aria-labelledby="compare-heading">
       <div class="gp-head"><h2 id="compare-heading">{cmp_title} and its neighbours right now</h2><a href="comparisons.html">Compare any countries →</a></div>
-      <div data-area-compare-body><p class="area-empty">Loading...</p></div>
+      <div data-area-compare-body><p class="area-empty">Loading…</p></div>
     </section>""")
             s, e = section_span(text, "stack-heading")
             text = text[:e] + "\n\n" + compare + text[e:]
@@ -174,10 +174,10 @@ def apply(path, code, poss, flows, europe):
         m = re.search(r'<section class="hero">.*?</section>', text, re.S)
         now = block("now", f"""    <section class="home-hero area-now" data-area-now aria-label="Right now">
       <div class="home-hero__main">
-        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data...</span></p>
+        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data…</span></p>
         <p class="area-now__big"><span class="home-hero__share"><span data-area-now-share>-</span>%</span> <span class="home-hero__lead">of {poss} power is renewable right now</span></p>
       </div>
-      <div class="home-hero__card"><p data-area-now-summary>Loading live data...</p></div>
+      <div class="home-hero__card"><p data-area-now-summary>Loading live data…</p></div>
     </section>""")
         text = text[:m.end()] + "\n\n" + now + text[m.end():]
 
