@@ -1,0 +1,17 @@
+# ukgridlive.info - this site has moved to Grid Pulse (https://gridpulse.info/).
+#
+# Use this file ONLY if ukgridlive.info has its own web folder, separate
+# from gridpulse.info's. Upload it to that folder's root, replacing what is
+# there. Every old address is sent permanently (301) to the same address
+# on the new site, so bookmarks, search results and shared links keep
+# working. "?from=ukgridlive" lets the new site show a one-off "UK Grid:
+# Live+ is now Grid Pulse" notice.
+#
+# If both domains point at the SAME web folder, don't use this file - add
+# the two RewriteCond/RewriteRule lines to the new site's own root
+# .htaccess instead (the HTTP_HOST check means only the old domain is
+# redirected).
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?ukgridlive\.info$ [NC]
+RewriteRule ^(.*)$ https://gridpulse.info/$1?from=ukgridlive [R=301,L,QSA]

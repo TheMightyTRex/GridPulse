@@ -1,0 +1,1824 @@
+From 3fb224c93d170e9229aa1a88169c1e9805ad7c6d Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 1 Nov 2026 16:47:06 +0000
+Subject: [PATCH] WIP (untested): data layer for country pages - areas, daily
+ summaries, records, flows, yearly history, APIs, tools/data-jobs.php
+
+Not deployed. Continue in the Grid Pulse repo after the move - see the handover document.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_018M1JuuwkKF7XcM8rUtE8KD
+---
+ api/annual.php            |  40 +++
+ api/archive.php           |  39 +++
+ api/areas.php             |   8 +
+ api/day.php               |  88 +++++
+ api/flows.php             | 110 +++++++
+ api/records.php           |  15 +
+ cron/run-due.php          |   6 +-
+ includes/areas.php        | 677 ++++++++++++++++++++++++++++++++++++++
+ includes/flows_annual.php | 605 ++++++++++++++++++++++++++++++++++
+ includes/refresh.php      |  19 ++
+ tools/data-jobs.php       |  84 +++++
+ 11 files changed, 1690 insertions(+), 1 deletion(-)
+ create mode 100644 api/annual.php
+ create mode 100644 api/archive.php
+ create mode 100644 api/areas.php
+ create mode 100644 api/day.php
+ create mode 100644 api/flows.php
+ create mode 100644 api/records.php
+ create mode 100644 includes/areas.php
+ create mode 100644 includes/flows_annual.php
+ create mode 100644 tools/data-jobs.php
+
+diff --git a/api/annual.php b/api/annual.php
+new file mode 100644
+index 0000000..d421fdf
+--- /dev/null
++++ b/api/annual.php
+@@ -0,0 +1,40 @@
++<?php
++/**
++ * GET api/annual.php?area=FR
++ *
++ * Generation by fuel group for each year, in GWh, from official yearly
++ * statistics (see ukgrid_annual_sources() in includes/flows_annual.php for
++ * which source covers which area, and exactly what it covers). Filled in
++ * by the ANNUAL scheduler job; empty until that has run for this area.
++ */
++require __DIR__ . '/_bootstrap.php';
++
++$config = ukgrid_load_config();
++$area = ukgrid_api_area($config);
++$pdo = ukgrid_db();
++ukgrid_flows_annual_ensure_tables($pdo);
++$src = ukgrid_annual_sources()[$area['code']] ?? null;
++
++$st = $pdo->prepare('SELECT year, grp, gwh FROM annual_mix WHERE area = :a ORDER BY year');
++$st->execute(['a' => $area['code']]);
++$years = [];
++$groups = [];
++foreach ($st->fetchAll() as $r) {
++    $years[(int) $r['year']] = true;
++    $groups[$r['grp']][(int) $r['year']] = (float) $r['gwh'];
++}
++$yearList = array_keys($years);
++sort($yearList);
++$series = [];
++foreach ($groups as $g => $byYear) {
++    $series[$g] = array_map(function ($y) use ($byYear) { return $byYear[$y] ?? 0; }, $yearList);
++}
++$state = ukgrid_fetch_state_get($pdo, 'ANNUAL')[$area['code']] ?? null;
++
++echo json_encode([
++    'ok' => true, 'area' => ukgrid_area_public($area),
++    'source' => $src ? ['credit' => $src['credit'], 'url' => $src['url'], 'scope' => $src['scope']] : null,
++    'years' => $yearList, 'groups' => (object) $series,
++    'current_year' => (int) gmdate('Y'),
++    'updated' => $state ? ukgrid_iso($state['fetched_at']) : null,
++]);
+diff --git a/api/archive.php b/api/archive.php
+new file mode 100644
+index 0000000..87f4036
+--- /dev/null
++++ b/api/archive.php
+@@ -0,0 +1,39 @@
++<?php
++/**
++ * GET api/archive.php?area=FR[&year=2026]
++ *
++ * Every stored day for one area and year, from daily_summary (worked out
++ * by the DAILY job - see includes/areas.php): renewable and zero-carbon
++ * share, largest source, average demand and price. Also lists which years
++ * have any days. Used by pages/archive.html.
++ */
++require __DIR__ . '/_bootstrap.php';
++
++$config = ukgrid_load_config();
++$area = ukgrid_api_area($config);
++$pdo = ukgrid_db();
++ukgrid_area_ensure_tables($pdo);
++
++$yearsSt = $pdo->prepare('SELECT YEAR(day) y, COUNT(*) n, AVG(renewable_share) r FROM daily_summary WHERE area = :a AND gen_mwh > 0 GROUP BY y ORDER BY y');
++$yearsSt->execute(['a' => $area['code']]);
++$years = array_map(function ($r) {
++    return ['year' => (int) $r['y'], 'days' => (int) $r['n'], 'renewable_share_avg' => round((float) $r['r'], 1)];
++}, $yearsSt->fetchAll());
++
++$year = (int) ($_GET['year'] ?? ($years ? end($years)['year'] : (int) date('Y')));
++$st = $pdo->prepare('SELECT day, coverage, gen_mwh, renewable_share, zero_carbon_share, fossil_share, largest, demand_avg_mw, price_avg, carbon_avg, imports_net_mwh
++    FROM daily_summary WHERE area = :a AND gen_mwh > 0 AND day BETWEEN :f AND :t ORDER BY day');
++$st->execute(['a' => $area['code'], 'f' => $year . '-01-01', 't' => $year . '-12-31']);
++$days = array_map(function ($r) {
++    return [
++        'day' => $r['day'], 'coverage' => (float) $r['coverage'], 'gen_mwh' => (float) $r['gen_mwh'],
++        'renewable_share' => (float) $r['renewable_share'], 'zero_carbon_share' => (float) $r['zero_carbon_share'],
++        'fossil_share' => (float) $r['fossil_share'], 'largest' => $r['largest'],
++        'demand_avg_mw' => $r['demand_avg_mw'] !== null ? (float) $r['demand_avg_mw'] : null,
++        'price_avg' => $r['price_avg'] !== null ? (float) $r['price_avg'] : null,
++        'carbon_avg' => $r['carbon_avg'] !== null ? (float) $r['carbon_avg'] : null,
++        'imports_net_mwh' => $r['imports_net_mwh'] !== null ? (float) $r['imports_net_mwh'] : null,
++    ];
++}, $st->fetchAll());
++
++echo json_encode(['ok' => true, 'area' => ukgrid_area_public($area), 'year' => $year, 'years' => $years, 'days' => $days]);
+diff --git a/api/areas.php b/api/areas.php
+new file mode 100644
+index 0000000..dd7eeaa
+--- /dev/null
++++ b/api/areas.php
+@@ -0,0 +1,8 @@
++<?php
++/** GET api/areas.php - every area this site covers (see includes/areas.php), for the archive and day pages' country picker. */
++require __DIR__ . '/_bootstrap.php';
++$out = [];
++foreach (ukgrid_areas(ukgrid_load_config()) as $a) {
++    $out[] = ukgrid_area_public($a);
++}
++echo json_encode(['ok' => true, 'areas' => $out]);
+diff --git a/api/day.php b/api/day.php
+new file mode 100644
+index 0000000..3d454c3
+--- /dev/null
++++ b/api/day.php
+@@ -0,0 +1,88 @@
++<?php
++/**
++ * GET api/day.php?area=FR[&date=2026-10-31]
++ *
++ * One local day for one area (today if no date): readings in regular
++ * buckets (generation by fuel group, demand, price, carbon, net imports),
++ * the day's summary (energy by fuel, shares, demand peak and low, price
++ * range, imports) and any of the area's records set that day. Used by the
++ * "Today so far" card, the replay slider and pages/day.html.
++ * See includes/areas.php for the fuel groups and share definitions.
++ */
++require __DIR__ . '/_bootstrap.php';
++
++$config = ukgrid_load_config();
++$area = ukgrid_api_area($config);
++$pdo = ukgrid_db();
++$today = ukgrid_area_today($area);
++$date = (string) ($_GET['date'] ?? $today);
++if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date > $today) {
++    ukgrid_json_error('bad_date', 'date must be YYYY-MM-DD, today or earlier, in the area\'s own time zone');
++}
++
++[$from, $to] = ukgrid_area_day_bounds($area, $date);
++$buckets = ukgrid_area_buckets($pdo, $area, $from, $to);
++$summary = ukgrid_area_day_summary($area, $buckets, $date);
++
++$times = [];
++$groups = [];
++$demand = $price = $carbon = $imports = [];
++$present = [];
++foreach ($buckets as $row) {
++    foreach ($row['g'] as $g => $mw) {
++        $present[$g] = true;
++    }
++}
++foreach ($buckets as $ts => $row) {
++    $times[] = ukgrid_iso($ts);
++    foreach (array_keys($present) as $g) {
++        $groups[$g][] = isset($row['g'][$g]) ? round($row['g'][$g], 1) : null;
++    }
++    $demand[] = $row['demand'] !== null ? round($row['demand'], 1) : null;
++    $price[] = $row['price'] !== null ? round($row['price'], 2) : null;
++    $carbon[] = $row['carbon'] !== null ? round($row['carbon'], 1) : null;
++    $imports[] = $row['imports'] !== null ? round($row['imports'], 1) : null;
++}
++
++// Records whose all-time best falls on this day.
++$recordsSet = [];
++try {
++    $rec = ukgrid_area_records($pdo, $area);
++    foreach ($rec['board'] as $r) {
++        if ($r['day'] === $date) {
++            $recordsSet[] = $r;
++        }
++    }
++    $since = $rec['since'];
++} catch (Throwable $e) {
++    $since = null;
++}
++
++$extremes = [];
++if ($summary) {
++    foreach ($summary['extremes'] as $k => [$v, $ts]) {
++        $extremes[$k] = ['value' => $v, 'ts' => strlen((string) $ts) === 10 ? $ts : ukgrid_iso($ts)];
++    }
++    $summary['extremes'] = $extremes;
++}
++
++echo json_encode([
++    'ok' => true,
++    'area' => ukgrid_area_public($area),
++    'date' => $date,
++    'is_today' => $date === $today,
++    'today' => $today,
++    'records_since' => $since,
++    'from' => ukgrid_iso($from),
++    'to' => ukgrid_iso($to),
++    'series' => [
++        'times' => $times,
++        'groups' => (object) $groups,
++        'demand' => array_filter($demand, 'is_numeric') ? $demand : null,
++        'price' => array_filter($price, 'is_numeric') ? $price : null,
++        'carbon' => array_filter($carbon, 'is_numeric') ? $carbon : null,
++        'imports' => array_filter($imports, 'is_numeric') ? $imports : null,
++    ],
++    'summary' => $summary,
++    'records_set' => $recordsSet,
++]);
+diff --git a/api/flows.php b/api/flows.php
+new file mode 100644
+index 0000000..a76d049
+--- /dev/null
++++ b/api/flows.php
+@@ -0,0 +1,110 @@
++<?php
++/**
++ * GET api/flows.php?area=FR[&date=2026-10-31]
++ *
++ * Electricity across each of an area's borders for one local day (today
++ * if no date): energy in and out, the latest flow, and an hourly net
++ * series (positive = importing into this area).
++ *   - Great Britain: each interconnector from Elexon, grouped by country.
++ *   - Ireland: the net flow with Great Britain from EirGrid.
++ *   - European countries: ENTSO-E cross-border physical flows (fetched a
++ *     border at a time by the scheduler - see includes/flows_annual.php),
++ *     with when each border was last updated.
++ * Other areas have no border data here and get an empty list.
++ */
++require __DIR__ . '/_bootstrap.php';
++
++$config = ukgrid_load_config();
++$area = ukgrid_api_area($config);
++$pdo = ukgrid_db();
++$today = ukgrid_area_today($area);
++$date = (string) ($_GET['date'] ?? $today);
++if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date > $today) {
++    ukgrid_json_error('bad_date', 'date must be YYYY-MM-DD, today or earlier');
++}
++[$from, $to] = ukgrid_area_day_bounds($area, $date);
++$code = $area['code'];
++$neighbours = []; // key => ['label', 'cables' => [], 'series' => [ts => net MW], 'updated' => ?]
++
++$add = function (string $key, string $label, string $ts, float $mw, ?string $cable = null) use (&$neighbours) {
++    if (!isset($neighbours[$key])) {
++        $neighbours[$key] = ['code' => $key, 'label' => $label, 'cables' => [], 'series' => [], 'updated' => null];
++    }
++    $neighbours[$key]['series'][$ts] = ($neighbours[$key]['series'][$ts] ?? 0) + $mw;
++    if ($cable !== null && !in_array($cable, $neighbours[$key]['cables'], true)) {
++        $neighbours[$key]['cables'][] = $cable;
++    }
++};
++$bucketHours = 1.0;
++
++if ($area['kind'] === 'gb') {
++    $bucketHours = 0.5;
++    $cables = [
++        'INTFR' => ['FR', 'France', 'IFA'], 'INTIFA2' => ['FR', 'France', 'IFA2'], 'INTELEC' => ['FR', 'France', 'ElecLink'],
++        'INTNED' => ['NL', 'Netherlands', 'BritNed'], 'INTNEM' => ['BE', 'Belgium', 'Nemo Link'],
++        'INTNSL' => ['NO', 'Norway', 'North Sea Link'], 'INTVKL' => ['DK', 'Denmark', 'Viking Link'],
++        'INTIRL' => ['IE', 'Ireland', 'Moyle'], 'INTEW' => ['IE', 'Ireland', 'East-West'], 'INTGRNL' => ['IE', 'Ireland', 'Greenlink'],
++    ];
++    $st = $pdo->prepare("SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/1800)*1800) b, fuel_type, AVG(mw) FROM readings_generation
++        WHERE ts >= :f AND ts < :t AND fuel_type LIKE 'INT%' GROUP BY b, fuel_type ORDER BY b");
++    $st->execute(['f' => $from, 't' => $to]);
++    foreach ($st->fetchAll(PDO::FETCH_NUM) as [$ts, $f, $mw]) {
++        [$k, $label, $cable] = $cables[$f] ?? [$f, $f, $f];
++        $add($k, $label, $ts, (float) $mw, $cable);
++    }
++} elseif ($area['kind'] === 'ie') {
++    $bucketHours = 0.5;
++    $st = $pdo->prepare("SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/1800)*1800) b, AVG(mw) FROM readings_ie_generation
++        WHERE ts >= :f AND ts < :t AND category = 'INTERCONNECTION' GROUP BY b ORDER BY b");
++    $st->execute(['f' => $from, 't' => $to]);
++    foreach ($st->fetchAll(PDO::FETCH_NUM) as [$ts, $mw]) {
++        $add('GB', 'Great Britain', $ts, (float) $mw, 'Moyle, East-West and Greenlink');
++    }
++} elseif ($area['kind'] === 'entsoe') {
++    ukgrid_flows_annual_ensure_tables($pdo);
++    $zones = ukgrid_flow_zones();
++    $st = $pdo->prepare("SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/3600)*3600) b, from_area, to_area, AVG(mw) FROM readings_flow
++        WHERE ts >= :f AND ts < :t AND (from_area = :c1 OR to_area = :c2) GROUP BY b, from_area, to_area ORDER BY b");
++    $st->execute(['f' => $from, 't' => $to, 'c1' => $code, 'c2' => $code]);
++    foreach ($st->fetchAll(PDO::FETCH_NUM) as [$ts, $fa, $ta, $mw]) {
++        $other = $fa === $code ? $ta : $fa;
++        $add($other, $zones[$other][1] ?? $other, $ts, $ta === $code ? (float) $mw : -(float) $mw);
++    }
++    $state = ukgrid_fetch_state_get($pdo, 'FLOWS');
++    foreach (ukgrid_flow_borders($config) as [$a, $b]) {
++        if ($a !== $code && $b !== $code) {
++            continue;
++        }
++        $other = $a === $code ? $b : $a;
++        $s = $state[$a . '-' . $b] ?? null;
++        if (!isset($neighbours[$other])) {
++            $neighbours[$other] = ['code' => $other, 'label' => $zones[$other][1] ?? $other, 'cables' => [], 'series' => [], 'updated' => null];
++        }
++        $neighbours[$other]['updated'] = $s ? ukgrid_iso($s['fetched_at']) : null;
++        $neighbours[$other]['status'] = $s['status'] ?? null;
++    }
++}
++
++$out = [];
++foreach ($neighbours as $n) {
++    ksort($n['series']);
++    $in = $outE = 0.0;
++    foreach ($n['series'] as $mw) {
++        if ($mw > 0) $in += $mw * $bucketHours; else $outE -= $mw * $bucketHours;
++    }
++    $lastTs = $n['series'] ? array_key_last($n['series']) : null;
++    $out[] = [
++        'code' => $n['code'], 'label' => $n['label'], 'cables' => $n['cables'],
++        'in_mwh' => round($in, 1), 'out_mwh' => round($outE, 1),
++        'latest_mw' => $lastTs ? round($n['series'][$lastTs], 1) : null, 'latest_ts' => ukgrid_iso($lastTs),
++        'updated' => $n['updated'] ?? null, 'status' => $n['status'] ?? null,
++        'times' => array_map('ukgrid_iso', array_keys($n['series'])),
++        'values' => array_map(function ($v) { return round($v, 1); }, array_values($n['series'])),
++    ];
++}
++usort($out, function ($a, $b) { return ($b['in_mwh'] + $b['out_mwh']) <=> ($a['in_mwh'] + $a['out_mwh']); });
++
++$source = ['gb' => 'Elexon Insights Solution (interconnector flows)', 'ie' => 'EirGrid Smart Grid Dashboard',
++           'entsoe' => 'ENTSO-E Transparency Platform (cross-border physical flows)'][$area['kind']] ?? null;
++echo json_encode(['ok' => true, 'area' => ukgrid_area_public($area), 'date' => $date, 'source' => $source,
++                  'bucket_minutes' => (int) ($bucketHours * 60), 'neighbours' => $out]);
+diff --git a/api/records.php b/api/records.php
+new file mode 100644
+index 0000000..611ef6b
+--- /dev/null
++++ b/api/records.php
+@@ -0,0 +1,15 @@
++<?php
++/**
++ * GET api/records.php?area=FR
++ *
++ * Records worked out from this site's own stored readings (so they only
++ * go back to when the site started recording that area - "since" in the
++ * reply): the best of each kind with the record it beat, each year's
++ * best, and the records broken most recently. See ukgrid_area_records().
++ */
++require __DIR__ . '/_bootstrap.php';
++
++$config = ukgrid_load_config();
++$area = ukgrid_api_area($config);
++$rec = ukgrid_area_records(ukgrid_db(), $area);
++echo json_encode(array_merge(['ok' => true, 'area' => ukgrid_area_public($area)], $rec));
+diff --git a/cron/run-due.php b/cron/run-due.php
+index 2f318a8..3ce2d28 100644
+--- a/cron/run-due.php
++++ b/cron/run-due.php
+@@ -60,6 +60,10 @@ $caller = preg_replace('/[^a-z0-9_-]/i', '', (string) ($_GET['caller'] ?? ($isCl
+ // NESO needs several discovery calls, so page loads leave it out; a
+ // scheduler can afford it.
+ if (!isset($intervals['NESO'])) $intervals['NESO'] = 30;
++// Cross-border flows (one border per call) and yearly history (one area
++// per call) - see includes/flows_annual.php.
++if (!isset($intervals['FLOWS'])) $intervals['FLOWS'] = 4;
++if (!isset($intervals['ANNUAL'])) $intervals['ANNUAL'] = 120;
+ 
+ $due = ukgrid_refresh_overdue($pdo, $intervals);
+ ukgrid_file_log('run-due (' . $caller . '): ' . (count($due) ? implode(', ', array_keys($due)) . ' due' : 'nothing due'));
+@@ -77,7 +81,7 @@ usort($order, function ($a, $b) {
+     return ($b === 'ENTSOE') <=> ($a === 'ENTSOE');
+ });
+ // Worst case = timeout x the most requests the source makes in one run.
+-$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2];
++$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1];
+ 
+ $lock = $pdo->prepare('SELECT GET_LOCK(?, 0)');
+ $release = $pdo->prepare('SELECT RELEASE_LOCK(?)');
+diff --git a/includes/areas.php b/includes/areas.php
+new file mode 100644
+index 0000000..10d511b
+--- /dev/null
++++ b/includes/areas.php
+@@ -0,0 +1,677 @@
++<?php
++/**
++ * UK Grid: Live+ - one view of every grid this site covers ("areas").
++ *
++ * Each grid has its own tables (Elexon for GB, EirGrid for Ireland,
++ * ENTSO-E for the European countries, EIA for the USA, IESO for Ontario,
++ * Open Electricity for Australia). The day pages, daily archive, records,
++ * "today so far" figures and replay all need the same thing from each:
++ * generation by fuel, demand, price and net imports, in regular time
++ * buckets. This file turns each source into that one shape, so those
++ * features are written once and work for every country.
++ *
++ * Fuel groups (keep in sync with assets/country.js AREA_GROUPS):
++ *   wind, solar, hydro, nuclear, gas, coal, oil, biomass,
++ *   other_renewable (geothermal, marine, other renewable), other, storage
++ * Storage is pumped hydro or batteries generating; charging is a load and
++ * is left out. Net imports are positive when importing.
++ *
++ * Shares (worked out in ukgrid_area_shares()):
++ *   - renewable: wind, solar, hydro, other renewables, plus biomass -
++ *     except for Great Britain, where this site has always counted
++ *     biomass as non-renewable (matching the GB home page);
++ *   - zero-carbon: wind, solar, hydro, other renewables and nuclear,
++ *     never biomass (it burns fuel);
++ *   - fossil: gas, coal and oil.
++ *   All are shares of generation inside the area (storage included,
++ *   imports not).
++ */
++
++const UKGRID_AREA_GROUPS = ['wind', 'solar', 'hydro', 'nuclear', 'gas', 'coal', 'oil', 'biomass', 'other_renewable', 'other', 'storage'];
++
++/** Every area, keyed by code. Only ENTSO-E countries in the config are included. */
++function ukgrid_areas(array $config): array
++{
++    $areas = [
++        'GB' => ['name' => 'Great Britain', 'kind' => 'gb', 'tz' => 'Europe/London', 'currency' => 'GBP', 'bucket' => 1800,
++                 'page' => 'index.html', 'carbon' => true, 'renewable_biomass' => false,
++                 'source' => 'Elexon Insights Solution, NESO Data Portal and the Carbon Intensity API'],
++        'IE' => ['name' => 'Ireland', 'kind' => 'ie', 'tz' => 'Europe/Dublin', 'currency' => 'EUR', 'bucket' => 1800,
++                 'page' => 'pages/ireland.html', 'carbon' => true, 'renewable_biomass' => true, 'other_label' => 'Gas and other',
++                 'source' => 'EirGrid Smart Grid Dashboard (all-island) and ENTSO-E Transparency Platform (price)'],
++        'US' => ['name' => 'USA', 'kind' => 'us', 'tz' => 'America/New_York', 'currency' => 'USD', 'bucket' => 3600,
++                 'page' => 'pages/usa.html', 'carbon' => false, 'renewable_biomass' => true,
++                 'source' => 'U.S. Energy Information Administration (EIA-930, lower 48 states)'],
++        'CA' => ['name' => 'Ontario', 'kind' => 'ca', 'tz' => 'America/Toronto', 'currency' => 'CAD', 'bucket' => 3600,
++                 'page' => 'pages/canada.html', 'carbon' => false, 'renewable_biomass' => true,
++                 'source' => 'IESO (Independent Electricity System Operator, Ontario)'],
++        'AU' => ['name' => 'Australia (NEM)', 'kind' => 'au', 'tz' => 'Australia/Brisbane', 'currency' => 'AUD', 'bucket' => 1800,
++                 'page' => 'pages/australia.html', 'carbon' => false, 'renewable_biomass' => true,
++                 'source' => 'Open Electricity (CC BY-NC 4.0, non-commercial use only)'],
++    ];
++    $tz = [
++        'FR' => 'Europe/Paris', 'NL' => 'Europe/Amsterdam', 'BE' => 'Europe/Brussels', 'NO' => 'Europe/Oslo',
++        'DK' => 'Europe/Copenhagen', 'DE' => 'Europe/Berlin', 'ES' => 'Europe/Madrid', 'IT' => 'Europe/Rome',
++        'SE' => 'Europe/Stockholm', 'PT' => 'Europe/Lisbon', 'PL' => 'Europe/Warsaw',
++    ];
++    $pages = [
++        'FR' => 'france', 'NL' => 'nl', 'BE' => 'belgium', 'NO' => 'norway', 'DK' => 'denmark', 'DE' => 'germany',
++        'ES' => 'spain', 'IT' => 'italy', 'SE' => 'sweden', 'PT' => 'portugal', 'PL' => 'poland',
++    ];
++    foreach (($config['sources']['entsoe_countries'] ?? []) as $cc => $c) {
++        if ($cc === 'IE' || !isset($tz[$cc]) || !in_array('generation', $c['fetch'] ?? [], true)) {
++            continue;
++        }
++        $areas[$cc] = [
++            'name' => (string) ($c['label'] ?? $cc), 'kind' => 'entsoe', 'tz' => $tz[$cc], 'currency' => 'EUR',
++            'bucket' => 3600, 'page' => 'pages/' . $pages[$cc] . '.html', 'carbon' => false, 'renewable_biomass' => true,
++            'source' => 'ENTSO-E Transparency Platform',
++            'has_demand' => in_array('demand', $c['fetch'] ?? [], true),
++            'has_price' => in_array('price', $c['fetch'] ?? [], true),
++        ];
++    }
++    foreach ($areas as $code => &$a) {
++        $a['code'] = $code;
++        $a['has_demand'] = $a['has_demand'] ?? true;
++        $a['has_price'] = $a['has_price'] ?? in_array($a['kind'], ['gb', 'ie', 'au'], true);
++    }
++    unset($a);
++    return $areas;
++}
++
++/** ENTSO-E psrType -> fuel group. */
++function ukgrid_area_psr_group(string $psr): string
++{
++    static $map = [
++        'B01' => 'biomass', 'B02' => 'coal', 'B03' => 'coal', 'B04' => 'gas', 'B05' => 'coal', 'B06' => 'oil',
++        'B07' => 'oil', 'B08' => 'coal', 'B09' => 'other_renewable', 'B10' => 'storage', 'B11' => 'hydro',
++        'B12' => 'hydro', 'B13' => 'other_renewable', 'B14' => 'nuclear', 'B15' => 'other_renewable',
++        'B16' => 'solar', 'B17' => 'other', 'B18' => 'wind', 'B19' => 'wind', 'B20' => 'other',
++    ];
++    return $map[$psr] ?? 'other';
++}
++
++/**
++ * Local day -> [utcStart, utcEnd) as 'Y-m-d H:i:s', using the area's time
++ * zone (so a 23- or 25-hour clock-change day is handled).
++ */
++function ukgrid_area_day_bounds(array $area, string $day): array
++{
++    $tz = new DateTimeZone($area['tz']);
++    $start = new DateTimeImmutable($day . ' 00:00:00', $tz);
++    $end = $start->modify('+1 day');
++    $utc = new DateTimeZone('UTC');
++    return [$start->setTimezone($utc)->format('Y-m-d H:i:s'), $end->setTimezone($utc)->format('Y-m-d H:i:s')];
++}
++
++/** Today's date in the area's own time zone. */
++function ukgrid_area_today(array $area): string
++{
++    return (new DateTimeImmutable('now', new DateTimeZone($area['tz'])))->format('Y-m-d');
++}
++
++/**
++ * Bucketed readings for one area between two UTC times (end exclusive).
++ * Returns [ 'Y-m-d H:i:s' => ['g' => [group => MW], 'demand' => ?, 'price' => ?, 'carbon' => ?, 'imports' => ?] ]
++ * in time order. Buckets with no generation are left out.
++ */
++function ukgrid_area_buckets(PDO $pdo, array $area, string $fromUtc, string $toUtc): array
++{
++    $b = (int) $area['bucket'];
++    $bucketExpr = "FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/{$b})*{$b})";
++    $range = 'ts >= :f AND ts < :t';
++    $p = ['f' => $fromUtc, 't' => $toUtc];
++    $out = [];
++    $add = function (string $ts, string $field, $group, $mw) use (&$out) {
++        if ($mw === null || !is_numeric($mw)) {
++            return;
++        }
++        if (!isset($out[$ts])) {
++            $out[$ts] = ['g' => [], 'demand' => null, 'price' => null, 'carbon' => null, 'imports' => null];
++        }
++        if ($field === 'g') {
++            $out[$ts]['g'][$group] = ($out[$ts]['g'][$group] ?? 0) + (float) $mw;
++        } elseif ($field === 'imports') {
++            $out[$ts]['imports'] = ($out[$ts]['imports'] ?? 0) + (float) $mw;
++        } else {
++            $out[$ts][$field] = (float) $mw;
++        }
++    };
++    $q = function (string $sql, array $extra = []) use ($pdo, $p) {
++        $st = $pdo->prepare($sql);
++        $st->execute(array_merge($p, $extra));
++        return $st->fetchAll(PDO::FETCH_NUM);
++    };
++    $code = $area['code'];
++
++    switch ($area['kind']) {
++        case 'gb':
++            $fuel = ['CCGT' => 'gas', 'OCGT' => 'gas', 'COAL' => 'coal', 'NUCLEAR' => 'nuclear', 'BIOMASS' => 'biomass',
++                     'WIND' => 'wind', 'WIND_EMBEDDED' => 'wind', 'SOLAR_EMBEDDED' => 'solar', 'NPSHYD' => 'hydro',
++                     'PS' => 'storage', 'OIL' => 'oil', 'OTHER' => 'other'];
++            foreach ($q("SELECT {$bucketExpr} b, fuel_type, AVG(mw) FROM readings_generation WHERE {$range} GROUP BY b, fuel_type") as [$ts, $f, $mw]) {
++                if (strpos($f, 'INT') === 0) {
++                    $add($ts, 'imports', null, $mw);
++                } else {
++                    $add($ts, 'g', $fuel[$f] ?? 'other', $mw);
++                }
++            }
++            foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
++            foreach ($q("SELECT {$bucketExpr} b, AVG(price) FROM readings_price WHERE {$range} AND provider = 'APXMIDP' GROUP BY b") as [$ts, $v]) $add($ts, 'price', null, $v);
++            foreach ($q("SELECT {$bucketExpr} b, AVG(COALESCE(actual_gco2, forecast_gco2)) FROM readings_emissions WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'carbon', null, $v);
++            break;
++
++        case 'entsoe':
++            foreach ($q("SELECT {$bucketExpr} b, psr_type, AVG(mw) FROM readings_entsoe_generation WHERE {$range} AND country_code = :cc GROUP BY b, psr_type", ['cc' => $code]) as [$ts, $psr, $mw]) {
++                $add($ts, 'g', ukgrid_area_psr_group((string) $psr), $mw);
++            }
++            if ($area['has_demand']) {
++                foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_entsoe_demand WHERE {$range} AND country_code = :cc GROUP BY b", ['cc' => $code]) as [$ts, $v]) $add($ts, 'demand', null, $v);
++            }
++            if ($area['has_price']) {
++                foreach ($q("SELECT {$bucketExpr} b, AVG(price_eur_mwh) FROM readings_entsoe_price WHERE {$range} AND country_code = :cc GROUP BY b", ['cc' => $code]) as [$ts, $v]) $add($ts, 'price', null, $v);
++            }
++            foreach (ukgrid_area_flow_net($pdo, $code, $bucketExpr, $range, $p) as [$ts, $v]) {
++                $add($ts, 'imports', null, $v);
++            }
++            break;
++
++        case 'ie':
++            $tot = [];
++            foreach ($q("SELECT {$bucketExpr} b, category, AVG(mw) FROM readings_ie_generation WHERE {$range} GROUP BY b, category") as [$ts, $cat, $mw]) {
++                if ($cat === 'TOTAL') {
++                    $tot[$ts] = (float) $mw;
++                } elseif ($cat === 'WIND') {
++                    $add($ts, 'g', 'wind', $mw);
++                } elseif ($cat === 'SOLAR') {
++                    $add($ts, 'g', 'solar', $mw);
++                } elseif ($cat === 'INTERCONNECTION') {
++                    $add($ts, 'imports', null, $mw);
++                }
++            }
++            foreach ($tot as $ts => $mw) {
++                $known = ($out[$ts]['g']['wind'] ?? 0) + ($out[$ts]['g']['solar'] ?? 0);
++                $add($ts, 'g', 'other', max(0, $mw - $known));
++            }
++            foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_ie_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
++            foreach ($q("SELECT {$bucketExpr} b, AVG(price_eur_mwh) FROM readings_entsoe_price WHERE {$range} AND country_code = 'IE' GROUP BY b") as [$ts, $v]) $add($ts, 'price', null, $v);
++            foreach ($q("SELECT {$bucketExpr} b, AVG(gco2_per_kwh) FROM readings_ie_co2 WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'carbon', null, $v);
++            break;
++
++        case 'us':
++            $fuel = ['COL' => 'coal', 'NG' => 'gas', 'NUC' => 'nuclear', 'OIL' => 'oil', 'WAT' => 'hydro', 'SUN' => 'solar',
++                     'SNB' => 'solar', 'WND' => 'wind', 'GEO' => 'other_renewable', 'BAT' => 'storage', 'PS' => 'storage',
++                     'OES' => 'storage', 'UES' => 'storage', 'OTH' => 'other', 'UNK' => 'other'];
++            foreach ($q("SELECT {$bucketExpr} b, category, AVG(mw) FROM readings_us_generation WHERE {$range} GROUP BY b, category") as [$ts, $cat, $mw]) {
++                if ($cat === 'TOTAL') {
++                    continue;
++                }
++                if ($cat === 'INTERCONNECTION') {
++                    // EIA total interchange is positive when exporting.
++                    $add($ts, 'imports', null, -(float) $mw);
++                    continue;
++                }
++                if (isset($fuel[$cat]) && $fuel[$cat] === 'storage' && $mw < 0) {
++                    continue; // charging
++                }
++                $add($ts, 'g', $fuel[$cat] ?? 'other', $mw);
++            }
++            foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_us_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
++            break;
++
++        case 'ca':
++            $fuel = ['NUCLEAR' => 'nuclear', 'GAS' => 'gas', 'HYDRO' => 'hydro', 'WIND' => 'wind', 'SOLAR' => 'solar',
++                     'BIOFUEL' => 'biomass', 'OTHER' => 'other'];
++            foreach ($q("SELECT {$bucketExpr} b, category, AVG(mw) FROM readings_ca_generation WHERE {$range} GROUP BY b, category") as [$ts, $cat, $mw]) {
++                $add($ts, 'g', $fuel[$cat] ?? 'other', $mw);
++            }
++            foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_ca_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
++            break;
++
++        case 'au':
++            $fuel = ['coal' => 'coal', 'gas' => 'gas', 'wind' => 'wind', 'solar' => 'solar', 'hydro' => 'hydro',
++                     'distillate' => 'oil', 'bioenergy' => 'biomass', 'battery_discharging' => 'storage'];
++            foreach ($q("SELECT {$bucketExpr} b, category, AVG(mw) FROM readings_au_generation WHERE {$range} GROUP BY b, category") as [$ts, $cat, $mw]) {
++                if (!isset($fuel[$cat])) {
++                    continue; // pumps and battery_charging are loads
++                }
++                $add($ts, 'g', $fuel[$cat], abs((float) $mw));
++            }
++            foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_au_demand WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'demand', null, $v);
++            foreach ($q("SELECT {$bucketExpr} b, AVG(price_aud_mwh) FROM readings_au_price WHERE {$range} GROUP BY b") as [$ts, $v]) $add($ts, 'price', null, $v);
++            break;
++    }
++
++    // Only buckets with generation count as readings; negative storage
++    // (charging) is not generation.
++    foreach ($out as $ts => $row) {
++        foreach ($row['g'] as $g => $mw) {
++            if ($mw < 0) {
++                unset($out[$ts]['g'][$g]);
++            }
++        }
++        if (empty($out[$ts]['g'])) {
++            unset($out[$ts]);
++        }
++    }
++    ksort($out);
++    return $out;
++}
++
++/** Net imports per bucket from readings_flow (ENTSO-E physical flows). Empty if that table is missing or empty. */
++function ukgrid_area_flow_net(PDO $pdo, string $code, string $bucketExpr, string $range, array $p): array
++{
++    try {
++        $st = $pdo->prepare(
++            "SELECT b, SUM(v) FROM (
++               SELECT {$bucketExpr} b, to_area, from_area, AVG(CASE WHEN to_area = :c1 THEN mw ELSE -mw END) v
++               FROM readings_flow WHERE {$range} AND (to_area = :c2 OR from_area = :c3)
++               GROUP BY b, to_area, from_area
++             ) x GROUP BY b"
++        );
++        $st->execute(array_merge($p, ['c1' => $code, 'c2' => $code, 'c3' => $code]));
++        return $st->fetchAll(PDO::FETCH_NUM);
++    } catch (Throwable $e) {
++        return [];
++    }
++}
++
++/** Renewable / zero-carbon / fossil MW and total generation for one bucket's groups. */
++function ukgrid_area_shares(array $area, array $g): array
++{
++    $sum = function (array $keys) use ($g) {
++        $s = 0.0;
++        foreach ($keys as $k) {
++            $s += $g[$k] ?? 0;
++        }
++        return $s;
++    };
++    $total = array_sum($g);
++    $renKeys = ['wind', 'solar', 'hydro', 'other_renewable'];
++    if (!empty($area['renewable_biomass'])) {
++        $renKeys[] = 'biomass';
++    }
++    return [
++        'total' => $total,
++        'renewable' => $sum($renKeys),
++        'zero_carbon' => $sum(['wind', 'solar', 'hydro', 'other_renewable', 'nuclear']),
++        'fossil' => $sum(['gas', 'coal', 'oil']),
++    ];
++}
++
++/**
++ * Summary of one local day from bucketed readings: energy by group,
++ * shares, demand peak/low, price range, imports, and that day's extremes
++ * (used for the records). Null if the day has no readings.
++ */
++function ukgrid_area_day_summary(array $area, array $buckets, string $day): ?array
++{
++    if (!$buckets) {
++        return null;
++    }
++    [$dayStart, $dayEnd] = ukgrid_area_day_bounds($area, $day);
++    $hours = (strtotime($dayEnd . ' UTC') - strtotime($dayStart . ' UTC')) / 3600;
++    $h = $area['bucket'] / 3600; // hours per bucket
++    $energy = [];
++    $gen = $ren = $zc = $fos = 0.0;
++    $imp = $impIn = $impOut = 0.0;
++    $impSeen = false;
++    $demand = $price = $carbon = [];
++    $ext = [];
++    $better = function (string $key, float $v, string $ts, bool $high) use (&$ext) {
++        if (!isset($ext[$key]) || ($high ? $v > $ext[$key][0] : $v < $ext[$key][0])) {
++            $ext[$key] = [round($v, 2), $ts];
++        }
++    };
++    foreach ($buckets as $ts => $row) {
++        $s = ukgrid_area_shares($area, $row['g']);
++        if ($s['total'] <= 0) {
++            continue;
++        }
++        foreach ($row['g'] as $grp => $mw) {
++            $energy[$grp] = ($energy[$grp] ?? 0) + $mw * $h;
++        }
++        $gen += $s['total'] * $h;
++        $ren += $s['renewable'] * $h;
++        $zc += $s['zero_carbon'] * $h;
++        $fos += $s['fossil'] * $h;
++        $better('wind_peak_mw', $row['g']['wind'] ?? 0, $ts, true);
++        $better('solar_peak_mw', $row['g']['solar'] ?? 0, $ts, true);
++        $better('renewable_share_high', $s['renewable'] / $s['total'] * 100, $ts, true);
++        $better('zero_carbon_share_high', $s['zero_carbon'] / $s['total'] * 100, $ts, true);
++        $better('fossil_share_low', $s['fossil'] / $s['total'] * 100, $ts, false);
++        if ($row['imports'] !== null) {
++            $impSeen = true;
++            $imp += $row['imports'] * $h;
++            if ($row['imports'] > 0) {
++                $impIn += $row['imports'] * $h;
++            } else {
++                $impOut -= $row['imports'] * $h;
++            }
++        }
++        if ($row['demand'] !== null) {
++            $demand[] = $row['demand'];
++            $better('demand_high_mw', $row['demand'], $ts, true);
++            $better('demand_low_mw', $row['demand'], $ts, false);
++        }
++        if ($row['price'] !== null) {
++            $price[] = $row['price'];
++            $better('price_high', $row['price'], $ts, true);
++            $better('price_low', $row['price'], $ts, false);
++        }
++        if ($row['carbon'] !== null) {
++            $carbon[] = $row['carbon'];
++            $better('carbon_low', $row['carbon'], $ts, false);
++            $better('carbon_high', $row['carbon'], $ts, true);
++        }
++    }
++    if ($gen <= 0) {
++        return null;
++    }
++    arsort($energy);
++    $avg = function (array $a) { return $a ? array_sum($a) / count($a) : null; };
++    // Remove extremes that are meaningless when the source has no such
++    // generation at all (a 0MW "solar peak" in a country with no solar data).
++    foreach (['wind_peak_mw' => 'wind', 'solar_peak_mw' => 'solar'] as $k => $grp) {
++        if (empty($energy[$grp])) {
++            unset($ext[$k]);
++        }
++    }
++    $ext['wind_day_mwh'] = isset($energy['wind']) ? [round($energy['wind'], 1), $day] : null;
++    $ext['solar_day_mwh'] = isset($energy['solar']) ? [round($energy['solar'], 1), $day] : null;
++    $ext['renewable_day_share'] = [round($ren / $gen * 100, 2), $day];
++    $ext = array_filter($ext);
++    return [
++        'day' => $day,
++        'coverage' => round(min(1, count($buckets) * $h / $hours), 3),
++        'gen_mwh' => round($gen, 1),
++        'energy_mwh' => array_map(function ($v) { return round($v, 1); }, $energy),
++        'largest' => array_key_first($energy),
++        'renewable_share' => round($ren / $gen * 100, 2),
++        'zero_carbon_share' => round($zc / $gen * 100, 2),
++        'fossil_share' => round($fos / $gen * 100, 2),
++        'imports_net_mwh' => $impSeen ? round($imp, 1) : null,
++        'imports_in_mwh' => $impSeen ? round($impIn, 1) : null,
++        'imports_out_mwh' => $impSeen ? round($impOut, 1) : null,
++        // Share of the area's own use met by its own generation.
++        'home_share' => $impSeen && ($gen + $imp) > 0 ? round(min(100, $gen / ($gen + max(0, $imp)) * 100), 2) : null,
++        'demand_avg_mw' => $demand ? round($avg($demand), 1) : null,
++        'price_avg' => $price ? round($avg($price), 2) : null,
++        'carbon_avg' => $carbon ? round($avg($carbon), 1) : null,
++        'extremes' => $ext,
++    ];
++}
++
++/** Creates the daily_summary table if needed. */
++function ukgrid_area_ensure_tables(PDO $pdo): void
++{
++    static $done = false;
++    if ($done) {
++        return;
++    }
++    $pdo->exec("CREATE TABLE IF NOT EXISTS daily_summary (
++        area VARCHAR(4) NOT NULL,
++        day DATE NOT NULL,
++        coverage DECIMAL(4,3) NOT NULL,
++        gen_mwh DECIMAL(14,1) NOT NULL,
++        renewable_share DECIMAL(5,2) NOT NULL,
++        zero_carbon_share DECIMAL(5,2) NOT NULL,
++        fossil_share DECIMAL(5,2) NOT NULL,
++        largest VARCHAR(20) NULL,
++        demand_avg_mw DECIMAL(10,1) NULL,
++        price_avg DECIMAL(9,2) NULL,
++        carbon_avg DECIMAL(7,1) NULL,
++        imports_net_mwh DECIMAL(12,1) NULL,
++        summary_json TEXT NOT NULL,
++        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
++        PRIMARY KEY (area, day)
++    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
++    $done = true;
++}
++
++/** Saves one day's summary. */
++function ukgrid_area_save_day(PDO $pdo, string $code, array $s): void
++{
++    $st = $pdo->prepare('INSERT INTO daily_summary (area, day, coverage, gen_mwh, renewable_share, zero_carbon_share, fossil_share, largest, demand_avg_mw, price_avg, carbon_avg, imports_net_mwh, summary_json)
++        VALUES (:a, :d, :cov, :gen, :ren, :zc, :fos, :lg, :dem, :pr, :co, :imp, :js)
++        ON DUPLICATE KEY UPDATE coverage = VALUES(coverage), gen_mwh = VALUES(gen_mwh), renewable_share = VALUES(renewable_share),
++          zero_carbon_share = VALUES(zero_carbon_share), fossil_share = VALUES(fossil_share), largest = VALUES(largest),
++          demand_avg_mw = VALUES(demand_avg_mw), price_avg = VALUES(price_avg), carbon_avg = VALUES(carbon_avg),
++          imports_net_mwh = VALUES(imports_net_mwh), summary_json = VALUES(summary_json)');
++    $st->execute([
++        'a' => $code, 'd' => $s['day'], 'cov' => $s['coverage'], 'gen' => $s['gen_mwh'], 'ren' => $s['renewable_share'],
++        'zc' => $s['zero_carbon_share'], 'fos' => $s['fossil_share'], 'lg' => $s['largest'], 'dem' => $s['demand_avg_mw'],
++        'pr' => $s['price_avg'], 'co' => $s['carbon_avg'], 'imp' => $s['imports_net_mwh'], 'js' => json_encode($s),
++    ]);
++}
++
++/** Earliest stored reading for an area, as a UTC 'Y-m-d H:i:s', or null. */
++function ukgrid_area_first_ts(PDO $pdo, array $area): ?string
++{
++    $sql = [
++        'gb' => 'SELECT MIN(ts) FROM readings_generation',
++        'ie' => 'SELECT MIN(ts) FROM readings_ie_generation',
++        'us' => 'SELECT MIN(ts) FROM readings_us_generation',
++        'ca' => 'SELECT MIN(ts) FROM readings_ca_generation',
++        'au' => 'SELECT MIN(ts) FROM readings_au_generation',
++        'entsoe' => 'SELECT MIN(ts) FROM readings_entsoe_generation WHERE country_code = :cc',
++    ][$area['kind']];
++    try {
++        $st = $pdo->prepare($sql);
++        $st->execute($area['kind'] === 'entsoe' ? ['cc' => $area['code']] : []);
++        $v = $st->fetchColumn();
++        return $v ? (string) $v : null;
++    } catch (Throwable $e) {
++        return null;
++    }
++}
++
++/**
++ * The DAILY job: re-summarises yesterday and today for every area (late
++ * data keeps arriving), then works backwards through older days that have
++ * readings but no summary yet, a limited number per run. Database only -
++ * no outside requests.
++ */
++function ukgrid_compute_daily(PDO $pdo, array $config, int $timeoutSeconds = 10): array
++{
++    ukgrid_area_ensure_tables($pdo);
++    $areas = ukgrid_areas($config);
++    $started = microtime(true);
++    $budget = max(3, $timeoutSeconds);
++    $rows = 0;
++    $errors = [];
++    $backfillMax = (int) ($config['refresh']['daily_backfill_days_per_run'] ?? 30);
++    $backfilled = 0;
++
++    foreach ($areas as $code => $area) {
++        try {
++            $today = ukgrid_area_today($area);
++            $yesterday = (new DateTimeImmutable($today))->modify('-1 day')->format('Y-m-d');
++            foreach ([$yesterday, $today] as $day) {
++                [$f, $t] = ukgrid_area_day_bounds($area, $day);
++                $s = ukgrid_area_day_summary($area, ukgrid_area_buckets($pdo, $area, $f, $t), $day);
++                if ($s) {
++                    ukgrid_area_save_day($pdo, $code, $s);
++                    $rows++;
++                }
++            }
++        } catch (Throwable $e) {
++            $errors[] = $code . ': ' . $e->getMessage();
++        }
++    }
++
++    // Backfill, oldest gap last: walk back from the day before yesterday.
++    foreach ($areas as $code => $area) {
++        if ($backfilled >= $backfillMax || microtime(true) - $started > $budget) {
++            break;
++        }
++        try {
++            $first = ukgrid_area_first_ts($pdo, $area);
++            if ($first === null) {
++                continue;
++            }
++            $firstDay = (new DateTimeImmutable($first, new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($area['tz']))->format('Y-m-d');
++            $have = $pdo->prepare('SELECT day FROM daily_summary WHERE area = :a AND day >= :d');
++            $have->execute(['a' => $code, 'd' => $firstDay]);
++            $done = array_flip($have->fetchAll(PDO::FETCH_COLUMN));
++            $day = (new DateTimeImmutable(ukgrid_area_today($area)))->modify('-2 day');
++            $stop = new DateTimeImmutable($firstDay);
++            while ($day >= $stop && $backfilled < $backfillMax && microtime(true) - $started <= $budget) {
++                $d = $day->format('Y-m-d');
++                $day = $day->modify('-1 day');
++                if (isset($done[$d])) {
++                    continue;
++                }
++                [$f, $t] = ukgrid_area_day_bounds($area, $d);
++                $s = ukgrid_area_day_summary($area, ukgrid_area_buckets($pdo, $area, $f, $t), $d);
++                $backfilled++;
++                if ($s) {
++                    ukgrid_area_save_day($pdo, $code, $s);
++                    $rows++;
++                } else {
++                    // Remember empty days too, so they are not re-checked every run.
++                    ukgrid_area_save_day($pdo, $code, ['day' => $d, 'coverage' => 0, 'gen_mwh' => 0, 'renewable_share' => 0,
++                        'zero_carbon_share' => 0, 'fossil_share' => 0, 'largest' => null, 'demand_avg_mw' => null,
++                        'price_avg' => null, 'carbon_avg' => null, 'imports_net_mwh' => null, 'empty' => true]);
++                }
++            }
++        } catch (Throwable $e) {
++            $errors[] = $code . ' backfill: ' . $e->getMessage();
++        }
++    }
++
++    ukgrid_log_ingest('DAILY', $errors ? 'ERROR' : 'OK', $rows, ($backfilled ? "backfilled {$backfilled} older day(s). " : '') . implode('; ', array_slice($errors, 0, 5)));
++    return ['rows' => $rows, 'errors' => $errors];
++}
++
++/** Record definitions: key => [label, unit, 'high'|'low', needs]. */
++function ukgrid_area_record_defs(array $area): array
++{
++    $cur = ['GBP' => '£', 'EUR' => '€', 'USD' => '$', 'AUD' => 'A$', 'CAD' => 'C$'][$area['currency']] ?? '';
++    $defs = [
++        'wind_peak_mw' => ['Highest wind output', 'MW', 'high', 'Generation'],
++        'wind_day_mwh' => ['Most wind in a day', 'MWh', 'high', 'Generation'],
++        'solar_peak_mw' => ['Highest solar output', 'MW', 'high', 'Generation'],
++        'solar_day_mwh' => ['Most solar in a day', 'MWh', 'high', 'Generation'],
++        'renewable_share_high' => ['Highest renewable share', '%', 'high', 'Shares'],
++        'renewable_day_share' => ['Most renewable day', '%', 'high', 'Shares'],
++        'zero_carbon_share_high' => ['Highest zero-carbon share', '%', 'high', 'Shares'],
++        'fossil_share_low' => ['Lowest fossil share', '%', 'low', 'Shares'],
++        'demand_high_mw' => ['Highest demand', 'MW', 'high', 'Demand'],
++        'demand_low_mw' => ['Lowest demand', 'MW', 'low', 'Demand'],
++    ];
++    if ($area['has_price']) {
++        $defs['price_high'] = ['Highest price', $cur . '/MWh', 'high', 'Price'];
++        $defs['price_low'] = ['Lowest price', $cur . '/MWh', 'low', 'Price'];
++    }
++    if (!empty($area['carbon'])) {
++        $defs['carbon_low'] = ['Lowest carbon intensity', 'g/kWh', 'low', 'Carbon'];
++        $defs['carbon_high'] = ['Highest carbon intensity', 'g/kWh', 'high', 'Carbon'];
++    }
++    return $defs;
++}
++
++/** For the API endpoints: the area named by ?area=, or a JSON 400. */
++function ukgrid_api_area(array $config): array
++{
++    $areas = ukgrid_areas($config);
++    $code = strtoupper((string) ($_GET['area'] ?? ''));
++    if (!isset($areas[$code])) {
++        ukgrid_json_error('bad_area', 'area must be one of: ' . implode(', ', array_keys($areas)));
++    }
++    return $areas[$code];
++}
++
++/** Public fields of an area, for API replies. */
++function ukgrid_area_public(array $area): array
++{
++    return [
++        'code' => $area['code'], 'name' => $area['name'], 'tz' => $area['tz'], 'currency' => $area['currency'],
++        'page' => $area['page'], 'source' => $area['source'], 'has_demand' => $area['has_demand'],
++        'has_price' => $area['has_price'], 'has_carbon' => !empty($area['carbon']),
++        'other_label' => $area['other_label'] ?? null, 'renewable_biomass' => !empty($area['renewable_biomass']),
++        'bucket_minutes' => (int) ($area['bucket'] / 60),
++    ];
++}
++
++/** ISO 8601 UTC for a 'Y-m-d H:i:s' UTC string. */
++function ukgrid_iso(?string $ts): ?string
++{
++    return $ts ? gmdate('Y-m-d\TH:i:s\Z', strtotime($ts . ' UTC')) : null;
++}
++
++/**
++ * Walks every stored day in date order and works out the records: the
++ * best value of each kind, the record it beat, each year's best, and
++ * every time a record was broken.
++ */
++function ukgrid_area_records(PDO $pdo, array $area): array
++{
++    ukgrid_area_ensure_tables($pdo);
++    $defs = ukgrid_area_record_defs($area);
++    $st = $pdo->prepare('SELECT day, coverage, summary_json FROM daily_summary WHERE area = :a AND gen_mwh > 0 ORDER BY day');
++    $st->execute(['a' => $area['code']]);
++    $best = [];
++    $prev = [];
++    $years = [];
++    $grid = [];
++    $breaks = [];
++    $first = null;
++    $dailyKinds = ['wind_day_mwh', 'solar_day_mwh', 'renewable_day_share'];
++    foreach ($st as $row) {
++        $first = $first ?? $row['day'];
++        $s = json_decode($row['summary_json'], true);
++        if (!is_array($s) || empty($s['extremes'])) {
++            continue;
++        }
++        $year = substr($row['day'], 0, 4);
++        $years[$year] = true;
++        foreach ($defs as $key => [$label, $unit, $dir]) {
++            if (!isset($s['extremes'][$key])) {
++                continue;
++            }
++            if (in_array($key, $dailyKinds, true) && (float) $row['coverage'] < 0.9) {
++                continue; // a whole-day record needs (nearly) the whole day
++            }
++            [$v, $ts] = $s['extremes'][$key];
++            $v = (float) $v;
++            $isBetter = function ($a, $b) use ($dir) { return $dir === 'high' ? $a > $b : $a < $b; };
++            if (!isset($grid[$key][$year]) || $isBetter($v, $grid[$key][$year])) {
++                $grid[$key][$year] = $v;
++            }
++            if (!isset($best[$key]) || $isBetter($v, $best[$key]['value'])) {
++                if (isset($best[$key])) {
++                    $prev[$key] = $best[$key];
++                    $breaks[] = ['key' => $key, 'label' => $label, 'unit' => $unit, 'value' => $v, 'ts' => $ts, 'day' => $row['day'],
++                                 'previous' => $best[$key]['value'], 'previous_ts' => $best[$key]['ts']];
++                }
++                $best[$key] = ['value' => $v, 'ts' => $ts, 'day' => $row['day']];
++            }
++        }
++    }
++    $iso = function ($ts) {
++        return strlen((string) $ts) === 10 ? $ts : ukgrid_iso($ts);
++    };
++    $board = [];
++    foreach ($defs as $key => [$label, $unit, $dir, $group]) {
++        if (!isset($best[$key])) {
++            continue;
++        }
++        $board[] = ['key' => $key, 'label' => $label, 'unit' => $unit, 'direction' => $dir, 'group' => $group,
++                    'value' => $best[$key]['value'], 'ts' => $iso($best[$key]['ts']), 'day' => $best[$key]['day'],
++                    'previous' => $prev[$key]['value'] ?? null, 'previous_ts' => isset($prev[$key]) ? $iso($prev[$key]['ts']) : null];
++    }
++    // Recent breaks, newest first, ignoring the first 30 days of records
++    // (everything is a "record" while there is little history).
++    $settle = $first ? date('Y-m-d', strtotime($first . ' +30 days')) : null;
++    $recent = array_values(array_filter($breaks, function ($b) use ($settle) { return $settle && $b['day'] >= $settle; }));
++    usort($recent, function ($a, $b) { return strcmp($b['day'], $a['day']); });
++    $recent = array_map(function ($b) use ($iso) {
++        $b['ts'] = $iso($b['ts']);
++        $b['previous_ts'] = $iso($b['previous_ts']);
++        return $b;
++    }, array_slice($recent, 0, 12));
++    $yearList = array_keys($years);
++    sort($yearList);
++    return ['since' => $first, 'board' => $board, 'years' => $yearList, 'grid' => $grid, 'recent' => $recent];
++}
+diff --git a/includes/flows_annual.php b/includes/flows_annual.php
+new file mode 100644
+index 0000000..93b6b78
+--- /dev/null
++++ b/includes/flows_annual.php
+@@ -0,0 +1,605 @@
++<?php
++/**
++ * UK Grid: Live+ - cross-border flows and yearly generation history.
++ *
++ * Both make slow outside requests, so only the scheduler runs them
++ * (cron/run-due.php: GitHub Actions or the Docker container), a little
++ * at a time, never a visitor's page load.
++ *
++ * FLOWS - physical flows across each border between the European
++ * countries on this site and their neighbours, from the ENTSO-E
++ * Transparency Platform ("Cross-border physical flows", document A11).
++ * One border (both directions, two requests) per run, oldest first, so
++ * each border is updated every few hours. Stored in readings_flow.
++ *
++ * ANNUAL - generation by fuel for each year, from official statistics:
++ *   - European countries and Ireland: Eurostat, "Production of
++ *     electricity and derived heat by type of fuel" (nrg_bal_peh, gross
++ *     electricity production). Whole countries, so Norway, Sweden and
++ *     Denmark are the whole country rather than the one price zone the
++ *     live pages show, and Ireland is the Republic of Ireland only.
++ *   - Great Britain: NESO Data Portal, "Historic generation mix".
++ *   - USA: EIA, "Electric power operational data" (all sectors).
++ *   - Ontario: IESO, yearly "Generator output by fuel type" reports.
++ *   - Australia (NEM): Open Electricity, yearly energy by fuel
++ *     (CC BY-NC 4.0, like the rest of that page).
++ * One area per run; each area is refreshed every 30 days. Stored in
++ * annual_mix. tools/annual-check.php shows what each source returned.
++ */
++
++/** Creates the tables these two jobs use, if missing. */
++function ukgrid_flows_annual_ensure_tables(PDO $pdo): void
++{
++    static $done = false;
++    if ($done) {
++        return;
++    }
++    $pdo->exec("CREATE TABLE IF NOT EXISTS readings_flow (
++        ts DATETIME NOT NULL COMMENT 'UTC',
++        from_area VARCHAR(4) NOT NULL,
++        to_area VARCHAR(4) NOT NULL,
++        mw DECIMAL(10,2) NOT NULL,
++        PRIMARY KEY (ts, from_area, to_area),
++        KEY idx_to (to_area, ts),
++        KEY idx_from (from_area, ts)
++    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
++    $pdo->exec("CREATE TABLE IF NOT EXISTS fetch_state (
++        job VARCHAR(10) NOT NULL,
++        item VARCHAR(20) NOT NULL,
++        fetched_at DATETIME NOT NULL,
++        status VARCHAR(10) NOT NULL,
++        message TEXT NULL,
++        PRIMARY KEY (job, item)
++    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
++    $pdo->exec("CREATE TABLE IF NOT EXISTS annual_mix (
++        area VARCHAR(4) NOT NULL,
++        year SMALLINT NOT NULL,
++        grp VARCHAR(20) NOT NULL,
++        gwh DECIMAL(12,1) NOT NULL,
++        source VARCHAR(20) NOT NULL,
++        PRIMARY KEY (area, year, grp)
++    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
++    $done = true;
++}
++
++function ukgrid_fetch_state_get(PDO $pdo, string $job): array
++{
++    $st = $pdo->prepare('SELECT item, fetched_at, status, message FROM fetch_state WHERE job = :j');
++    $st->execute(['j' => $job]);
++    $out = [];
++    foreach ($st->fetchAll() as $r) {
++        $out[$r['item']] = $r;
++    }
++    return $out;
++}
++
++function ukgrid_fetch_state_set(PDO $pdo, string $job, string $item, string $status, string $message): void
++{
++    $pdo->prepare('INSERT INTO fetch_state (job, item, fetched_at, status, message) VALUES (:j, :i, UTC_TIMESTAMP(), :s, :m)
++        ON DUPLICATE KEY UPDATE fetched_at = VALUES(fetched_at), status = VALUES(status), message = VALUES(message)')
++        ->execute(['j' => $job, 'i' => $item, 's' => $status, 'm' => mb_substr($message, 0, 2000)]);
++}
++
++// ---------------------------------------------------------------------------
++// Cross-border flows
++// ---------------------------------------------------------------------------
++
++/** ENTSO-E area codes for this site's countries and their neighbours. */
++function ukgrid_flow_zones(): array
++{
++    return [
++        'FR' => ['10YFR-RTE------C', 'France'], 'NL' => ['10YNL----------L', 'Netherlands'], 'BE' => ['10YBE----------2', 'Belgium'],
++        'NO' => ['10YNO-2--------T', 'Norway (NO2)'], 'DK' => ['10YDK-1--------W', 'Denmark (DK1, west)'],
++        'DE' => ['10Y1001A1001A82H', 'Germany'], 'ES' => ['10YES-REE------0', 'Spain'], 'IT' => ['10YIT-GRTN-----B', 'Italy'],
++        'SE' => ['10Y1001A1001A46L', 'Sweden (SE3)'], 'PT' => ['10YPT-REN------W', 'Portugal'], 'PL' => ['10YPL-AREA-----S', 'Poland'],
++        'CH' => ['10YCH-SWISSGRIDZ', 'Switzerland'], 'AT' => ['10YAT-APG------L', 'Austria'], 'CZ' => ['10YCZ-CEPS-----N', 'Czechia'],
++        'SK' => ['10YSK-SEPS-----K', 'Slovakia'], 'LT' => ['10YLT-1001A0008Q', 'Lithuania'], 'SI' => ['10YSI-ELES-----O', 'Slovenia'],
++        'GR' => ['10YGR-HTSO-----Y', 'Greece'], 'FI' => ['10YFI-1--------U', 'Finland'], 'NO1' => ['10YNO-1--------2', 'Norway (NO1, Oslo)'],
++        'NO5' => ['10Y1001A1001A48H', 'Norway (NO5, Bergen)'], 'DK2' => ['10YDK-2--------M', 'Denmark (DK2, east)'],
++        'SE2' => ['10Y1001A1001A45N', 'Sweden (SE2)'], 'SE4' => ['10Y1001A1001A47J', 'Sweden (SE4, south)'],
++    ];
++}
++
++/** Borders as [a, b] pairs. Each is fetched in both directions. */
++function ukgrid_flow_borders(array $config): array
++{
++    $borders = $config['refresh']['flow_borders'] ?? [
++        ['FR', 'BE'], ['FR', 'DE'], ['FR', 'ES'], ['FR', 'IT'], ['FR', 'CH'],
++        ['NL', 'BE'], ['NL', 'DE'], ['NL', 'NO'], ['NL', 'DK'],
++        ['BE', 'DE'],
++        ['NO', 'DE'], ['NO', 'DK'], ['NO', 'NO1'], ['NO', 'NO5'],
++        ['DK', 'DE'], ['DK', 'SE'], ['DK', 'DK2'],
++        ['DE', 'PL'], ['DE', 'CZ'], ['DE', 'AT'], ['DE', 'CH'], ['DE', 'DK2'], ['DE', 'SE4'],
++        ['ES', 'PT'],
++        ['IT', 'CH'], ['IT', 'AT'], ['IT', 'SI'], ['IT', 'GR'],
++        ['SE', 'NO1'], ['SE', 'FI'], ['SE', 'SE2'], ['SE', 'SE4'],
++        ['PL', 'CZ'], ['PL', 'SK'], ['PL', 'LT'], ['PL', 'SE4'],
++    ];
++    $configured = $config['sources']['entsoe_countries'] ?? [];
++    return array_values(array_filter($borders, function ($b) use ($configured) {
++        return isset($configured[$b[0]]) || isset($configured[$b[1]]);
++    }));
++}
++
++/** The FLOWS job: fetches the border(s) updated longest ago. */
++function ukgrid_ingest_flows(PDO $pdo, array $config, int $timeoutSeconds = 10, ?string $onlyBorder = null): array
++{
++    ukgrid_flows_annual_ensure_tables($pdo);
++    $token = trim((string) ($config['sources']['entsoe_api_token'] ?? ''));
++    if ($token === '' || $token === 'CHANGE-ME') {
++        ukgrid_log_ingest('FLOWS', 'OK', 0, 'entsoe_api_token not set - skipping.');
++        return ['rows' => 0, 'errors' => []];
++    }
++    $base = rtrim($config['sources']['entsoe_base'] ?? 'https://web-api.tp.entsoe.eu/api', '/');
++    $zones = ukgrid_flow_zones();
++    $state = ukgrid_fetch_state_get($pdo, 'FLOWS');
++    $minAge = (int) ($config['refresh']['flows_min_age_minutes'] ?? 60);
++    $perRun = max(1, (int) ($config['refresh']['flows_borders_per_run'] ?? 1));
++
++    $due = [];
++    foreach (ukgrid_flow_borders($config) as [$a, $b]) {
++        if (!isset($zones[$a], $zones[$b])) {
++            continue;
++        }
++        $key = $a . '-' . $b;
++        $last = isset($state[$key]) ? strtotime($state[$key]['fetched_at'] . ' UTC') : 0;
++        if ($onlyBorder !== null ? $key === $onlyBorder : $last < time() - $minAge * 60) {
++            $due[$key] = $last;
++        }
++    }
++    asort($due);
++    $due = array_slice(array_keys($due), 0, $perRun);
++    if (!$due) {
++        ukgrid_log_ingest('FLOWS', 'OK', 0, 'every border was updated within the last ' . $minAge . ' minutes.');
++        return ['rows' => 0, 'errors' => []];
++    }
++
++    // Yesterday 00:00 UTC to the end of this hour covers "today" in every
++    // European time zone, plus late corrections to yesterday.
++    $start = gmdate('Ymd', time() - 86400) . '0000';
++    $end = gmdate('YmdH', time() + 3600) . '00';
++    $ins = $pdo->prepare('INSERT INTO readings_flow (ts, from_area, to_area, mw) VALUES (:ts, :f, :t, :mw) ON DUPLICATE KEY UPDATE mw = VALUES(mw)');
++    $rows = 0;
++    $errors = [];
++    foreach ($due as $key) {
++        [$a, $b] = explode('-', $key);
++        $msgs = [];
++        $pairRows = 0;
++        foreach ([[$a, $b], [$b, $a]] as [$from, $to]) {
++            $url = $base . '?securityToken=' . urlencode($token) . '&documentType=A11'
++                . '&out_Domain=' . urlencode($zones[$from][0]) . '&in_Domain=' . urlencode($zones[$to][0])
++                . '&periodStart=' . $start . '&periodEnd=' . $end;
++            $body = ukgrid_http_get_raw($url, $timeoutSeconds);
++            if ($body === null) {
++                $msgs[] = "{$from}->{$to}: request failed";
++                continue;
++            }
++            $parsed = ukgrid_entsoe_parse_points($body, 'quantity');
++            if (!$parsed['ok']) {
++                $msgs[] = "{$from}->{$to}: " . $parsed['error'];
++                continue;
++            }
++            foreach ($parsed['points'] as $pt) {
++                $ins->execute(['ts' => $pt['ts'], 'f' => $from, 't' => $to, 'mw' => $pt['value']]);
++                $pairRows++;
++            }
++        }
++        $rows += $pairRows;
++        ukgrid_fetch_state_set($pdo, 'FLOWS', $key, $pairRows > 0 ? 'OK' : 'ERROR', implode('; ', $msgs));
++        if ($pairRows === 0) {
++            $errors[] = $key . ': ' . implode('; ', $msgs);
++        }
++    }
++    ukgrid_log_ingest('FLOWS', $rows > 0 ? 'OK' : 'ERROR', $rows, 'borders: ' . implode(', ', $due) . ($errors ? ' - ' . implode(' | ', $errors) : ''));
++    return ['rows' => $rows, 'errors' => $errors];
++}
++
++// ---------------------------------------------------------------------------
++// Yearly generation history
++// ---------------------------------------------------------------------------
++
++/** Which yearly source each area uses, and a plain description of what it covers. */
++function ukgrid_annual_sources(): array
++{
++    $eu = function (string $geo, string $scope) {
++        return ['kind' => 'eurostat', 'geo' => $geo, 'scope' => $scope,
++                'credit' => 'Eurostat, nrg_bal_peh (gross electricity production)', 'url' => 'https://ec.europa.eu/eurostat/databrowser/view/nrg_bal_peh/default/table'];
++    };
++    return [
++        'GB' => ['kind' => 'neso', 'scope' => 'Great Britain', 'credit' => 'NESO Data Portal, Historic generation mix', 'url' => 'https://www.neso.energy/data-portal/historic-generation-mix'],
++        'IE' => $eu('IE', 'Republic of Ireland (the live page covers the whole island)'),
++        'FR' => $eu('FR', 'France'), 'NL' => $eu('NL', 'Netherlands'), 'BE' => $eu('BE', 'Belgium'),
++        'NO' => $eu('NO', 'the whole of Norway (the live page shows the NO2 price zone)'),
++        'DK' => $eu('DK', 'the whole of Denmark (the live page shows DK1, western Denmark)'),
++        'DE' => $eu('DE', 'Germany'), 'ES' => $eu('ES', 'Spain'), 'IT' => $eu('IT', 'Italy'),
++        'SE' => $eu('SE', 'the whole of Sweden (the live page shows the SE3 price zone)'),
++        'PT' => $eu('PT', 'Portugal'), 'PL' => $eu('PL', 'Poland'),
++        'US' => ['kind' => 'eia', 'scope' => 'the whole USA, all sectors', 'credit' => 'U.S. EIA, Electric power operational data', 'url' => 'https://www.eia.gov/electricity/data/browser/'],
++        'CA' => ['kind' => 'ieso', 'scope' => 'Ontario', 'credit' => 'IESO, Generator output by fuel type (yearly reports)', 'url' => 'https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/'],
++        'AU' => ['kind' => 'openelectricity', 'scope' => 'the National Electricity Market (not Western Australia)', 'credit' => 'Open Electricity (CC BY-NC 4.0)', 'url' => 'https://openelectricity.org.au/'],
++    ];
++}
++
++/** The ANNUAL job: refreshes the area whose yearly figures are oldest. */
++function ukgrid_ingest_annual(PDO $pdo, array $config, int $timeoutSeconds = 15, ?string $only = null): array
++{
++    ukgrid_flows_annual_ensure_tables($pdo);
++    $areas = ukgrid_areas($config);
++    $sources = ukgrid_annual_sources();
++    $state = ukgrid_fetch_state_get($pdo, 'ANNUAL');
++    $refreshDays = (int) ($config['refresh']['annual_refresh_days'] ?? 30);
++
++    $pick = null;
++    $oldest = PHP_INT_MAX;
++    foreach ($areas as $code => $area) {
++        if (!isset($sources[$code]) || ($only !== null && $code !== $only)) {
++            continue;
++        }
++        $s = $state[$code] ?? null;
++        $last = $s ? strtotime($s['fetched_at'] . ' UTC') : 0;
++        // Retry a failure after a day; refresh a success every $refreshDays.
++        // Ontario fills one year per run until it has every year.
++        $wait = $s && $s['status'] === 'OK' ? ($s['message'] === 'more' ? 0 : $refreshDays * 86400) : 86400;
++        if (($only !== null || $last + $wait <= time()) && $last < $oldest) {
++            $oldest = $last;
++            $pick = $code;
++        }
++    }
++    if ($pick === null) {
++        ukgrid_log_ingest('ANNUAL', 'OK', 0, 'every area is up to date.');
++        return ['rows' => 0, 'errors' => []];
++    }
++
++    $src = $sources[$pick];
++    try {
++        switch ($src['kind']) {
++            case 'eurostat': $res = ukgrid_annual_eurostat($src['geo'], $timeoutSeconds); break;
++            case 'neso': $res = ukgrid_annual_neso($config, $timeoutSeconds); break;
++            case 'eia': $res = ukgrid_annual_eia($config, $timeoutSeconds); break;
++            case 'ieso': $res = ukgrid_annual_ieso($pdo, $timeoutSeconds); break;
++            case 'openelectricity': $res = ukgrid_annual_openelectricity($config, $timeoutSeconds); break;
++            default: $res = ['ok' => false, 'error' => 'unknown source', 'years' => []];
++        }
++    } catch (Throwable $e) {
++        $res = ['ok' => false, 'error' => get_class($e) . ': ' . $e->getMessage(), 'years' => []];
++    }
++
++    $rows = 0;
++    if (!empty($res['years'])) {
++        $ins = $pdo->prepare('INSERT INTO annual_mix (area, year, grp, gwh, source) VALUES (:a, :y, :g, :v, :s) ON DUPLICATE KEY UPDATE gwh = VALUES(gwh), source = VALUES(source)');
++        foreach ($res['years'] as $year => $groups) {
++            if (empty($res['keep_old'])) {
++                $pdo->prepare('DELETE FROM annual_mix WHERE area = :a AND year = :y')->execute(['a' => $pick, 'y' => $year]);
++            }
++            foreach ($groups as $g => $gwh) {
++                if ($gwh === null || !is_finite((float) $gwh)) {
++                    continue;
++                }
++                $ins->execute(['a' => $pick, 'y' => (int) $year, 'g' => $g, 'v' => round((float) $gwh, 1), 's' => $src['kind']]);
++                $rows++;
++            }
++        }
++    }
++    $ok = $rows > 0 || !empty($res['ok']);
++    $message = $ok ? (!empty($res['more']) ? 'more' : 'years: ' . implode(', ', array_keys($res['years'] ?? []))) : (string) ($res['error'] ?? 'no data');
++    ukgrid_fetch_state_set($pdo, 'ANNUAL', $pick, $ok ? 'OK' : 'ERROR', $message);
++    ukgrid_log_ingest('ANNUAL', $ok ? 'OK' : 'ERROR', $rows, $pick . ' (' . $src['kind'] . '): ' . ($ok ? $rows . ' figures' : $message));
++    return ['rows' => $rows, 'errors' => $ok ? [] : [$message]];
++}
++
++/** Turns mapped totals plus a grand total into groups, with "other" taking the rest. */
++function ukgrid_annual_finish(array $groups, ?float $total): array
++{
++    $groups = array_filter($groups, function ($v) { return $v !== null && $v > 0; });
++    if ($total !== null) {
++        $rest = $total - array_sum($groups);
++        if ($rest > 0.5) {
++            $groups['other'] = ($groups['other'] ?? 0) + $rest;
++        }
++    }
++    return $groups;
++}
++
++/**
++ * Eurostat JSON-stat 2.0. Values are flattened row-major over the
++ * dimensions in "id"; dimensions other than fuel (siec) and year are
++ * reduced to their total (TOTAL, or the code every other code starts with,
++ * or the sum when they split the total).
++ */
++function ukgrid_annual_eurostat(string $geo, int $timeout): array
++{
++    $url = 'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_bal_peh?format=JSON&lang=en'
++        . '&geo=' . urlencode($geo) . '&unit=GWH&nrg_bal=GEP';
++    $j = ukgrid_http_get_json($url, $timeout);
++    if (!$j || empty($j['id']) || empty($j['dimension']) || !isset($j['value'])) {
++        return ['ok' => false, 'error' => 'Eurostat request failed or the reply was not JSON-stat' . ($j && isset($j['error']) ? ': ' . json_encode($j['error']) : ''), 'years' => []];
++    }
++    $ids = $j['id'];
++    $sizes = $j['size'];
++    $codes = []; // dim => [pos => code]
++    foreach ($ids as $d) {
++        $idx = $j['dimension'][$d]['category']['index'] ?? [];
++        $isList = array_keys($idx) === range(0, count($idx) - 1) && !is_numeric(reset($idx));
++        $codes[$d] = $isList ? $idx : array_flip($idx);
++        ksort($codes[$d]);
++    }
++    // Which codes count for the "other" dimensions.
++    $keep = [];
++    foreach ($ids as $d) {
++        if ($d === 'siec' || $d === 'time') {
++            continue;
++        }
++        $list = array_values($codes[$d]);
++        if (in_array('TOTAL', $list, true)) {
++            $keep[$d] = ['TOTAL'];
++        } elseif (count($list) === 1) {
++            $keep[$d] = $list;
++        } else {
++            $agg = null;
++            foreach ($list as $c) {
++                $isPrefix = true;
++                foreach ($list as $o) {
++                    if ($o !== $c && strpos($o, $c) !== 0) { $isPrefix = false; break; }
++                }
++                if ($isPrefix) { $agg = $c; break; }
++            }
++            $keep[$d] = $agg !== null ? [$agg] : $list;
++        }
++    }
++    $vals = []; // [siec][year] => GWh
++    $n = count($ids);
++    foreach ($j['value'] as $flat => $v) {
++        if ($v === null || !is_numeric($v)) {
++            continue;
++        }
++        $rem = (int) $flat;
++        $pos = array_fill(0, $n, 0);
++        for ($k = $n - 1; $k >= 0; $k--) {
++            $pos[$k] = $rem % $sizes[$k];
++            $rem = intdiv($rem, $sizes[$k]);
++        }
++        $siec = $year = null;
++        $skip = false;
++        foreach ($ids as $k => $d) {
++            $c = $codes[$d][$pos[$k]] ?? null;
++            if ($d === 'siec') { $siec = $c; }
++            elseif ($d === 'time') { $year = $c; }
++            elseif (!in_array($c, $keep[$d], true)) { $skip = true; break; }
++        }
++        if ($skip || $siec === null || $year === null || !ctype_digit((string) $year)) {
++            continue;
++        }
++        $vals[$siec][$year] = ($vals[$siec][$year] ?? 0) + (float) $v;
++    }
++    if (empty($vals['TOTAL'])) {
++        return ['ok' => false, 'error' => 'Eurostat reply had no TOTAL fuel row. Fuel codes seen: ' . implode(', ', array_slice(array_keys($vals), 0, 40)), 'years' => []];
++    }
++    $get = function (array $list, $year) use ($vals) {
++        $s = null;
++        foreach ($list as $c) {
++            if (isset($vals[$c][$year])) {
++                $s = ($s ?? 0) + $vals[$c][$year];
++            }
++        }
++        return $s;
++    };
++    $years = [];
++    foreach (array_keys($vals['TOTAL']) as $y) {
++        $hydro = $get(['RA110', 'RA120'], $y);
++        if ($hydro === null) {
++            $all = $get(['RA100'], $y);
++            $hydro = $all !== null ? $all - ($get(['RA130'], $y) ?? 0) : null;
++        }
++        $wind = $get(['RA300'], $y) ?? $get(['RA310', 'RA320'], $y);
++        $solar = $get(['RA400'], $y) ?? $get(['RA410', 'RA420'], $y);
++        $bio = $get(['CF_R'], $y) ?? $get(['R5110-5150_W6000RI', 'R5160', 'R5210P', 'R5210B', 'R5220P', 'R5220B', 'R5290', 'R5300', 'W6210'], $y);
++        $years[(int) $y] = ukgrid_annual_finish([
++            'coal' => $get(['C0000X0350-0370', 'C0350-0370', 'P1000'], $y),
++            'oil' => $get(['O4000XBIO', 'S2000'], $y),
++            'gas' => $get(['G3000'], $y),
++            'nuclear' => $get(['N900H'], $y),
++            'hydro' => $hydro,
++            'storage' => $get(['RA130'], $y),
++            'wind' => $wind,
++            'solar' => $solar,
++            'biomass' => $bio,
++            'other_renewable' => $get(['RA200', 'RA500'], $y),
++        ], (float) $vals['TOTAL'][$y]);
++    }
++    ksort($years);
++    return ['ok' => true, 'years' => $years];
++}
++
++/** NESO historic generation mix: half-hourly MW summed into GWh per year. */
++function ukgrid_annual_neso(array $config, int $timeout): array
++{
++    $apiBase = rtrim($config['sources']['neso_api_base'] ?? 'https://api.neso.energy/api/3/action', '/');
++    $pkgId = $config['sources']['neso_historic_mix_package'] ?? 'historic-generation-mix';
++    $pkg = ukgrid_http_get_json($apiBase . '/package_show?id=' . urlencode($pkgId), $timeout);
++    if (!$pkg || empty($pkg['result']['resources'])) {
++        return ['ok' => false, 'error' => 'NESO package_show failed for "' . $pkgId . '"', 'years' => []];
++    }
++    $res = null;
++    foreach ($pkg['result']['resources'] as $r) {
++        if (!empty($r['datastore_active']) && stripos((string) ($r['name'] ?? ''), 'mix') !== false) {
++            $res = $r;
++            break;
++        }
++    }
++    foreach ($pkg['result']['resources'] as $r) {
++        if ($res === null && !empty($r['datastore_active'])) {
++            $res = $r;
++        }
++    }
++    if ($res === null) {
++        return ['ok' => false, 'error' => 'no datastore resource in "' . $pkgId . '"', 'years' => []];
++    }
++    $probe = ukgrid_http_get_json($apiBase . '/datastore_search?resource_id=' . urlencode($res['id']) . '&limit=1', $timeout);
++    $fields = array_map(function ($f) { return $f['id']; }, $probe['result']['fields'] ?? []);
++    $find = function (string $name) use ($fields) {
++        foreach ($fields as $f) {
++            if (strcasecmp($f, $name) === 0) return $f;
++        }
++        return null;
++    };
++    $dt = $find('DATETIME');
++    if ($dt === null) {
++        return ['ok' => false, 'error' => 'no DATETIME column. Columns: ' . implode(', ', $fields), 'years' => []];
++    }
++    $map = ['GAS' => 'gas', 'COAL' => 'coal', 'NUCLEAR' => 'nuclear', 'WIND' => 'wind', 'WIND_EMB' => 'wind', 'HYDRO' => 'hydro',
++            'BIOMASS' => 'biomass', 'SOLAR' => 'solar', 'STORAGE' => 'storage', 'OTHER' => 'other'];
++    $sel = [];
++    foreach ($map as $col => $g) {
++        $f = $find($col);
++        if ($f !== null) {
++            $sel[] = 'SUM("' . $f . '") AS "' . $col . '"';
++        }
++    }
++    if (!$sel) {
++        return ['ok' => false, 'error' => 'none of the expected fuel columns found. Columns: ' . implode(', ', $fields), 'years' => []];
++    }
++    // Half-hourly MW averages: MW x 0.5h = MWh, summed per year.
++    $sql = 'SELECT EXTRACT(YEAR FROM "' . $dt . '"::timestamp) AS y, COUNT(*) AS n, ' . implode(', ', $sel)
++        . ' FROM "' . $res['id'] . '" GROUP BY y ORDER BY y';
++    $out = ukgrid_http_get_json($apiBase . '/datastore_search_sql?sql=' . urlencode($sql), $timeout);
++    if (!$out || empty($out['success'])) {
++        return ['ok' => false, 'error' => 'NESO datastore_search_sql failed', 'years' => []];
++    }
++    $years = [];
++    foreach ($out['result']['records'] ?? [] as $r) {
++        $y = (int) $r['y'];
++        if ($y < 2000) {
++            continue;
++        }
++        $groups = [];
++        foreach ($map as $col => $g) {
++            if (isset($r[$col]) && is_numeric($r[$col])) {
++                $groups[$g] = ($groups[$g] ?? 0) + (float) $r[$col] * 0.5 / 1000;
++            }
++        }
++        $years[$y] = ukgrid_annual_finish($groups, null);
++    }
++    return ['ok' => (bool) $years, 'error' => $years ? null : 'no rows', 'years' => $years];
++}
++
++/** EIA electric power operational data: thousand MWh (= GWh) by fuel, all sectors, US total. */
++function ukgrid_annual_eia(array $config, int $timeout): array
++{
++    $key = trim((string) ($config['sources']['eia_api_key'] ?? ''));
++    if ($key === '' || $key === 'CHANGE-ME') {
++        return ['ok' => false, 'error' => 'eia_api_key not set', 'years' => []];
++    }
++    $url = 'https://api.eia.gov/v2/electricity/electric-power-operational-data/data/?api_key=' . urlencode($key)
++        . '&frequency=annual&data[0]=generation&facets[location][]=US&facets[sectorid][]=99&start=2001&length=5000';
++    $j = ukgrid_http_get_json($url, $timeout);
++    $rows = $j['response']['data'] ?? null;
++    if (!is_array($rows)) {
++        return ['ok' => false, 'error' => 'EIA request failed or unexpected reply' . (isset($j['error']) ? ': ' . json_encode($j['error']) : ''), 'years' => []];
++    }
++    $map = ['COW' => 'coal', 'PET' => 'oil', 'NG' => 'gas', 'NUC' => 'nuclear', 'HYC' => 'hydro', 'WND' => 'wind',
++            'SUN' => 'solar', 'GEO' => 'other_renewable', 'WWW' => 'biomass', 'WAS' => 'biomass'];
++    $by = [];
++    $total = [];
++    foreach ($rows as $r) {
++        $y = (int) ($r['period'] ?? 0);
++        $f = (string) ($r['fueltypeid'] ?? '');
++        $v = $r['generation'] ?? null;
++        if (!$y || !is_numeric($v)) {
++            continue;
++        }
++        if ($f === 'ALL') {
++            $total[$y] = (float) $v;
++        } elseif (isset($map[$f])) {
++            $by[$y][$map[$f]] = ($by[$y][$map[$f]] ?? 0) + (float) $v;
++        }
++    }
++    $years = [];
++    foreach ($total as $y => $t) {
++        $years[$y] = ukgrid_annual_finish($by[$y] ?? [], $t);
++    }
++    ksort($years);
++    return ['ok' => (bool) $years, 'error' => $years ? null : 'no ALL (total) rows. fueltypeid values seen: ' . implode(', ', array_slice(array_unique(array_column($rows, 'fueltypeid')), 0, 40)), 'years' => $years];
++}
++
++/**
++ * IESO yearly report files, one per run (each is a few megabytes): the
++ * earliest year not stored yet, from 2015 to last year.
++ */
++function ukgrid_annual_ieso(PDO $pdo, int $timeout): array
++{
++    $have = $pdo->query("SELECT DISTINCT year FROM annual_mix WHERE area = 'CA'")->fetchAll(PDO::FETCH_COLUMN);
++    $lastYear = (int) gmdate('Y') - 1;
++    $year = null;
++    for ($y = 2015; $y <= $lastYear; $y++) {
++        if (!in_array((string) $y, array_map('strval', $have), true)) {
++            $year = $y;
++            break;
++        }
++    }
++    if ($year === null) {
++        return ['ok' => true, 'years' => [], 'keep_old' => true];
++    }
++    $url = 'https://reports-public.ieso.ca/public/GenOutputbyFuelHourly/PUB_GenOutputbyFuelHourly_' . $year . '.xml';
++    $body = ukgrid_http_get_raw($url, max($timeout, 20));
++    if ($body === null) {
++        return ['ok' => false, 'error' => 'IESO ' . $year . ' report request failed', 'years' => []];
++    }
++    libxml_use_internal_errors(true);
++    $xml = simplexml_load_string($body);
++    if ($xml === false) {
++        return ['ok' => false, 'error' => 'IESO ' . $year . ' report was not XML', 'years' => []];
++    }
++    $map = ['NUCLEAR' => 'nuclear', 'GAS' => 'gas', 'HYDRO' => 'hydro', 'WIND' => 'wind', 'SOLAR' => 'solar', 'BIOFUEL' => 'biomass', 'OTHER' => 'other'];
++    $groups = [];
++    foreach ($xml->DocBody->DailyData ?? [] as $daily) {
++        foreach ($daily->HourlyData as $hourly) {
++            foreach ($hourly->FuelTotal as $ft) {
++                $fuel = (string) ($ft->Fuel ?? '');
++                $out = (string) ($ft->EnergyValue->Output ?? '');
++                if ($fuel !== '' && is_numeric($out)) {
++                    $g = $map[$fuel] ?? 'other';
++                    $groups[$g] = ($groups[$g] ?? 0) + (float) $out / 1000; // MWh per hour -> GWh
++                }
++            }
++        }
++    }
++    if (!$groups) {
++        return ['ok' => false, 'error' => 'IESO ' . $year . ' report had no FuelTotal rows', 'years' => []];
++    }
++    return ['ok' => true, 'years' => [$year => $groups], 'keep_old' => false, 'more' => $year < $lastYear];
++}
++
++/** Open Electricity: yearly energy by fuel group for the NEM. */
++function ukgrid_annual_openelectricity(array $config, int $timeout): array
++{
++    $key = trim((string) ($config['sources']['openelectricity_api_key'] ?? ''));
++    if ($key === '' || $key === 'CHANGE-ME') {
++        return ['ok' => false, 'error' => 'openelectricity_api_key not set', 'years' => []];
++    }
++    $base = rtrim($config['sources']['openelectricity_base'] ?? 'https://api.openelectricity.org.au/v4', '/');
++    $url = $base . '/data/network/NEM?metrics=energy&interval=1y&secondary_grouping=fueltech_group'
++        . '&date_start=2010-01-01T00:00:00&date_end=' . urlencode(gmdate('Y-m-d\TH:i:s', time() + 10 * 3600));
++    $j = ukgrid_http_get_json_auth($url, $key, $timeout);
++    $results = $j['data'][0]['results'] ?? null;
++    if (!is_array($results)) {
++        return ['ok' => false, 'error' => 'Open Electricity request failed or unexpected reply' . (isset($j['error']) ? ': ' . $j['error'] : ''), 'years' => []];
++    }
++    $map = ['coal' => 'coal', 'gas' => 'gas', 'wind' => 'wind', 'solar' => 'solar', 'hydro' => 'hydro',
++            'distillate' => 'oil', 'bioenergy' => 'biomass', 'battery_discharging' => 'storage'];
++    $years = [];
++    foreach ($results as $r) {
++        $g = $r['columns']['fueltech_group'] ?? null;
++        if (!isset($map[$g])) {
++            continue;
++        }
++        foreach ($r['data'] ?? [] as $pt) {
++            if (!is_array($pt) || count($pt) < 2 || !is_numeric($pt[1])) {
++                continue;
++            }
++            $y = (int) substr((string) $pt[0], 0, 4);
++            $years[$y][$map[$g]] = ($years[$y][$map[$g]] ?? 0) + abs((float) $pt[1]) / 1000; // MWh -> GWh
++        }
++    }
++    ksort($years);
++    return ['ok' => (bool) $years, 'error' => $years ? null : 'no fuel rows in reply', 'years' => $years];
++}
+diff --git a/includes/refresh.php b/includes/refresh.php
+index 17744b6..4e3fb10 100755
+--- a/includes/refresh.php
++++ b/includes/refresh.php
+@@ -27,6 +27,8 @@
+  */
+ 
+ require_once __DIR__ . '/ingest.php';
++require_once __DIR__ . '/areas.php';
++require_once __DIR__ . '/flows_annual.php';
+ 
+ /**
+  * Public entry point - called on every API request (see api/_bootstrap.php).
+@@ -145,6 +147,14 @@ function ukgrid_refresh_schedule(array $config): array
+     // intervals list predates it) still picks it up.
+     if (!isset($intervals['BATTERY'])) $intervals['BATTERY'] = 30;
+     if (!isset($timeouts['BATTERY'])) $timeouts['BATTERY'] = 8;
++    // Added 1 November 2026: daily summaries for the day pages, archive and
++    // records. Database only, so page loads can run it too.
++    if (!isset($intervals['DAILY'])) $intervals['DAILY'] = 30;
++    if (!isset($timeouts['DAILY'])) $timeouts['DAILY'] = 8;
++    // Cross-border flows and yearly history make several slow outside
++    // requests, so only the scheduler runs them (see cron/run-due.php).
++    if (!isset($timeouts['FLOWS'])) $timeouts['FLOWS'] = 10;
++    if (!isset($timeouts['ANNUAL'])) $timeouts['ANNUAL'] = 15;
+ 
+     return [$intervals, $timeouts];
+ }
+@@ -227,6 +237,15 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int
+                 ? ukgrid_ingest_battery($pdo, $config, $timeoutSeconds, 8, 12)
+                 : ukgrid_ingest_battery($pdo, $config, $timeoutSeconds, 2, 3);
+             break;
++        case 'DAILY':
++            ukgrid_compute_daily($pdo, $config, $timeoutSeconds);
++            break;
++        case 'FLOWS':
++            ukgrid_ingest_flows($pdo, $config, $timeoutSeconds);
++            break;
++        case 'ANNUAL':
++            ukgrid_ingest_annual($pdo, $config, $timeoutSeconds);
++            break;
+         case 'NOTABLE_MOMENTS':
+             // Pure re-aggregation of data already in this database (see
+             // its own docblock in includes/ingest.php) - runs daily,
+diff --git a/tools/data-jobs.php b/tools/data-jobs.php
+new file mode 100644
+index 0000000..9db61be
+--- /dev/null
++++ b/tools/data-jobs.php
+@@ -0,0 +1,84 @@
++<?php
++/**
++ * tools/data-jobs.php - the state of the scheduler-only jobs added for the
++ * country pages: yearly history (ANNUAL), cross-border flows (FLOWS) and
++ * daily summaries (DAILY). Shows what each source last returned (so a
++ * changed Eurostat or EIA format shows up here first), and can run one
++ * area or border now. Password-protected like every page in tools/.
++ */
++
++require __DIR__ . '/../includes/error_page.php';
++ukgrid_html_errors();
++require __DIR__ . '/../includes/db.php';
++require __DIR__ . '/../includes/refresh.php';
++require __DIR__ . '/_auth.php';
++
++$config = ukgrid_load_config();
++ukgrid_tools_require_login($config);
++$pdo = ukgrid_db();
++ukgrid_flows_annual_ensure_tables($pdo);
++ukgrid_area_ensure_tables($pdo);
++@set_time_limit(90);
++$h = function ($s) { return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8'); };
++
++$note = '';
++if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
++    if (!empty($_POST['annual'])) {
++        $r = ukgrid_ingest_annual($pdo, $config, 30, strtoupper((string) $_POST['annual']));
++        $note = 'Yearly history for ' . $_POST['annual'] . ': ' . $r['rows'] . ' figures saved' . ($r['errors'] ? ' - ' . implode('; ', $r['errors']) : '') . '.';
++    } elseif (!empty($_POST['border'])) {
++        $r = ukgrid_ingest_flows($pdo, $config, 20, (string) $_POST['border']);
++        $note = 'Border ' . $_POST['border'] . ': ' . $r['rows'] . ' readings saved' . ($r['errors'] ? ' - ' . implode('; ', $r['errors']) : '') . '.';
++    } elseif (!empty($_POST['daily'])) {
++        $r = ukgrid_compute_daily($pdo, $config, 60);
++        $note = 'Daily summaries: ' . $r['rows'] . ' days saved' . ($r['errors'] ? ' - ' . implode('; ', $r['errors']) : '') . '.';
++    }
++}
++
++$areas = ukgrid_areas($config);
++$sources = ukgrid_annual_sources();
++$annualState = ukgrid_fetch_state_get($pdo, 'ANNUAL');
++$flowState = ukgrid_fetch_state_get($pdo, 'FLOWS');
++$yearsSt = $pdo->query('SELECT area, MIN(year) a, MAX(year) b, COUNT(DISTINCT year) n FROM annual_mix GROUP BY area');
++$yearInfo = [];
++foreach ($yearsSt->fetchAll() as $r) {
++    $yearInfo[$r['area']] = $r;
++}
++$daysSt = $pdo->query('SELECT area, MIN(day) a, MAX(day) b, SUM(gen_mwh > 0) n FROM daily_summary GROUP BY area');
++$dayInfo = [];
++foreach ($daysSt->fetchAll() as $r) {
++    $dayInfo[$r['area']] = $r;
++}
++
++$form = function (string $name, string $value, string $label) use ($h) {
++    return '<form method="post" style="display:inline"><input type="hidden" name="' . $h($name) . '" value="' . $h($value) . '"><button type="submit" style="margin:0;padding:.2rem .6rem;font-size:.85rem">' . $h($label) . '</button></form>';
++};
++
++$rows = '';
++foreach ($areas as $code => $a) {
++    $s = $annualState[$code] ?? null;
++    $y = $yearInfo[$code] ?? null;
++    $d = $dayInfo[$code] ?? null;
++    $rows .= '<tr><td><strong>' . $h($code) . '</strong> ' . $h($a['name']) . '</td>'
++        . '<td>' . ($d ? $h($d['n'] . ' days, ' . $d['a'] . ' to ' . $d['b']) : 'none yet') . '</td>'
++        . '<td>' . $h($sources[$code]['credit'] ?? '-') . '</td>'
++        . '<td>' . ($y ? $h($y['n'] . ' years, ' . $y['a'] . '-' . $y['b']) : 'none yet') . '</td>'
++        . '<td>' . ($s ? $h($s['status'] . ' at ' . $s['fetched_at'] . ' UTC: ' . $s['message']) : 'not run yet') . '</td>'
++        . '<td>' . (isset($sources[$code]) ? $form('annual', $code, 'Fetch now') : '') . '</td></tr>';
++}
++$flowRows = '';
++foreach (ukgrid_flow_borders($config) as [$a, $b]) {
++    $k = $a . '-' . $b;
++    $s = $flowState[$k] ?? null;
++    $flowRows .= '<tr><td>' . $h($k) . '</td><td>' . ($s ? $h($s['status'] . ' at ' . $s['fetched_at'] . ' UTC' . ($s['message'] ? ': ' . $s['message'] : '')) : 'not run yet') . '</td><td>' . $form('border', $k, 'Fetch now') . '</td></tr>';
++}
++
++$table = '<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:.85rem" border="1" cellpadding="4">';
++$body = '<h1>Data jobs</h1>'
++    . ($note ? '<p><strong>' . $h($note) . '</strong></p>' : '')
++    . '<p>The scheduler (GitHub Actions or Docker, through cron/run-due.php) runs these a little at a time. Use the buttons to run one now.</p>'
++    . '<h2>Daily summaries and yearly history</h2><p>' . $form('daily', '1', 'Work out daily summaries now') . '</p>'
++    . $table . '<tr><th>Area</th><th>Daily summaries</th><th>Yearly source</th><th>Years stored</th><th>Last yearly fetch</th><th></th></tr>' . $rows . '</table></div>'
++    . '<h2>Cross-border flows (ENTSO-E)</h2>'
++    . $table . '<tr><th>Border</th><th>Last fetch</th><th></th></tr>' . $flowRows . '</table></div>';
++ukgrid_tools_page('Data jobs', str_replace('max-width:34rem', 'max-width:none', $body));
+-- 
+2.43.0
+
