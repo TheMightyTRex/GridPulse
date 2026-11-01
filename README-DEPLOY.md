@@ -1,4 +1,4 @@
-# UK Grid: Live+ - deployment & configuration guide
+# Grid Pulse - deployment & configuration guide
 
 This folder is the full site: static frontend (the same pages you previewed) plus a PHP/MySQL backend that polls public data sources and stores real history - three for the Great Britain pages, EirGrid's Smart Grid Dashboard for the Ireland page, and (optionally) the EIA API for part of the USA page. Written for **shared hosting with cPanel or Plesk** - no SSH/shell access assumed. No API key is required for the first four sources; the EIA source is the one exception (see "About the data sources" below) - skip it and the USA page simply stays on illustrative data.
 

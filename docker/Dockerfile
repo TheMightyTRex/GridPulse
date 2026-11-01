@@ -1,4 +1,4 @@
-# Tiny scheduler for UK Grid: Live+. Every few minutes it asks the live
+# Tiny scheduler for Grid Pulse. Every few minutes it asks the live
 # site to fetch whatever data is due (cron/run-due.php). It holds no data
 # and no database details - only the site address and the cron secret.
 FROM alpine:3.20

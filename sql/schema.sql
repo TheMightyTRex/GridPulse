@@ -1,5 +1,5 @@
 -- ==========================================================================
--- UK Grid: Live+ - MySQL schema
+-- Grid Pulse - MySQL schema
 -- Import this via phpMyAdmin (or `mysql -u user -p dbname < schema.sql`)
 -- into the database you created for this site. Safe to re-run: every
 -- CREATE TABLE uses IF NOT EXISTS.

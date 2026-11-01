@@ -32,7 +32,7 @@ function ukgrid_tools_page(string $title, string $bodyHtml): void
 {
     header('Content-Type: text/html; charset=utf-8');
     echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-        . '<meta name="robots" content="noindex, nofollow"><title>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . ' - UK Grid: Live+ tools</title>'
+        . '<meta name="robots" content="noindex, nofollow"><title>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . ' - Grid Pulse tools</title>'
         . '<style>body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f5f6f8;color:#1a1d23;margin:0;padding:2rem 1rem}'
         . 'main{max-width:34rem;margin:0 auto;background:#fff;border:1px solid #dde1e7;border-radius:10px;padding:1.5rem}'
         . 'h1{font-size:1.25rem;margin-top:0}label{display:block;font-weight:600;margin:.75rem 0 .25rem}'
@@ -130,7 +130,7 @@ function ukgrid_tools_require_login(array $config): void
         exit;
     }
     http_response_code(401);
-    $body = '<h1>UK Grid: Live+ - internal tools</h1>'
+    $body = '<h1>Grid Pulse - internal tools</h1>'
         . ($error !== '' ? '<p class="err">' . $h($error) . '</p>' : '')
         . '<form method="post" action="' . $h($self) . '">'
         . '<label for="pw">Password</label><input type="password" id="pw" name="password" required autofocus autocomplete="current-password">'

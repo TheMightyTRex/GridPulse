@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261101a"
+VERSION = "20261101b"
 FONTS = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">'
 
 # Menu: (group id, label, [(column heading, [(page file, link text, short description)])])
@@ -89,10 +89,14 @@ GROUPS = [
 LINKS = [("comparisons.html", "Compare"), ("data-sources.html", "Sources"), ("about.html", "About")]
 
 LOGO = """<svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
-        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
-        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
-        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
-        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <rect class="gp-bar" style="--i:0" x="4" y="19" width="4.6" height="10" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:1" x="11" y="16" width="4.6" height="16" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:2" x="18" y="9" width="4.6" height="30" rx="2.3" fill="#ffd54a"/>
+        <rect class="gp-bar" style="--i:3" x="25" y="18" width="4.6" height="12" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:4" x="32" y="13" width="4.6" height="22" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:5" x="39" y="20" width="4.6" height="8" rx="2.3" fill="#ffffff"/>
+        <circle class="ug-ping" cx="45" cy="24" r="3" fill="#4fd18b"/>
+        <circle class="gp-node" cx="45" cy="24" r="3" fill="#4fd18b"/>
       </svg>"""
 
 
@@ -125,9 +129,9 @@ def build(page, base):
     out.append('<div class="site-head">')
     out.append('<header class="site-header">')
     out.append('  <div class="wrap site-header__bar">')
-    out.append(f'    <a class="brand ug-logo" href="{link_for(base, "index.html")}" aria-label="UK Grid: Live+, home">')
+    out.append(f'    <a class="brand ug-logo" href="{link_for(base, "index.html")}" aria-label="Grid Pulse, home">')
     out.append('      ' + LOGO)
-    out.append('      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>')
+    out.append('      <span class="brand__name" aria-hidden="true"><span class="brand__uk">Grid</span><span class="brand__tag ug-tag">Pulse</span></span>')
     out.append('    </a>')
     out.append('    <nav class="site-nav" aria-label="Main">')
     out.append('      <ul id="site-nav-list" data-nav-list>')
@@ -202,6 +206,42 @@ DISPLAY_PANEL = """<div id="display-panel" class="display-panel" role="dialog" a
   <div class="display-panel__foot"><button type="button" class="btn" data-pref-reset>Reset</button><button type="button" class="btn btn--primary" data-pref-done>Done</button></div>
 </div>"""
 
+SITE = "https://gridpulse.info"
+HEAD_BLOCK = re.compile(r'<!-- head:start.*?<!-- head:end -->\n?', re.S)
+OLD_ICON = re.compile(r'<link rel="icon" href="[^"]*logo\.svg" type="image/svg\+xml">\n?')
+
+
+def head_block(path, base, text):
+    """Icons, canonical address and share-card tags, built from the page's own title and description."""
+    title = re.search(r'<title>(.*?)</title>', text, re.S)
+    desc = re.search(r'<meta name="description" content="([^"]*)">', text)
+    title = title.group(1).strip() if title else "Grid Pulse"
+    desc = desc.group(1) if desc else ""
+    a = {"root": "", "pages": "../", "abs": "/"}[base]
+    out = ['<!-- head:start (written by tools/apply_shell.py) -->',
+           f'<link rel="icon" href="{a}assets/gridpulse-favicon.svg" type="image/svg+xml">',
+           f'<link rel="icon" href="{a}assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">',
+           f'<link rel="apple-touch-icon" href="{a}assets/gridpulse-apple-touch-icon-180.png">',
+           '<meta name="theme-color" content="#14181f">']
+    if base != "abs":
+        url = SITE + "/" if path.name == "index.html" and base == "root" else f"{SITE}/pages/{path.name}"
+        out += [f'<link rel="canonical" href="{url}">',
+                '<meta property="og:site_name" content="Grid Pulse">',
+                '<meta property="og:type" content="website">',
+                f'<meta property="og:title" content="{title}">',
+                f'<meta property="og:description" content="{desc}">' if desc else '',
+                f'<meta property="og:url" content="{url}">',
+                f'<meta property="og:image" content="{SITE}/assets/gridpulse-social.png?v={VERSION}">',
+                '<meta property="og:image:width" content="1200">',
+                '<meta property="og:image:height" content="630">',
+                '<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">',
+                '<meta name="twitter:card" content="summary_large_image">']
+    else:
+        out.append('<meta name="robots" content="noindex">')
+    out.append('<!-- head:end -->')
+    return "\n".join(x for x in out if x) + "\n"
+
+
 OLD_BLOCK = re.compile(r'(<aside class="preview-banner".*?</aside>\s*)?<div class="site-head">.*?</nav>\s*</div>', re.S)
 SHELL_BLOCK = re.compile(r'<!-- shell:start.*?<!-- shell:end -->', re.S)
 
@@ -220,6 +260,12 @@ def main():
         else:
             print("no header found in", path, file=sys.stderr)
             sys.exit(1)
+        hb = head_block(path, base, new)
+        if HEAD_BLOCK.search(new):
+            new = HEAD_BLOCK.sub(lambda m: hb, new, count=1)
+        else:
+            new = OLD_ICON.sub("", new, count=1)
+            new = re.sub(r'(</title>\n(?:<meta name="description" content="[^"]*">\n)?)', lambda m: m.group(1) + hb, new, count=1)
         new = re.sub(r'<link href="https://fonts\.googleapis\.com/css2\?[^"]*" rel="stylesheet">', FONTS, new)
         if "design-c.css" not in new:
             new = re.sub(r'(<link rel="stylesheet" href="((?:\.\./)?)assets/style\.css\?v=[0-9a-z]+">)',

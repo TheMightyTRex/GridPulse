@@ -1,6 +1,6 @@
 <?php
 /**
- * UK Grid: Live+ - site configuration.
+ * Grid Pulse - site configuration.
  *
  * Copy this file to "config.php" in the same folder and fill in your own
  * values. config.php itself is never committed/shipped with real values
@@ -143,7 +143,7 @@ return [
     // (non-commercial use only, with attribution) - a stricter term than
     // every other source in this file, all of which are free for any use.
     // Read https://openelectricity.org.au (their full licence page) before
-    // relying on this if ukgridlive.info ever carries ads, a paid tier, or
+    // relying on this if gridpulse.info ever carries ads, a paid tier, or
     // any other commercial element - CC BY-NC 4.0 may not permit that
     // without a separate commercial licence from Open Electricity. See
     // pages/about.html and pages/data-sources.html for the attribution

@@ -1,4 +1,4 @@
-# UK Grid: Live+ - friendly error pages (errors/*.html).
+# Grid Pulse - friendly error pages (errors/*.html).
 #
 # If your host already put an .htaccess in the site root (for example to
 # force https), don't replace it with this one: copy the ErrorDocument
@@ -6,7 +6,7 @@
 #
 # ErrorDocument is a core Apache directive that shared hosts allow in
 # .htaccess. The paths start at the site root, so this assumes the site is
-# at the top of the domain (https://www.ukgridlive.info/).
+# at the top of the domain (https://gridpulse.info/).
 
 ErrorDocument 400 /errors/400.html
 ErrorDocument 401 /errors/401.html

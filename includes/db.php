@@ -1,6 +1,6 @@
 <?php
 /**
- * UK Grid: Live+ - config loader + PDO connection helper.
+ * Grid Pulse - config loader + PDO connection helper.
  * Included by every API endpoint and every cron ingestion script.
  */
 
@@ -50,7 +50,7 @@ function ukgrid_load_config(): array
         try {
             $config = require $file;
         } catch (ParseError $e) {
-            error_log('UK Grid: Live+ config.php syntax error: ' . $e->getMessage() . ' on line ' . $e->getLine());
+            error_log('Grid Pulse config.php syntax error: ' . $e->getMessage() . ' on line ' . $e->getLine());
             ukgrid_config_fail('config_syntax_error', 'includes/config.php has a typo on or just before line ' . $e->getLine()
                 . '. Every setting must sit inside the "return [" ... "];" list and end with a comma, e.g. \'cron_http_secret\' => \'your-value\',');
         }

@@ -3,14 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About - UK Grid: Live+</title>
-<meta name="description" content="What UK Grid: Live+ is, full credit to Kate Morley's original National Grid: Live, and why the figures on the two sites do not always match.">
+<title>About - Grid Pulse</title>
+<meta name="description" content="What Grid Pulse (formerly UK Grid: Live+) is, full credit to Kate Morley's original National Grid: Live, and why the figures on the two sites do not always match.">
+<!-- head:start (written by tools/apply_shell.py) -->
+<link rel="icon" href="../assets/gridpulse-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="../assets/gridpulse-apple-touch-icon-180.png">
+<meta name="theme-color" content="#14181f">
+<link rel="canonical" href="https://gridpulse.info/pages/about.html">
+<meta property="og:site_name" content="Grid Pulse">
+<meta property="og:type" content="website">
+<meta property="og:title" content="About - Grid Pulse">
+<meta property="og:description" content="What Grid Pulse (formerly UK Grid: Live+) is, full credit to Kate Morley's original National Grid: Live, and why the figures on the two sites do not always match.">
+<meta property="og:url" content="https://gridpulse.info/pages/about.html">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css?v=20261101a">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101a">
+<link rel="stylesheet" href="../assets/style.css?v=20261101b">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -18,7 +34,7 @@
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u="//www.ukgridlive.info/stat/";
+    var u="//gridpulse.info/stat/";
     _paq.push(['setTrackerUrl', u+'matomo.php']);
     _paq.push(['setSiteId', '1']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -34,14 +50,18 @@
 <div class="site-head">
 <header class="site-header">
   <div class="wrap site-header__bar">
-    <a class="brand ug-logo" href="../index.html" aria-label="UK Grid: Live+, home">
+    <a class="brand ug-logo" href="../index.html" aria-label="Grid Pulse, home">
       <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
-        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
-        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
-        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
-        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <rect class="gp-bar" style="--i:0" x="4" y="19" width="4.6" height="10" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:1" x="11" y="16" width="4.6" height="16" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:2" x="18" y="9" width="4.6" height="30" rx="2.3" fill="#ffd54a"/>
+        <rect class="gp-bar" style="--i:3" x="25" y="18" width="4.6" height="12" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:4" x="32" y="13" width="4.6" height="22" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:5" x="39" y="20" width="4.6" height="8" rx="2.3" fill="#ffffff"/>
+        <circle class="ug-ping" cx="45" cy="24" r="3" fill="#4fd18b"/>
+        <circle class="gp-node" cx="45" cy="24" r="3" fill="#4fd18b"/>
       </svg>
-      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">Grid</span><span class="brand__tag ug-tag">Pulse</span></span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul id="site-nav-list" data-nav-list>
@@ -217,20 +237,21 @@
   <div class="wrap">
 
     <section class="hero">
-      <h1>About UK Grid: Live+</h1>
+      <h1>About Grid Pulse</h1>
+      <p class="moved-line"><strong>Grid Pulse was formerly UK Grid: Live+</strong> (ukgridlive.info). It moved to gridpulse.info and took its new name in November 2026, because it now covers grids well beyond the UK. Old links forward to the same page here.</p>
       <p class="credit-line" style="display:block;font-size:.95rem;margin-bottom:.5rem;">A redesign based on <a href="https://iamkate.com/">Kate&nbsp;Morley</a>'s <a href="https://github.com/KateMorley/grid">National Grid: Live</a></p>
-      <p>UK Grid: Live+ takes the concept and data pipeline design of Kate Morley's <a href="https://grid.iamkate.com/">National Grid: Live</a> and rebuilds it with dark mode, longer historical ranges, dedicated pages per energy type, live-wired pages for over a dozen other countries, and a cross-country comparisons tool. It is not affiliated with National Grid plc, NESO, Elexon, EirGrid, or Kate Morley herself.</p>
+      <p>Grid Pulse takes the concept and data pipeline design of Kate Morley's <a href="https://grid.iamkate.com/">National Grid: Live</a> and rebuilds it with dark mode, longer historical ranges, dedicated pages per energy type, live-wired pages for over a dozen other countries, and a cross-country comparisons tool. It is not affiliated with National Grid plc, NESO, Elexon, EirGrid, or Kate Morley herself.</p>
     </section>
 
     <section class="panel" aria-labelledby="source-heading">
       <h2 id="source-heading">Source code</h2>
-      <p>UK Grid: Live+'s source is public on GitHub at <a href="https://github.com/TheMightyTRex/UKGridLive">github.com/TheMightyTRex/UKGridLive</a> - the frontend, the PHP/MySQL ingestion pipeline, and the deployment guide. There is no separate open-source licence attached to the repository; the only redistribution terms that apply are the ones the data APIs themselves require, such as Elexon's BMRS attribution statement in the footer below (see the <a href="data-sources.html">Sources page</a> for each API's own terms).</p>
+      <p>Grid Pulse's source is public on GitHub at <a href="https://github.com/TheMightyTRex/GridPulse">github.com/TheMightyTRex/GridPulse</a> - the frontend, the PHP/MySQL ingestion pipeline, and the deployment guide. There is no separate open-source licence attached to the repository; the only redistribution terms that apply are the ones the data APIs themselves require, such as Elexon's BMRS attribution statement in the footer below (see the <a href="data-sources.html">Sources page</a> for each API's own terms).</p>
       <p>One source is a step stricter than the rest: the <a href="australia.html">Australia (NEM) page</a>'s grid data comes from the <a href="https://openelectricity.org.au/">Open Electricity API</a> (formerly OpenNEM), whose data is licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> - non-commercial use only, with attribution - rather than the unrestricted or attribution-only terms every other source on this site is used under. See <a href="data-sources.html">the Sources page</a> for the full breakdown of every source and its own terms.</p>
     </section>
 
     <section class="panel" aria-labelledby="kate-heading">
       <h2 id="kate-heading">Credit to Kate Morley</h2>
-      <p>UK Grid: Live+ is a redesign built on the concept, data pipeline design, and public-domain groundwork of <strong>National Grid: Live</strong> at <a href="https://grid.iamkate.com/">grid.iamkate.com</a>, created by <a href="https://iamkate.com/">Kate Morley</a>. The original source code is published on <a href="https://github.com/KateMorley/grid">GitHub</a> under the CC0 1.0 Universal licence, meaning Kate has waived copyright to the extent possible under law.</p>
+      <p>Grid Pulse is a redesign built on the concept, data pipeline design, and public-domain groundwork of <strong>National Grid: Live</strong> at <a href="https://grid.iamkate.com/">grid.iamkate.com</a>, created by <a href="https://iamkate.com/">Kate Morley</a>. The original source code is published on <a href="https://github.com/KateMorley/grid">GitHub</a> under the CC0 1.0 Universal licence, meaning Kate has waived copyright to the extent possible under law.</p>
       <p>This project reuses her choice of data sources and much of the original site's spirit - a concise, accessible, public-facing view of the grid - while adding the features above. If you find this kind of tool useful, consider supporting Kate directly via <a href="https://ko-fi.com/katemorley">Ko-fi</a>, since she covers the hosting costs of the original, far more popular, site.</p>
     </section>
 
@@ -239,10 +260,10 @@
       <p>Both sites pull from the same three public GB data feeds - the Elexon Insights Solution, the National Energy System Operator's Data Portal, and the Carbon Intensity API - so most figures should be close. But a few, especially the headline demand figure, can be some way off. Here is why.</p>
 
       <h3 style="font-size:1rem;">Demand is calculated differently</h3>
-      <p>grid.iamkate.com does not fetch a published demand statistic at all. Its "Demand" figure is calculated in code as <strong>total generation plus net interconnector imports</strong> - an energy-balance figure derived from the same generation data it displays elsewhere on the page. UK Grid: Live+ instead fetches Elexon's own separately-published <strong>Transmission System Demand Outturn</strong> figure directly from the Insights Solution's <code>/demand/outturn</code> endpoint. These are two genuinely different quantities, built from different accounting methods, so they can diverge by a noticeable margin - occasionally a few gigawatts - even when both sites are otherwise in sync. Neither figure is "wrong"; they are just answering a slightly different question.</p>
+      <p>grid.iamkate.com does not fetch a published demand statistic at all. Its "Demand" figure is calculated in code as <strong>total generation plus net interconnector imports</strong> - an energy-balance figure derived from the same generation data it displays elsewhere on the page. Grid Pulse instead fetches Elexon's own separately-published <strong>Transmission System Demand Outturn</strong> figure directly from the Insights Solution's <code>/demand/outturn</code> endpoint. These are two genuinely different quantities, built from different accounting methods, so they can diverge by a noticeable margin - occasionally a few gigawatts - even when both sites are otherwise in sync. Neither figure is "wrong"; they are just answering a slightly different question.</p>
 
       <h3 style="font-size:1rem;">Different refresh timing</h3>
-      <p>grid.iamkate.com's own update script runs on a five-minute schedule. UK Grid: Live+ refreshes on demand - the first visitor after a source's data goes stale triggers a fresh pull, which in practice lands somewhere in the 15-30 minute range. Comparing the two sites at any single moment can catch them mid-way through different update cycles, especially for fast-moving figures like price and generation mix.</p>
+      <p>grid.iamkate.com's own update script runs on a five-minute schedule. Grid Pulse refreshes on demand - the first visitor after a source's data goes stale triggers a fresh pull, which in practice lands somewhere in the 15-30 minute range. Comparing the two sites at any single moment can catch them mid-way through different update cycles, especially for fast-moving figures like price and generation mix.</p>
 
       <h3 style="font-size:1rem;">What matches closely</h3>
       <p>Generation by fuel type, wholesale price, and carbon intensity use the same underlying sources and broadly the same methodology on both sites, including folding in embedded solar and wind from NESO's data portal and excluding battery storage output from the generation total to avoid double-counting. Small gaps here are almost always down to the refresh-timing difference above, or to NESO retrospectively revising an estimate after publication, rather than a difference in how the number is calculated.</p>
@@ -257,10 +278,10 @@
   <div class="wrap">
     <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
     <p class="footer-attribution" style="margin-top:.75rem;">The <a href="australia.html">Australia (NEM) page</a>'s grid data comes from the <a href="https://openelectricity.org.au/">Open Electricity API</a>, used under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> (non-commercial, with attribution) - the one source on this site with a use restriction beyond simple attribution.</p>
-    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> Grid Pulse <span class="badge">Not affiliated with National Grid plc</span></p>
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101a"></script>
+<script src="../assets/app.js?v=20261101b"></script>
 </body>
 </html>
