@@ -63,7 +63,7 @@ if (!isset($intervals['NESO'])) $intervals['NESO'] = 30;
 
 $due = ukgrid_refresh_overdue($pdo, $intervals);
 ukgrid_file_log('run-due (' . $caller . '): ' . (count($due) ? implode(', ', array_keys($due)) . ' due' : 'nothing due'));
-ukgrid_out('UK Grid: Live+ run-due, ' . gmdate('Y-m-d H:i:s') . ' UTC, caller ' . $caller);
+ukgrid_out('Grid Pulse run-due, ' . gmdate('Y-m-d H:i:s') . ' UTC, caller ' . $caller);
 if (!$due) {
     ukgrid_out('Nothing due.');
 }

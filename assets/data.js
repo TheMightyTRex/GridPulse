@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UK Grid: Live+ - live-data adapter
+   Grid Pulse - live-data adapter
    Talks to the PHP/MySQL backend (api/current.php, api/series.php). Every
    function resolves to `null` (never throws past its own boundary) if the
    API is unreachable, mis-configured, or simply has no data yet - callers

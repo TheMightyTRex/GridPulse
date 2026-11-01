@@ -71,7 +71,7 @@ function ukgrid_http_get_json(string $url, int $timeoutSeconds = 20, array $extr
         // autumn) download far faster compressed.
         CURLOPT_ENCODING => '',
         CURLOPT_HTTPHEADER => array_merge(['Accept: application/json'], $extraHeaders),
-        CURLOPT_USERAGENT => 'UK-Grid-Live-Plus/1.0 (+https://github.com/KateMorley/grid; contact via site data-sources page)',
+        CURLOPT_USERAGENT => 'GridPulse/1.0 (+https://gridpulse.info; contact via site data-sources page)',
     ]);
     $body = curl_exec($ch);
     $errno = curl_errno($ch);
@@ -147,7 +147,7 @@ function ukgrid_http_get_json_auth(string $url, string $bearerToken, int $timeou
         // autumn) download far faster compressed.
         CURLOPT_ENCODING => '',
         CURLOPT_HTTPHEADER => ['Accept: application/json', 'Authorization: Bearer ' . $bearerToken],
-        CURLOPT_USERAGENT => 'UK-Grid-Live-Plus/1.0 (+https://github.com/KateMorley/grid; contact via site data-sources page)',
+        CURLOPT_USERAGENT => 'GridPulse/1.0 (+https://gridpulse.info; contact via site data-sources page)',
     ]);
     $body = curl_exec($ch);
     $errno = curl_errno($ch);
@@ -219,7 +219,7 @@ function ukgrid_http_get_raw(string $url, int $timeoutSeconds = 20, array $extra
         // download far faster compressed.
         CURLOPT_ENCODING => $isRange ? 'identity' : '',
         CURLOPT_HTTPHEADER => array_merge(['Accept: application/xml'], $extraHeaders),
-        CURLOPT_USERAGENT => 'UK-Grid-Live-Plus/1.0 (+https://github.com/KateMorley/grid; contact via site data-sources page)',
+        CURLOPT_USERAGENT => 'GridPulse/1.0 (+https://gridpulse.info; contact via site data-sources page)',
     ]);
     $body = curl_exec($ch);
     $errno = curl_errno($ch);

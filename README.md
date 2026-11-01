@@ -1,8 +1,10 @@
-# UK Grid: Live+
+# Grid Pulse
 
 A live dashboard for Great Britain's electricity grid - price, demand, emissions, generation mix and cross-border transfers, with dark mode and history from a day to a decade. It also carries live-wired pages for Ireland and the USA, plus illustrative comparison pages for several other European and American countries.
 
-Live at [ukgridlive.info](https://ukgridlive.info).
+Live at [gridpulse.info](https://gridpulse.info).
+
+Grid Pulse was formerly **UK Grid: Live+** (ukgridlive.info, repo TheMightyTRex/UKGridLive). The old domain forwards every address here. The PHP function prefix `ukgrid_` and the `UKGRID_` secret names are kept from the old name so nothing breaks.
 
 ## What it does
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UK Grid: Live+ - shared behaviour
+   Grid Pulse - shared behaviour
    ========================================================================== */
 
 (function () {
@@ -1357,7 +1357,7 @@
    *
    * This matters because the first line's timezone is whatever the
    * visitor's own browser/OS is set to, NOT necessarily UK time - a site
-   * called "UK Grid: Live+" showing "2.32pm" with no timezone attached is
+   * called "Grid Pulse" showing "2.32pm" with no timezone attached is
    * ambiguous for anyone not physically in the UK right now (a reader
    * abroad, or checking a non-GB country page where it'd be easy to assume
    * the time shown is that country's local time instead). Labelling the
@@ -2326,7 +2326,7 @@
       const pct = ((Math.max(Number(v) || 0, 0) / total) * 100).toFixed(1);
       lines.push(`${l}: ${formatAxisValue(v, unit)} (${pct}%)`);
     });
-    lines.push("", "Source: https://ukgridlive.info/");
+    lines.push("", "Source: https://gridpulse.info/");
     return lines.join("\n");
   }
 
@@ -2474,10 +2474,10 @@
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = palette.text;
     ctx.font = '700 18px "Open Sans", -apple-system, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(fitTitleLine(ctx, spec.title || "UK Grid: Live+", cardW - pad * 2), pad, 32);
+    ctx.fillText(fitTitleLine(ctx, spec.title || "Grid Pulse", cardW - pad * 2), pad, 32);
     ctx.fillStyle = palette.muted;
     ctx.font = '500 12px "Open Sans", -apple-system, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText("ukgridlive.info – as of " + new Date().toLocaleString(), pad, 52);
+    ctx.fillText("gridpulse.info – as of " + new Date().toLocaleString(), pad, 52);
     ctx.strokeStyle = palette.border;
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -2493,14 +2493,14 @@
 
     ctx.fillStyle = palette.muted;
     ctx.font = '400 11px "Open Sans", -apple-system, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText("Source: https://ukgridlive.info/", pad, cardH - 12);
+    ctx.fillText("Source: https://gridpulse.info/", pad, cardH - 12);
 
     out.toBlob((blob) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `ukgridlive-${spec.base}-${todayStamp()}.png`;
+      a.download = `gridpulse-${spec.base}-${todayStamp()}.png`;
       a.style.position = "fixed";
       a.style.opacity = "0";
       document.body.appendChild(a);
@@ -2569,7 +2569,7 @@
       const csv = s.kind === "categories"
         ? categoriesToCsv(s.data.labels, s.data.values, s.data.unit)
         : seriesToCsv(s.data.times, s.data.labels, s.data.columns, {});
-      downloadTextFile(`ukgridlive-${s.base}-${todayStamp()}.csv`, csv, "text/csv");
+      downloadTextFile(`gridpulse-${s.base}-${todayStamp()}.csv`, csv, "text/csv");
       announceCopyResult(csvBtn, true);
     });
 
@@ -2625,7 +2625,7 @@
       }
       lines.push(indent + cells[0] + (valueParts.length ? ': ' + valueParts.join(' - ') : ''));
     });
-    lines.push('', 'Source: https://ukgridlive.info/');
+    lines.push('', 'Source: https://gridpulse.info/');
     return lines.join('\n');
   }
   window.GridPreview.mixTableToText = mixTableToText;
@@ -2665,7 +2665,7 @@
       const valueText = value ? value.textContent.replace(/\s+/g, " ").trim() : "";
       lines.push(valueText ? `${labelText}: ${valueText}` : labelText);
     });
-    lines.push("", "Source: https://ukgridlive.info/");
+    lines.push("", "Source: https://gridpulse.info/");
     return lines.join("\n");
   }
   window.GridPreview.listToText = listToText;
@@ -2706,7 +2706,7 @@
       const row = [when, ...columns.map((c) => (c.values[i] == null ? '' : c.values[i]))];
       lines.push(row.join('\t'));
     }
-    lines.push('', 'Source: https://ukgridlive.info/');
+    lines.push('', 'Source: https://gridpulse.info/');
     return lines.join('\n');
   }
   window.GridPreview.seriesToText = seriesToText;
@@ -2747,7 +2747,7 @@
       title: opts.title || null,
       units: Object.fromEntries(columns.map((c) => [c.name, c.unit || null])),
       generatedAt: new Date().toISOString(),
-      source: 'https://ukgridlive.info/',
+      source: 'https://gridpulse.info/',
       points,
     }, null, 2);
   }
@@ -2845,12 +2845,12 @@
    * where the local theme setting has no meaning.
    *
    * data shape: {
-   *   title: "UK Grid: Live+",
+   *   title: "Grid Pulse",
    *   asOf: "as of 14:32, 16 Aug 2026",
    *   sourceLabels: [...], sourceValues: [...], sourceColors: [...],
    *   renewablePct: 42,
    *   stats: [{ label, value, unit }, ...] (up to 4),
-   *   filename: "ukgridlive-snapshot-2026-08-16.png"
+   *   filename: "gridpulse-snapshot-2026-08-16.png"
    * }
    */
   function downloadSnapshotCard(data) {
@@ -2870,10 +2870,10 @@
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = text;
     ctx.font = "700 30px system-ui, -apple-system, Segoe UI, sans-serif";
-    ctx.fillText(data.title || "UK Grid: Live+", 48, 64);
+    ctx.fillText(data.title || "Grid Pulse", 48, 64);
     ctx.fillStyle = muted;
     ctx.font = "500 16px system-ui, -apple-system, Segoe UI, sans-serif";
-    ctx.fillText("ukgridlive.info", 48, 88);
+    ctx.fillText("gridpulse.info", 48, 88);
 
     ctx.textAlign = "right";
     ctx.fillStyle = muted;
@@ -2980,7 +2980,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = data.filename || "ukgridlive-snapshot.png";
+      a.download = data.filename || "gridpulse-snapshot.png";
       a.style.position = "fixed";
       a.style.opacity = "0";
       document.body.appendChild(a);
@@ -3045,7 +3045,7 @@
       btn.addEventListener('click', () => {
         const csv = tableToCsv(table);
         const base = slugify(btn.getAttribute('data-csv-title') || table.id || 'table');
-        downloadTextFile(`ukgridlive-${base}-${todayStamp()}.csv`, csv, 'text/csv');
+        downloadTextFile(`gridpulse-${base}-${todayStamp()}.csv`, csv, 'text/csv');
         announceCopyResult(btn, true);
       });
     });
@@ -3066,7 +3066,7 @@
       btn.addEventListener('click', () => {
         const csv = listToCsv(list);
         const base = slugify(btn.getAttribute('data-csv-title') || list.id || 'list');
-        downloadTextFile(`ukgridlive-${base}-${todayStamp()}.csv`, csv, 'text/csv');
+        downloadTextFile(`gridpulse-${base}-${todayStamp()}.csv`, csv, 'text/csv');
         announceCopyResult(btn, true);
       });
     });
@@ -3536,7 +3536,7 @@
     }
     const now = new Date();
     const title = d.title || "Generation mix";
-    const sub = "ukgridlive.info - as of " + fmtTime12(now) + ", " + now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    const sub = "gridpulse.info - as of " + fmtTime12(now) + ", " + now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
     const headLines = wrapLines(d.headline, F(600, 17), W - pad * 2);
 
     // Legend beside the donut: groups in two columns, row by row.
@@ -3690,14 +3690,14 @@
     });
 
     c.fillStyle = pal.muted; c.font = F(500, 12);
-    c.fillText("Outer ring and top bar: each source. Inner ring and bottom bar: its group. Source: https://ukgridlive.info/", pad, H - pad + 8);
+    c.fillText("Outer ring and top bar: each source. Inner ring and bottom bar: its group. Source: https://gridpulse.info/", pad, H - pad + 8);
 
     out.toBlob((blob) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `ukgridlive-${slugify(title)}-${todayStamp()}.png`;
+      a.download = `gridpulse-${slugify(title)}-${todayStamp()}.png`;
       a.style.position = "fixed"; a.style.opacity = "0";
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -4073,9 +4073,38 @@
     check();
   }
 
+  /* ---------- "We've moved" notice ----------
+     ukgridlive.info forwards every address here with ?from=ukgridlive.
+     Show a one-off notice, then take "from" out of the address so a
+     bookmark or a shared link doesn't carry it on. */
+  function initMovedNotice() {
+    let params;
+    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+    if (params.get("from") !== "ukgridlive") return;
+    params.delete("from");
+    const qs = params.toString();
+    try {
+      history.replaceState(history.state, "", window.location.pathname + (qs ? "?" + qs : "") + window.location.hash);
+    } catch (e) { /* ignore */ }
+    let seen = false;
+    try { seen = localStorage.getItem("gp-moved-notice") === "1"; } catch (e) { /* ignore */ }
+    if (seen) return;
+    try { localStorage.setItem("gp-moved-notice", "1"); } catch (e) { /* ignore */ }
+    const box = document.createElement("div");
+    box.className = "moved-notice";
+    box.setAttribute("role", "status");
+    box.innerHTML = '<div class="wrap moved-notice__inner"><p><strong>UK Grid: Live+ is now Grid Pulse.</strong> Update your bookmarks.</p>' +
+      '<button type="button" class="moved-notice__close" aria-label="Dismiss this notice">Dismiss</button></div>';
+    box.querySelector("button").addEventListener("click", () => box.remove());
+    const head = document.querySelector(".site-head");
+    if (head && head.parentNode) head.parentNode.insertBefore(box, head.nextSibling);
+    else document.body.insertBefore(box, document.body.firstChild);
+  }
+
   /* ---------- Init ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     initPrefs();
+    initMovedNotice();
     initBannerFold();
     initNav();
     initPageTools();

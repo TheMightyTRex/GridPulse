@@ -1,6 +1,6 @@
 <?php
 /**
- * UK Grid: Live+ - friendly error pages for PHP pages that return HTML
+ * Grid Pulse - friendly error pages for PHP pages that return HTML
  * (everything in tools/). The static pages in errors/ are shown by the web
  * server for missing pages (404), blocked folders (403) and server errors
  * (500) - see the .htaccess in the site root. But a PHP fatal error usually
@@ -30,7 +30,7 @@ if (!function_exists('ukgrid_send_error_page')) {
         $html = is_readable($file) ? (string) file_get_contents($file) : '';
         if ($html === '') {
             $html = '<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-                . '<title>Something went wrong - UK Grid: Live+</title></head><body style="font:16px/1.5 system-ui,sans-serif;max-width:36rem;margin:2rem auto;padding:0 1rem">'
+                . '<title>Something went wrong - Grid Pulse</title></head><body style="font:16px/1.5 system-ui,sans-serif;max-width:36rem;margin:2rem auto;padding:0 1rem">'
                 . '<h1>Something went wrong on our side</h1><p>This page couldn\'t load because of a problem on the server. Please try again in a minute or two.</p>'
                 . '<!-- error:detail --><p><a href="/index.html">Go to the live overview</a></p></body></html>';
         }
@@ -72,7 +72,7 @@ if (!function_exists('ukgrid_send_error_page')) {
             if (function_exists('ukgrid_file_log')) {
                 ukgrid_file_log($line);
             } else {
-                error_log('UK Grid: Live+ ' . $line);
+                error_log('Grid Pulse ' . $line);
             }
             // Throw away anything half-built, so the error page isn't
             // glued onto the end of a broken one.

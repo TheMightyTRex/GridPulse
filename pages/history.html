@@ -3,14 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>History - UK Grid: Live+</title>
+<title>History - Grid Pulse</title>
 <meta name="description" content="Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.">
+<!-- head:start (written by tools/apply_shell.py) -->
+<link rel="icon" href="../assets/gridpulse-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="../assets/gridpulse-apple-touch-icon-180.png">
+<meta name="theme-color" content="#14181f">
+<link rel="canonical" href="https://gridpulse.info/pages/history.html">
+<meta property="og:site_name" content="Grid Pulse">
+<meta property="og:type" content="website">
+<meta property="og:title" content="History - Grid Pulse">
+<meta property="og:description" content="Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.">
+<meta property="og:url" content="https://gridpulse.info/pages/history.html">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css?v=20261101a">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101a">
+<link rel="stylesheet" href="../assets/style.css?v=20261101b">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -19,7 +35,7 @@
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u="//www.ukgridlive.info/stat/";
+    var u="//gridpulse.info/stat/";
     _paq.push(['setTrackerUrl', u+'matomo.php']);
     _paq.push(['setSiteId', '1']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -35,14 +51,18 @@
 <div class="site-head">
 <header class="site-header">
   <div class="wrap site-header__bar">
-    <a class="brand ug-logo" href="../index.html" aria-label="UK Grid: Live+, home">
+    <a class="brand ug-logo" href="../index.html" aria-label="Grid Pulse, home">
       <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
-        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
-        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
-        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
-        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <rect class="gp-bar" style="--i:0" x="4" y="19" width="4.6" height="10" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:1" x="11" y="16" width="4.6" height="16" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:2" x="18" y="9" width="4.6" height="30" rx="2.3" fill="#ffd54a"/>
+        <rect class="gp-bar" style="--i:3" x="25" y="18" width="4.6" height="12" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:4" x="32" y="13" width="4.6" height="22" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:5" x="39" y="20" width="4.6" height="8" rx="2.3" fill="#ffffff"/>
+        <circle class="ug-ping" cx="45" cy="24" r="3" fill="#4fd18b"/>
+        <circle class="gp-node" cx="45" cy="24" r="3" fill="#4fd18b"/>
       </svg>
-      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">Grid</span><span class="brand__tag ug-tag">Pulse</span></span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul id="site-nav-list" data-nav-list>
@@ -394,12 +414,12 @@
 <footer class="site-footer">
   <div class="wrap">
     <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
-    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> Grid Pulse <span class="badge">Not affiliated with National Grid plc</span></p>
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101a"></script>
-<script src="../assets/data.js?v=20261101a"></script>
+<script src="../assets/app.js?v=20261101b"></script>
+<script src="../assets/data.js?v=20261101b"></script>
 <script>
 (function () {
   const METRICS = {
@@ -498,14 +518,14 @@
           const m = seriesStore.mix;
           if (m) {
             text = GridPreview.seriesToText(m.times, m.labels, m.columns, {
-              title: `Generation mix - ${periodLabel} - UK Grid: Live+`,
+              title: `Generation mix - ${periodLabel} - Grid Pulse`,
             });
           }
         } else if (key === "weather") {
           const w = seriesStore.weather;
           if (w) {
             text = GridPreview.seriesToText(w.times, w.labels, w.columns, {
-              title: `Wind speed & cloud cover - ${periodLabel} - UK Grid: Live+`,
+              title: `Wind speed & cloud cover - ${periodLabel} - Grid Pulse`,
             });
           }
         } else {
@@ -513,7 +533,7 @@
           const cfg = METRICS[key];
           if (s) {
             text = GridPreview.seriesToText(s.times, s.labels, [{ name: cfg.label, unit: s.unit || cfg.unit, values: s.values }], {
-              title: `${cfg.label} - ${periodLabel} - UK Grid: Live+`,
+              title: `${cfg.label} - ${periodLabel} - Grid Pulse`,
             });
           }
         }
@@ -573,14 +593,14 @@
           return;
         }
         const merged = GridPreview.mergeSeriesByTime(named);
-        const title = `UK Grid: Live+ - ${periodLabel}`;
+        const title = `Grid Pulse - ${periodLabel}`;
         const stamp = new Date().toISOString().slice(0, 10);
         if (format === "csv") {
           const csv = GridPreview.seriesToCsv(merged.times, null, merged.columns, { title });
-          GridPreview.downloadTextFile(`ukgridlive-${range}-${stamp}.csv`, csv, "text/csv");
+          GridPreview.downloadTextFile(`gridpulse-${range}-${stamp}.csv`, csv, "text/csv");
         } else {
           const json = GridPreview.seriesToJson(merged.times, null, merged.columns, { title });
-          GridPreview.downloadTextFile(`ukgridlive-${range}-${stamp}.json`, json, "application/json");
+          GridPreview.downloadTextFile(`gridpulse-${range}-${stamp}.json`, json, "application/json");
         }
         announceDownloadResult(btn, true);
       });
@@ -606,7 +626,7 @@
           const m = seriesStore.mix;
           if (canvas && m) {
             spec = {
-              title: `Generation mix over this period - ${periodLabel} - UK Grid: Live+`,
+              title: `Generation mix over this period - ${periodLabel} - Grid Pulse`,
               kind: "series",
               data: {
                 times: m.times, labels: m.labels,
@@ -621,7 +641,7 @@
           const col = w && (key === "weather-wind" ? w.columns[0] : w.columns[1]);
           if (canvas && col) {
             spec = {
-              title: `${col.name} - ${periodLabel} - UK Grid: Live+`,
+              title: `${col.name} - ${periodLabel} - Grid Pulse`,
               kind: "series",
               data: { times: w.times, labels: w.labels, columns: [col] },
               filenameBase: `${range}-${key}`,
@@ -633,7 +653,7 @@
           const cfg = METRICS[key];
           if (canvas && s && cfg) {
             spec = {
-              title: `${cfg.label} - ${periodLabel} - UK Grid: Live+`,
+              title: `${cfg.label} - ${periodLabel} - Grid Pulse`,
               kind: "series",
               data: { times: s.times, labels: s.labels, columns: [{ name: cfg.label, unit: s.unit || cfg.unit, color: cfg.color, values: s.values }] },
               filenameBase: `${range}-${key}`,

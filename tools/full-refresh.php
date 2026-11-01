@@ -233,7 +233,7 @@ if (empty($config['refresh']['on_demand'])) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Full refresh - UK Grid: Live+ tools</title>
+<title>Full refresh - Grid Pulse tools</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
   body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #14161a; color: #e8e8ea; margin: 0; padding: 2rem 1rem 4rem; }
@@ -445,7 +445,7 @@ if (empty($config['refresh']['on_demand'])) {
 
   function buildReport() {
     var lines = [];
-    lines.push('UK Grid: Live+ - full refresh results');
+    lines.push('Grid Pulse - full refresh results');
     lines.push('Generated: ' + new Date().toString());
     lines.push('');
     sourceOrder.forEach(function (name) {

@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse1 - 1 November 2026 (UK Grid: Live+ is now Grid Pulse)
+
+- **New name and address.** The site is now Grid Pulse, at https://gridpulse.info. Page titles, descriptions, the header, the footer, the README, the docs, snapshot card titles and download file names (`gridpulse-...` instead of `ukgridlive-...`) all use the new name. The PHP `ukgrid_` function prefix and the `UKGRID_` secret names stay the same, so nothing breaks.
+- **New logo ("pulse bars").** Six rounded bars with a tall yellow one and a green "live" node. Files: `assets/logo.svg`, `assets/gridpulse-favicon.svg`, `assets/gridpulse-favicon-48.png`, `assets/gridpulse-favicon-192.png`, `assets/gridpulse-apple-touch-icon-180.png`, `assets/gridpulse-icon-512.png`, and full logos in `assets/brand/`. On light backgrounds "PULSE" sits in a yellow box with dark text (`gridpulse-logo-on-light.svg`).
+- **Header animation.** The bars rise left to right, then the green node pings. "Reduce motion" (and the system setting) turns it off.
+- **Share cards.** `tools/apply_shell.py` now also writes a block into each page's `<head>`: the icons, a `<link rel="canonical">` with the gridpulse.info address, and Open Graph tags with a new 1200 x 630 share image (`assets/gridpulse-social.png`). Error pages get `noindex` instead.
+- **"We've moved" notice.** ukgridlive.info forwards every address here with `?from=ukgridlive`. The page then shows a one-off notice ("UK Grid: Live+ is now Grid Pulse. Update your bookmarks."), and takes `from` out of the address.
+- **About page** says Grid Pulse was formerly UK Grid: Live+, and keeps the credit to Kate Morley's National Grid: Live.
+- **Matomo** now tracks at `gridpulse.info/stat/`. Move or copy the `stat` folder from the old web space before uploading.
+- Outgoing requests now identify as `GridPulse/1.0 (+https://gridpulse.info)`. The scheduler's User-Agent is `gridpulse-scheduler`.
+- Cache-busting version bumped to 20261101b.
+
 ## UKGridLive57 - 1 November 2026
 
 - The first run after uploading only `cron/` stopped with "Call to undefined function ukgrid_http_set_deadline()", because the server still had the older `includes/http.php`, yet GitHub showed it as passed (HTTP 200). `cron/run-due.php` now checks that `includes/refresh.php`, `includes/battery.php` and `includes/http.php` are the matching version before it prints anything, and answers 500 naming any that are older.

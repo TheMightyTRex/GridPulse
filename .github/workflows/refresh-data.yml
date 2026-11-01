@@ -6,7 +6,7 @@
 #
 # Set up once (GitHub > this repo > Settings > Secrets and variables >
 # Actions > New repository secret):
-#   UKGRID_SITE_URL     https://ukgridlive.info
+#   UKGRID_SITE_URL     https://gridpulse.info
 #   UKGRID_CRON_SECRET  the same value as 'cron_http_secret' in includes/config.php
 #
 # Schedule: every 30 minutes keeps a PRIVATE repo inside GitHub's free
@@ -40,7 +40,7 @@ jobs:
           fi
           code=$(curl --silent --show-error --max-time 120 -o response.txt -w "%{http_code}" \
             -H "X-Cron-Secret: $CRON_SECRET" \
-            -H "User-Agent: ukgridlive-scheduler/github" \
+            -H "User-Agent: gridpulse-scheduler/github" \
             --data-urlencode "secret=$CRON_SECRET" \
             "${SITE_URL%/}/cron/run-due.php?caller=github") || code="000"
           echo "HTTP status: $code"
@@ -55,7 +55,7 @@ jobs:
             200) exit 0 ;;
             000) echo "Could not reach the site at all (address wrong, or the site is down)." ;;
             403) echo "Forbidden: check cron_http_secret is set in includes/config.php on the server, and that UKGRID_CRON_SECRET is exactly the same value (no spaces)." ;;
-            404) echo "Not found: upload cron/run-due.php to the server, and check UKGRID_SITE_URL (for example https://ukgridlive.info)." ;;
+            404) echo "Not found: upload cron/run-due.php to the server, and check UKGRID_SITE_URL (for example https://gridpulse.info)." ;;
             5*)  echo "Server error: see includes/refresh.log on the server." ;;
             *)   echo "Unexpected response from the site." ;;
           esac

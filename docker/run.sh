@@ -13,7 +13,7 @@ while true; do
   echo "--- $(date -u '+%Y-%m-%d %H:%M:%S') UTC"
   code=$(curl --silent --show-error --max-time 120 -o /tmp/response.txt -w "%{http_code}" \
     -H "X-Cron-Secret: ${CRON_SECRET}" \
-    -H "User-Agent: ukgridlive-scheduler/docker" \
+    -H "User-Agent: gridpulse-scheduler/docker" \
     --data-urlencode "secret=${CRON_SECRET}" \
     "$URL") || code="000"
   cat /tmp/response.txt 2>/dev/null; echo
