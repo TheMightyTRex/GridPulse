@@ -21,6 +21,14 @@ return [
   // db_connection_failed error with everything else looking right, try
   // 'host' => '127.0.0.1' instead of 'localhost' (a common fix - some
   // hosts' PHP has trouble with the "localhost" socket shortcut).
+  // --- Operator tools password ---------------------------------------------
+  // Protects tools/full-refresh.php (see tools/_auth.php). Leave it empty and
+  // that page shows a form that turns a password you choose into the hash
+  // to paste here - it won't run anything until this is set. It's a one-way
+  // hash, never the password itself. Kept here (not in tools/.htaccess) so a
+  // site re-upload can never overwrite or remove it.
+  'tools_password_hash' => '',
+
   'db' => [
     'host'    => 'localhost',
     'name'    => 'cpaneluser_ukgrid',
@@ -44,7 +52,10 @@ return [
     // attribution "Supported by EirGrid Group Data" wherever this data is
     // shown - already included in pages/ireland.html's footer, don't
     // remove it if you customise that page.
-    'eirgrid_base'           => 'https://www.smartgriddashboard.com/DashboardService.svc',
+    // EirGrid retired the old DashboardService.svc feed in October 2026 (it
+    // now only answers HTTP 503). The new dashboard's own chart API is used
+    // instead; an old DashboardService.svc value here is ignored.
+    'eirgrid_base'           => 'https://www.smartgriddashboard.com/api/chart/',
 
     // Powers the USA page (demand, generation, and net interstate/
     // international interchange, all lower-48-states aggregate). Unlike
@@ -98,17 +109,59 @@ return [
       // The six above are all physically interconnected to GB (Ireland via
       // Moyle/EWIC, France via IFA/IFA2/ElecLink, Netherlands via BritNed,
       // Belgium via Nemo Link, Norway via North Sea Link, Denmark via
-      // Viking Link). The five below are not GB-interconnected - they're
+      // Viking Link). The six below are not GB-interconnected - they're
       // included purely for cross-country comparison (pages/comparisons.html,
       // the "any country vs any country" Energy sources tab) since ENTSO-E
       // covers them on the same terms as everything above. See
       // pages/data-sources.html for this distinction spelled out.
       'DE' => ['domain' => '10Y1001A1001A82H', 'label' => 'Germany', 'fetch' => ['price', 'generation', 'demand']],
       'ES' => ['domain' => '10YES-REE------0', 'label' => 'Spain', 'fetch' => ['price', 'generation', 'demand']],
-      'IT' => ['domain' => '10YIT-GRTN-----B', 'label' => 'Italy', 'fetch' => ['price', 'generation', 'demand']],
+      // Italy: generation/demand use the whole-country control area, but
+      // ENTSO-E only has day-ahead prices per price zone - price_domain
+      // picks the North zone (IT-North, the largest). Optional: Italy
+      // defaults to this even if price_domain is left out.
+      'IT' => ['domain' => '10YIT-GRTN-----B', 'price_domain' => '10Y1001A1001A73I', 'label' => 'Italy', 'fetch' => ['price', 'generation', 'demand']],
       'SE' => ['domain' => '10Y1001A1001A46L', 'label' => 'Sweden (SE3)', 'fetch' => ['price', 'generation', 'demand']],
       'PT' => ['domain' => '10YPT-REN------W', 'label' => 'Portugal', 'fetch' => ['price', 'generation', 'demand']],
+      'PL' => ['domain' => '10YPL-AREA-----S', 'label' => 'Poland', 'fetch' => ['price', 'generation', 'demand']],
     ],
+
+    // Powers pages/australia.html - Australia's National Electricity
+    // Market (NEM) demand, generation by fuel technology group, and a
+    // demand-weighted average spot price, via the Open Electricity API
+    // (formerly OpenNEM) - see includes/ingest.php's
+    // ukgrid_ingest_openelectricity() and cron/fetch_openelectricity.php.
+    // Like eia_api_key above, this is NOT keyless - register a free
+    // account at https://platform.openelectricity.org.au/sign-up (instant,
+    // self-serve - first/last name, email, password, or continue with
+    // GitHub/Google; no approval wait like ENTSO-E) and generate a key
+    // from that account's dashboard, then paste it below. Leave it as
+    // 'CHANGE-ME' and the Australia page simply shows no live data (no
+    // illustrative fallback, no error) - same convention as eia_api_key.
+    // IMPORTANT - data licence: unless the Open Electricity API says
+    // otherwise for a specific endpoint, its data is CC BY-NC 4.0
+    // (non-commercial use only, with attribution) - a stricter term than
+    // every other source in this file, all of which are free for any use.
+    // Read https://openelectricity.org.au (their full licence page) before
+    // relying on this if ukgridlive.info ever carries ads, a paid tier, or
+    // any other commercial element - CC BY-NC 4.0 may not permit that
+    // without a separate commercial licence from Open Electricity. See
+    // pages/about.html and pages/data-sources.html for the attribution
+    // text this site shows alongside any Australia figures.
+    'openelectricity_api_key' => 'CHANGE-ME',
+    'openelectricity_base'    => 'https://api.openelectricity.org.au/v4',
+
+    // Powers the new "SEM imbalance price" figure on pages/ireland.html -
+    // the all-island (ROI + NI) Single Electricity Market's real,
+    // 5-minute, ex-post settlement price, alongside (not replacing)
+    // EirGrid's demand/generation/wind figures and ENTSO-E's day-ahead
+    // price already used there. See includes/ingest.php's
+    // ukgrid_ingest_semo() and cron/fetch_semo.php. Genuinely keyless and
+    // free, unlike eia_api_key/openelectricity_api_key above - no
+    // registration of any kind needed, so there's nothing to fill in
+    // below unless SEMO ever changes these URLs.
+    'semo_reports_api_base'  => 'https://reports.sem-o.com/api/v1/documents/static-reports',
+    'semo_resource_base'     => 'https://reports.sem-o.com/documents',
 
     // Powers the "Wind speed & cloud cover" card on the History page.
     // Open-Meteo is free and keyless - nothing to fill in. weather_lat/lon
@@ -156,26 +209,35 @@ return [
     // with an occasional slower page load in exchange for the
     // embedded-wind figure being refreshed automatically.
     //
-    // EIA and ENTSOE ARE included below (unlike NESO) even though both need
-    // an API key most installs won't have set - leaving either key as
-    // 'CHANGE-ME' just makes that source's ingest function log "OK, 0 rows"
-    // and return immediately, so there's no real cost to having them
-    // enabled by default for installs that haven't set a key up. For
-    // installs that HAVE, this is what makes the USA and
-    // France/Netherlands/Belgium/Norway/Denmark/Ireland-SEM-price pages
-    // work with zero cron access at all - see includes/refresh.php's
-    // ENTSOE case: on-demand refreshes are capped to ONE of the 6
+    // EIA, ENTSOE and OPENELECTRICITY ARE included below (unlike NESO) even
+    // though all three need an API key most installs won't have set -
+    // leaving any of those keys as 'CHANGE-ME' just makes that source's
+    // ingest function log "OK, 0 rows" and return immediately, so there's no
+    // real cost to having them enabled by default for installs that haven't
+    // set a key up. For installs that HAVE, this is what makes the USA,
+    // Australia and France/Netherlands/Belgium/Norway/Denmark/Ireland-SEM-
+    // price pages work with zero cron access at all - see includes/refresh.php's
+    // ENTSOE case: on-demand refreshes are capped to ONE of the 12
     // configured countries per trigger (staleness-first, not config order),
     // so every call - including the very first, before anything's ever
     // been fetched - stays down to at most 3 requests rather than
-    // potentially all 17 at once. 240 minutes for EIA matches its own
+    // potentially all 35 at once. 240 minutes for EIA matches its own
     // ~1-day publication lag. 20 for ENTSOE is shorter than you might
     // expect for a source that only updates every 1-3 hours - that's
-    // deliberate: since each trigger only refreshes ONE of the 6 countries,
-    // a 20-minute interval means roughly one full rotation through all 6
-    // every ~2 hours, keeping each individual country reasonably close to
-    // ENTSO-E's own publication cadence rather than the 6-hour-plus cycle a
-    // longer interval would produce.
+    // deliberate: since each trigger only refreshes ONE of the 12 countries,
+    // a 20-minute interval means roughly one full rotation through all 12
+    // every ~4 hours, keeping each individual country reasonably close to
+    // ENTSO-E's own publication cadence rather than the much longer cycle a
+    // longer interval would produce. 15 minutes for OPENELECTRICITY is
+    // close to AEMO's own 5-minute dispatch cadence without refreshing on
+    // nearly every page load - unlike ENTSOE there's only ever one NEM
+    // market to check, no per-country rotation needed. 15 minutes for SEMO
+    // matches OPENELECTRICITY's reasoning even though SEMO's own imbalance
+    // price updates every 5 minutes - ukgrid_ingest_semo() always fetches
+    // a full hour's overlap regardless of how often it's called, so 15
+    // minutes keeps pages/ireland.html's SEM imbalance price close to
+    // current without an on-demand refresh doing that fetch on nearly
+    // every page load.
     // WEATHER (Open-Meteo) and CONSTRAINTS (NESO's constraint-breakdown
     // dataset) are both included here so their pages' panels work with
     // zero cron access, same as everything else in this list. 60 minutes
@@ -195,6 +257,8 @@ return [
       'EIA' => 240,
       'IESO' => 30,
       'ENTSOE' => 20,
+      'OPENELECTRICITY' => 15,
+      'SEMO' => 15,
       'WEATHER' => 60,
       'CONSTRAINTS' => 1440,
       'NOTABLE_MOMENTS' => 1440,
@@ -208,8 +272,8 @@ return [
     // timeout only ever has to cover a small, predictable worst case - at
     // 6s that's at most ~18 seconds even on a completely cold start, well
     // within any shared host's default page-load execution limit. (An
-    // earlier version of this let a cold-start refresh attempt all 6
-    // countries - up to 17 requests - in one go, which could exceed a
+    // earlier version of this let a cold-start refresh attempt all 12
+    // countries - up to 35 requests - in one go, which could exceed a
     // typical ~30s default execution limit and get killed partway through,
     // silently favouring whichever countries are listed first in
     // entsoe_countries over the rest - that's why the cap exists now.) The
@@ -225,6 +289,8 @@ return [
       'EIA' => 15,
       'IESO' => 7, // per-request, not total - ukgrid_ingest_ieso() makes two sequential calls (~14s worst case)
       'ENTSOE' => 6,
+      'OPENELECTRICITY' => 8, // per-request, not total - ukgrid_ingest_openelectricity() makes two sequential calls
+      'SEMO' => 6, // per-request, not total - ukgrid_ingest_semo() makes one list call plus up to 12 small XML-file fetches
       'WEATHER' => 8,
       'CONSTRAINTS' => 10, // two sequential CKAN calls (resolve resource, then fetch it) - same shape as NESO above
       'NOTABLE_MOMENTS' => 12, // a handful of MAX()/MIN() queries against this site's own tables, no external call
@@ -258,4 +324,18 @@ return [
   // own ~15-30 minute sources, hence its own threshold rather than reusing
   // staleness_minutes (90).
   'entsoe_staleness_minutes' => 240,
+
+  // Same idea again, for pages/australia.html. AEMO's NEM dispatch data
+  // updates every 5 minutes - close to GB/Ireland's own pace - so this
+  // stays much tighter than usa_staleness_minutes/entsoe_staleness_minutes
+  // above; it mainly exists to catch ingestion actually breaking rather
+  // than a normal source-side lag.
+  'australia_staleness_minutes' => 30,
+
+  // Same idea again, for pages/ireland.html's SEM imbalance price (SEMO -
+  // see api/ireland_current.php and includes/ingest.php's
+  // ukgrid_ingest_semo()). SEMO publishes a new imbalance price roughly
+  // every 5 minutes, published ex-post - close to Australia's own pace, so
+  // this reuses the same tight threshold.
+  'semo_staleness_minutes' => 30,
 ];

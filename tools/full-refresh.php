@@ -2,13 +2,13 @@
 /**
  * tools/full-refresh.php - manual, one-off "pull everything right now"
  * diagnostic page. NOT part of the regular site - nothing on the site
- * links to this, and the whole tools/ folder is password-protected via
- * tools/.htaccess (HTTP Basic Auth) since it's for the site operator's own
- * use only, not visitors.
+ * links to this, and it's password-protected by tools/_auth.php (a login
+ * form checked against 'tools_password_hash' in includes/config.php) since
+ * it's for the site operator's own use only, not visitors.
  *
  * Runs every configured source's ingest function - Elexon, Carbon
- * Intensity, NESO, EirGrid, EIA, ENTSO-E (once per configured country) -
- * regardless of whether each is actually due yet. The real readings_*
+ * Intensity, NESO, EirGrid, EIA, ENTSO-E (once per configured country),
+ * Open Electricity - regardless of whether each is actually due yet. The real readings_*
  * tables still get written to normally - this is a genuine pull, not a dry
  * run - but nothing is written to includes/refresh.log or the ingest_log
  * table (see ukgrid_start_log_capture()/ukgrid_stop_log_capture() in
@@ -17,7 +17,7 @@
  *
  * DESIGN NOTE: this used to run everything inside one single PHP request.
  * On real shared hosting that was unreliable - a full run (ENTSO-E alone
- * can be up to 17 sequential requests across 6 countries) can take several
+ * can be up to 35 sequential requests across 12 countries) can take several
  * minutes, and many hosts enforce a hard request/process timeout at the
  * web-server or FastCGI/LiteSpeed level that a PHP-side set_time_limit()
  * call CANNOT override (that's a PHP-only setting; the server's own
@@ -40,14 +40,25 @@
  * already use, so re-running this can't create duplicate data.
  */
 
+require __DIR__ . '/../includes/error_page.php';
+// Show errors/500.html rather than a blank 500 if anything breaks. The
+// ?ajax=1 calls stay JSON, which is what this page's script reads.
+if (!isset($_GET['ajax'])) {
+    ukgrid_html_errors();
+}
 require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/ingest.php';
+require __DIR__ . '/_auth.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 date_default_timezone_set('UTC');
 
 $config = ukgrid_load_config();
+// Password check before anything else runs - see tools/_auth.php for why
+// this replaced tools/.htaccess's Basic Auth (a placeholder server path in
+// that file caused a blank 500 error after every full-site upload).
+ukgrid_tools_require_login($config);
 $pdo = ukgrid_db();
 
 function ukgrid_tool_h(string $s): string
@@ -64,6 +75,13 @@ if (isset($_GET['ajax'])) {
     set_time_limit(90); // a generous per-call ceiling, nowhere near the old full-run total
 
     $source = (string) ($_GET['source'] ?? '');
+    // ENTSO-E is run one named country per request: source=ENTSOE_ES etc.
+    $entsoeCountry = null;
+    if (preg_match('/^ENTSOE_([A-Z]{2,3})$/', $source, $m)
+        && isset($config['sources']['entsoe_countries'][$m[1]])) {
+        $entsoeCountry = $m[1];
+        $source = 'ENTSOE_COUNTRY';
+    }
     $jobs = [
         'ELEXON' => static fn () => ukgrid_ingest_elexon($pdo, $config, 15),
         'CARBON_INTENSITY' => static fn () => ukgrid_ingest_carbon_intensity($pdo, $config, 12),
@@ -79,6 +97,9 @@ if (isset($_GET['ajax'])) {
         // (see this file's own docblock above) - keeping this tight leaves
         // more headroom below whatever that ceiling turns out to be.
         'IESO' => static fn () => ukgrid_ingest_ieso($pdo, $config, 8),
+        'OPENELECTRICITY' => static fn () => ukgrid_ingest_openelectricity($pdo, $config, 12),
+        'SEMO' => static fn () => ukgrid_ingest_semo($pdo, $config, 15),
+        'BATTERY' => static fn () => ukgrid_ingest_battery($pdo, $config, 15, 8, 12),
         // One country per call: skipFresherThanMinutes=0 so nothing is
         // ever skipped, maxCountriesPerRun=1 so this stays short. The page
         // calls this once per configured country, and staleness-based
@@ -88,6 +109,15 @@ if (isset($_GET['ajax'])) {
         // ukgrid_ingest_entsoe()'s own doc comment in includes/ingest.php
         // for the full mechanism.
         'ENTSOE' => static fn () => ukgrid_ingest_entsoe($pdo, $config, 15, 0, 1),
+        // One named country per call, in entsoe_countries' own order, so
+        // every country is always covered and shows as its own card.
+        'ENTSOE_COUNTRY' => static fn () => ukgrid_ingest_entsoe($pdo, $config, 15, 0, 1, $entsoeCountry),
+        // Previously only refreshed on demand or by cron - included here so
+        // one run of this page really does refresh everything.
+        'WEATHER' => static fn () => ukgrid_ingest_weather($pdo, $config, 12),
+        'CONSTRAINTS' => static fn () => ukgrid_ingest_constraints($pdo, $config, 15),
+        // Last: it's re-aggregated from the data fetched by the steps above.
+        'NOTABLE_MOMENTS' => static fn () => ukgrid_compute_notable_moments($pdo, $config, 30),
     ];
 
     header('Content-Type: application/json');
@@ -109,7 +139,7 @@ if (isset($_GET['ajax'])) {
     $entries = ukgrid_stop_log_capture();
 
     echo json_encode([
-        'source' => $source,
+        'source' => $entsoeCountry !== null ? 'ENTSOE_' . $entsoeCountry : $source,
         'entries' => $entries,
         'threw' => $threw,
         'seconds' => round(microtime(true) - $jobStart, 1),
@@ -122,18 +152,19 @@ if (isset($_GET['ajax'])) {
 // above and renders their results as they come in.
 // ---------------------------------------------------------------------
 $countries = $config['sources']['entsoe_countries'] ?? [];
-$entsoeCallCount = 0;
-foreach ($countries as $countryCfg) {
+// Every configured ENTSO-E country gets its own step and card, in
+// entsoe_countries' own order (Ireland, France, Netherlands, ...).
+$entsoeSteps = [];
+$sourceLabels = [];
+foreach ($countries as $code => $countryCfg) {
     if (($countryCfg['domain'] ?? null) !== null && !empty($countryCfg['fetch'] ?? [])) {
-        $entsoeCallCount++;
+        $entsoeSteps[] = 'ENTSOE_' . $code;
+        $sourceLabels['ENTSOE_' . $code] = 'ENTSOE - ' . ($countryCfg['label'] ?? $code) . ' (' . $code . ')';
     }
 }
-// Always at least one call, even if entsoe_countries looks empty/unconfigured
-// - it'll just report back "not set up" rather than the page having no
-// ENTSOE card at all.
-$entsoeCallCount = max($entsoeCallCount, 1);
+$entsoeCallCount = count($entsoeSteps);
 
-$sourceOrder = ['ELEXON', 'CARBON_INTENSITY', 'NESO', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE'];
+$sourceOrder = array_merge(['ELEXON', 'CARBON_INTENSITY', 'NESO', 'EIRGRID', 'EIA', 'IESO'], $entsoeSteps ?: ['ENTSOE'], ['OPENELECTRICITY', 'SEMO', 'BATTERY', 'WEATHER', 'CONSTRAINTS', 'NOTABLE_MOMENTS']);
 
 // ---------------------------------------------------------------------
 // Config check - runs on every normal page load, entirely from what's
@@ -157,11 +188,15 @@ $configWarnings = [];
 
 $entsoeToken = trim((string) ($config['sources']['entsoe_api_token'] ?? ''));
 if ($entsoeToken === '' || $entsoeToken === 'CHANGE-ME') {
-    $configWarnings[] = "entsoe_api_token isn't set (still 'CHANGE-ME' or blank) in includes/config.php - Ireland's SEM price/mix and all ten ENTSO-E country pages (France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal) will show no live data until you add one. Free to get, but needs registration plus an email approval step - see includes/config.php.example.";
+    $configWarnings[] = "entsoe_api_token isn't set (still 'CHANGE-ME' or blank) in includes/config.php - Ireland's SEM price/mix and all eleven other ENTSO-E country pages (France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal, Poland) will show no live data until you add one. Free to get, but needs registration plus an email approval step - see includes/config.php.example.";
 }
 $eiaKey = trim((string) ($config['sources']['eia_api_key'] ?? ''));
 if ($eiaKey === '' || $eiaKey === 'CHANGE-ME') {
     $configWarnings[] = "eia_api_key isn't set in includes/config.php - the USA page will show no live data until you add one. Free, instant signup - see includes/config.php.example.";
+}
+$openElectricityKey = trim((string) ($config['sources']['openelectricity_api_key'] ?? ''));
+if ($openElectricityKey === '' || $openElectricityKey === 'CHANGE-ME') {
+    $configWarnings[] = "openelectricity_api_key isn't set in includes/config.php - the Australia page will show no live data until you add one. Free, instant signup - see includes/config.php.example.";
 }
 
 $expectedEntsoeCountries = [
@@ -179,7 +214,7 @@ if (!empty($missingEntsoeCountries)) {
     $configWarnings[] = 'entsoe_countries in includes/config.php is missing: ' . implode(', ', $missingList) . ' - those pages will stay on illustrative/no data until added. See includes/config.php.example for the exact entries to copy in.';
 }
 
-$expectedOnDemandSources = ['ELEXON', 'CARBON_INTENSITY', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE', 'WEATHER', 'CONSTRAINTS', 'NOTABLE_MOMENTS'];
+$expectedOnDemandSources = ['ELEXON', 'CARBON_INTENSITY', 'EIRGRID', 'EIA', 'IESO', 'ENTSOE', 'OPENELECTRICITY', 'SEMO', 'BATTERY', 'WEATHER', 'CONSTRAINTS', 'NOTABLE_MOMENTS'];
 $intervalsCfg = $config['refresh']['intervals_minutes'] ?? [];
 $timeoutsCfg = $config['refresh']['timeouts_seconds'] ?? [];
 $missingOnDemand = array_unique(array_merge(
@@ -243,7 +278,7 @@ if (empty($config['refresh']['on_demand'])) {
 <body>
 <div class="wrap">
   <h1>Full refresh - all sources</h1>
-  <p class="sub">Runs each source one small request at a time (rather than one long request) so a slow or hanging source can't take the whole page down. Results stream in below as each one finishes.</p>
+  <p class="sub">Runs each source one small request at a time (rather than one long request) so a slow or hanging source can't take the whole page down. Results stream in below as each one finishes. <a href="?logout=1">Log out</a></p>
 
   <?php if (!empty($configWarnings)): ?>
     <div class="config-check">
@@ -264,7 +299,7 @@ if (empty($config['refresh']['on_demand'])) {
     <div class="source" id="source-<?php echo ukgrid_tool_h($name); ?>">
       <div class="source__head">
         <span class="dot dot--pending" data-dot aria-hidden="true"></span>
-        <span class="source__name"><?php echo ukgrid_tool_h($name); ?></span>
+        <span class="source__name"><?php echo ukgrid_tool_h($sourceLabels[$name] ?? $name); ?></span>
         <span class="source__meta" data-meta>queued</span>
       </div>
       <div class="source__body" data-body>
@@ -286,9 +321,11 @@ if (empty($config['refresh']['on_demand'])) {
 (function () {
   var ENTSOE_CALLS = <?php echo (int) $entsoeCallCount; ?>;
   var sourceOrder = <?php echo json_encode($sourceOrder); ?>;
+  var sourceLabels = <?php echo json_encode($sourceLabels); ?>;
 
-  var steps = ['ELEXON', 'CARBON_INTENSITY', 'NESO', 'EIRGRID', 'EIA', 'IESO'];
-  for (var i = 0; i < ENTSOE_CALLS; i++) steps.push('ENTSOE');
+  // Same order as the cards: GB and other sources, then each ENTSO-E
+  // country in turn, then the rest.
+  var steps = sourceOrder.slice();
 
   // Per-source accumulated result, kept around for the "copy results" button
   // and (for ENTSOE) for merging multiple calls' entries into one card.
@@ -344,14 +381,24 @@ if (empty($config['refresh']['on_demand'])) {
 
   async function runStep(name, stepIndex, totalSteps) {
     setDot(name, 'running');
-    progressEl.textContent = 'Step ' + (stepIndex + 1) + ' of ' + totalSteps + ': working on ' + name +
-      (name === 'ENTSOE' ? ' (country ' + (results.ENTSOE.calls + 1) + ' of ' + ENTSOE_CALLS + ')' : '') + '...';
+    progressEl.textContent = 'Step ' + (stepIndex + 1) + ' of ' + totalSteps + ': working on ' + (sourceLabels[name] || name) + '...';
 
     var r = results[name];
 
     try {
       var res = await fetch('?ajax=1&source=' + encodeURIComponent(name) + '&_=' + Date.now());
-      var data = await res.json();
+      var raw = await res.text();
+      var data;
+      try {
+        data = JSON.parse(raw);
+      } catch (parseErr) {
+        // The web server answered with a page of its own (HTML) instead of
+        // this tool's JSON - usually the host's request time limit or a
+        // gateway error, i.e. the step took too long rather than failed.
+        var title = (raw.match(/<title>([^<]*)<\/title>/i) || [])[1] || '';
+        throw new Error('the web server returned HTTP ' + res.status + (title ? ' (' + title.trim() + ')' : '') +
+          ' instead of a result - most likely this step ran past the host\'s time limit. Re-running it usually works.');
+      }
 
       r.calls++;
       r.seconds += (data.seconds || 0);
@@ -403,9 +450,8 @@ if (empty($config['refresh']['on_demand'])) {
     lines.push('');
     sourceOrder.forEach(function (name) {
       var r = results[name];
-      var header = '== ' + name + ' ==';
-      if (name === 'ENTSOE') header += ' (' + r.calls + '/' + ENTSOE_CALLS + ' countries, ' + r.seconds.toFixed(1) + 's total)';
-      else header += ' (' + r.seconds.toFixed(1) + 's)';
+      var header = '== ' + (sourceLabels[name] || name) + ' ==';
+      header += ' (' + r.seconds.toFixed(1) + 's)';
       lines.push(header);
       if (!r.entries.length) {
         lines.push('  No log entries captured' + (r.threw ? ' - threw: ' + r.threw : '') + '.');

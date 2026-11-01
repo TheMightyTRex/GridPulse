@@ -4,6 +4,28 @@
  * Included by every API endpoint and every cron ingestion script.
  */
 
+/**
+ * Stops the request with a config or database problem. JSON for the API
+ * and plain callers; an HTML page (errors/500.html with the message) for
+ * pages that called ukgrid_html_errors() - see includes/error_page.php.
+ */
+function ukgrid_config_fail(string $error, string $message): void
+{
+    if (defined('UKGRID_HTML_ERRORS') && function_exists('ukgrid_send_error_page')) {
+        while (ob_get_level() > 0) {
+            @ob_end_clean();
+        }
+        ukgrid_send_error_page(500, '<p>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</p>');
+        exit;
+    }
+    http_response_code(500);
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+    }
+    echo json_encode(['error' => $error, 'message' => $message]);
+    exit;
+}
+
 function ukgrid_load_config(): array
 {
     static $config = null;
@@ -17,25 +39,27 @@ function ukgrid_load_config(): array
     $hardened = dirname(__DIR__, 2) . '/uk-grid-config/config.php';
     $local = __DIR__ . '/config.php';
 
-    if (is_file($hardened)) {
-        $config = require $hardened;
-    } elseif (is_file($local)) {
-        $config = require $local;
+    $file = is_file($hardened) ? $hardened : (is_file($local) ? $local : null);
+    if ($file !== null) {
+        // A typo in config.php (a missing comma, a quote left open, or a
+        // line pasted outside the "return [ ... ];" list) used to take the
+        // whole site down with a blank error. Say which line instead. Only
+        // the line number goes in the reply - PHP's own message can quote
+        // part of the file, which may be a password, so that goes to the
+        // PHP error log only.
+        try {
+            $config = require $file;
+        } catch (ParseError $e) {
+            error_log('UK Grid: Live+ config.php syntax error: ' . $e->getMessage() . ' on line ' . $e->getLine());
+            ukgrid_config_fail('config_syntax_error', 'includes/config.php has a typo on or just before line ' . $e->getLine()
+                . '. Every setting must sit inside the "return [" ... "];" list and end with a comma, e.g. \'cron_http_secret\' => \'your-value\',');
+        }
     } else {
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'error' => 'missing_config',
-            'message' => 'includes/config.php not found. Copy includes/config.php.example to includes/config.php and fill in your database details - see README-DEPLOY.md.',
-        ]);
-        exit;
+        ukgrid_config_fail('missing_config', 'includes/config.php not found. Copy includes/config.php.example to includes/config.php and fill in your database details - see README-DEPLOY.md.');
     }
 
     if (!is_array($config)) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'invalid_config', 'message' => 'config.php must return an array.']);
-        exit;
+        ukgrid_config_fail('invalid_config', 'includes/config.php must return a list of settings ("return [" ... "];").');
     }
 
     return $config;
@@ -71,13 +95,7 @@ function ukgrid_db(): PDO
         // log - check that first. On cPanel: Metrics > Errors, or look for
         // an error_log file in this folder / your account's logs folder.
         error_log('ukgrid db connection failed: dsn=' . $dsn . ' user=' . $user . ' - ' . $e->getMessage());
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'error' => 'db_connection_failed',
-            'message' => 'Could not connect to the database. Check includes/config.php against the credentials shown under cPanel > MySQL Databases. The exact error has been written to the PHP error log.',
-        ]);
-        exit;
+        ukgrid_config_fail('db_connection_failed', 'Could not connect to the database. Check includes/config.php against the credentials shown under cPanel > MySQL Databases. The exact error has been written to the PHP error log.');
     }
 
     return $pdo;

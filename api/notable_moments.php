@@ -3,7 +3,7 @@
  * GET api/notable_moments.php
  *
  * The highest/lowest value THIS INSTALL has itself recorded for a handful
- * of GB metrics (day-ahead price, carbon intensity, demand, wind, solar) -
+ * of GB metrics (wholesale market index price, carbon intensity, demand, wind, solar) -
  * see ukgrid_compute_notable_moments() in includes/ingest.php, which
  * recomputes and caches these into the notable_moments table roughly once
  * a day via includes/refresh.php's on-demand dispatch (or the optional
@@ -24,7 +24,7 @@
  * Response shape:
  *   { "ok": true, "recorded_since": "2026-08-01T00:00:00Z",
  *     "moments": [
- *       { "key": "price_highest", "label": "Highest day-ahead price recorded",
+ *       { "key": "price_highest", "label": "Highest wholesale price recorded (market index)",
  *         "value": 142.50, "unit": "GBP/MWh", "ts": "2026-08-10T18:00:00Z", "direction": "highest" },
  *       ...
  *     ] }

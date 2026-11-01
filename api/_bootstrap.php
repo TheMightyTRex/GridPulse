@@ -211,3 +211,69 @@ function ukgrid_is_interconnector(string $fuelType): bool
 {
     return strpos($fuelType, 'INT') === 0;
 }
+
+/**
+ * One coherent "generation mix right now" snapshot from a (ts, category, mw)
+ * readings table: every value read at ONE timestamp, rather than each
+ * category looked up independently as "nearest reading within +/- the
+ * window" - which could stitch a single donut/table together from readings
+ * taken hours apart. Picks the latest timestamp at or before $anchorTs
+ * (within $windowMinutes) that has readings for at least three-quarters as
+ * many of $categories as the most complete timestamp in that window, then
+ * reads every category there; a category missing at that timestamp falls
+ * back to its latest reading at or before it (never a later one), within
+ * the window. Same rule as api/country_current.php / api/usa_current.php.
+ *
+ * $table/$catCol are fixed identifiers from the calling endpoint, never
+ * user input. Returns ['ts' => 'Y-m-d H:i:s'|null, 'mix' => [category => mw]].
+ */
+function ukgrid_coherent_mix(PDO $pdo, string $table, string $catCol, array $categories, string $anchorTs, int $windowMinutes): array
+{
+    if (empty($categories)) {
+        return ['ts' => null, 'mix' => []];
+    }
+    $in = implode(',', array_map([$pdo, 'quote'], $categories));
+    $cov = $pdo->prepare(
+        "SELECT ts, COUNT(*) AS n FROM {$table}
+         WHERE {$catCol} IN ({$in}) AND ts BETWEEN DATE_SUB(:ts1, INTERVAL :w1 MINUTE) AND :ts2
+         GROUP BY ts ORDER BY ts DESC"
+    );
+    $cov->execute(['ts1' => $anchorTs, 'w1' => $windowMinutes, 'ts2' => $anchorTs]);
+    $rows = $cov->fetchAll();
+    $maxN = 0;
+    foreach ($rows as $r) {
+        $maxN = max($maxN, (int) $r['n']);
+    }
+    $needN = max(1, (int) ceil($maxN * 0.75));
+    $mixTs = null;
+    foreach ($rows as $r) { // newest first
+        if ((int) $r['n'] >= $needN) {
+            $mixTs = $r['ts'];
+            break;
+        }
+    }
+    if ($mixTs === null) {
+        return ['ts' => null, 'mix' => []];
+    }
+    $mix = [];
+    $at = $pdo->prepare("SELECT {$catCol} AS c, mw FROM {$table} WHERE ts = :ts AND {$catCol} IN ({$in})");
+    $at->execute(['ts' => $mixTs]);
+    foreach ($at->fetchAll() as $r) {
+        $mix[$r['c']] = (float) $r['mw'];
+    }
+    $prev = $pdo->prepare(
+        "SELECT mw FROM {$table} WHERE {$catCol} = :cat AND ts <= :ts1 AND ts >= DATE_SUB(:ts2, INTERVAL :w1 MINUTE)
+         ORDER BY ts DESC LIMIT 1"
+    );
+    foreach ($categories as $cat) {
+        if (array_key_exists($cat, $mix)) {
+            continue;
+        }
+        $prev->execute(['cat' => $cat, 'ts1' => $mixTs, 'ts2' => $mixTs, 'w1' => $windowMinutes]);
+        $v = $prev->fetchColumn();
+        if ($v !== false && $v !== null) {
+            $mix[$cat] = (float) $v;
+        }
+    }
+    return ['ts' => $mixTs, 'mix' => $mix];
+}

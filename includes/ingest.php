@@ -11,6 +11,7 @@
  */
 
 require_once __DIR__ . '/http.php';
+require_once __DIR__ . '/battery.php';
 
 /**
  * Shared by every ukgrid_ingest_*() function that makes more than one
@@ -370,7 +371,12 @@ function ukgrid_compute_notable_moments(PDO $pdo, array $config, int $timeoutSec
 {
     $moments = [];
 
-    $add = function (string $key, ?array $row, string $label, string $unit, string $direction, string $valueCol = 'v') use (&$moments) {
+    // $row is untyped on purpose: PDOStatement::fetch() returns false (not
+    // null) when a table has no matching row, and the previous `?array`
+    // type hint turned that into a fatal TypeError - so a single empty
+    // source table (e.g. no carbon-intensity readings yet) stopped EVERY
+    // notable moment from being computed, leaving the panel "not available".
+    $add = function (string $key, $row, string $label, string $unit, string $direction, string $valueCol = 'v') use (&$moments) {
         if ($row === false || $row === null || $row[$valueCol] === null) {
             return;
         }
@@ -383,14 +389,18 @@ function ukgrid_compute_notable_moments(PDO $pdo, array $config, int $timeoutSec
         ];
     };
 
-    // Day-ahead price (Elexon MID) - highest and lowest recorded. Negative
-    // prices are a real, interesting grid event (surplus low-carbon
-    // generation paying to keep running) rather than a data error, so the
-    // lowest figure is shown as-is, sign included.
-    $add('price_highest', $pdo->query("SELECT ts, price AS v FROM readings_price ORDER BY price DESC LIMIT 1")->fetch(),
-        'Highest day-ahead price recorded', 'GBP/MWh', 'highest');
-    $add('price_lowest', $pdo->query("SELECT ts, price AS v FROM readings_price ORDER BY price ASC LIMIT 1")->fetch(),
-        'Lowest day-ahead price recorded', 'GBP/MWh', 'lowest');
+    // Wholesale market index price (Elexon MID, APX - a short-term traded
+    // price, not the day-ahead auction it was previously labelled as) -
+    // highest and lowest recorded. Negative prices are a real, interesting
+    // grid event (surplus low-carbon generation paying to keep running)
+    // rather than a data error, so the lowest figure is shown as-is, sign
+    // included. Zero-volume half-hours are excluded: Elexon sets the price
+    // to exactly 0 when too little traded to form one, which used to make
+    // "lowest price" read as a meaningless GBP 0.00.
+    $add('price_highest', $pdo->query("SELECT ts, price AS v FROM readings_price WHERE volume > 0 ORDER BY price DESC LIMIT 1")->fetch(),
+        'Highest wholesale price recorded (market index)', 'GBP/MWh', 'highest');
+    $add('price_lowest', $pdo->query("SELECT ts, price AS v FROM readings_price WHERE volume > 0 ORDER BY price ASC LIMIT 1")->fetch(),
+        'Lowest wholesale price recorded (market index)', 'GBP/MWh', 'lowest');
 
     // Carbon intensity (Carbon Intensity API).
     $add('emissions_lowest', $pdo->query("SELECT ts, actual_gco2 AS v FROM readings_emissions WHERE actual_gco2 IS NOT NULL ORDER BY actual_gco2 ASC LIMIT 1")->fetch(),
@@ -404,18 +414,26 @@ function ukgrid_compute_notable_moments(PDO $pdo, array $config, int $timeoutSec
     $add('demand_lowest', $pdo->query("SELECT ts, mw AS v FROM readings_demand ORDER BY mw ASC LIMIT 1")->fetch(),
         'Lowest demand recorded (usually an overnight trough)', 'MW', 'lowest');
 
-    // Wind (transmission-connected WIND plus embedded WIND_EMBEDDED, summed
-    // per settlement period) - same fuel_type set index.html's own wind
-    // stat card uses.
+    // Wind = transmission-connected WIND (Elexon, every 5 minutes) plus
+    // NESO's embedded wind for the half-hour settlement period each reading
+    // falls in. Summing "per ts" only paired the two at :00/:30 - the
+    // other 5-minute readings counted transmission wind alone - the same
+    // mismatch api/series.php and api/current.php now handle.
     $add('wind_highest', $pdo->query(
-        "SELECT ts, SUM(mw) AS v FROM readings_generation WHERE fuel_type IN ('WIND','WIND_EMBEDDED') GROUP BY ts ORDER BY v DESC LIMIT 1"
+        "SELECT w.ts, w.mw + COALESCE(e.mw, 0) AS v
+           FROM readings_generation w
+           LEFT JOIN readings_generation e
+             ON e.fuel_type = 'WIND_EMBEDDED' AND e.ts = FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(w.ts) / 1800) * 1800)
+          WHERE w.fuel_type = 'WIND'
+          ORDER BY v DESC LIMIT 1"
     )->fetch(), 'Highest wind generation recorded', 'MW', 'highest');
 
     // Solar is entirely embedded (distribution-connected, not directly
-    // metered by Elexon) - single fuel_type, no SUM needed.
+    // metered by Elexon) - NESO's half-hourly embedded estimate, so it's
+    // labelled as an estimate rather than a metered reading.
     $add('solar_highest', $pdo->query(
         "SELECT ts, mw AS v FROM readings_generation WHERE fuel_type = 'SOLAR_EMBEDDED' ORDER BY mw DESC LIMIT 1"
-    )->fetch(), 'Highest solar generation recorded', 'MW', 'highest');
+    )->fetch(), 'Highest solar generation recorded (NESO estimate)', 'MW', 'highest');
 
     $stmt = $pdo->prepare(
         'INSERT INTO notable_moments (metric_key, label, value, unit, ts, direction)
@@ -764,18 +782,25 @@ function ukgrid_eirgrid_time_to_mysql(string $t): ?string
 /**
  * EirGrid Smart Grid Dashboard - no API key required. Covers the all-island
  * (Republic of Ireland + Northern Ireland) system: demand, total generation,
- * wind generation, and net interconnection with GB.
+ * wind generation, net interconnection and carbon intensity.
  *
- * Written defensively, like ukgrid_ingest_neso() above: multiple independent
- * community tools (and EirGrid's own dashboard) confirm this endpoint and
- * its query parameters are real, keyless and publicly documented under
- * EirGrid's Open Data Licence, but this project's build environment
- * couldn't get a live response from smartgriddashboard.com to verify the
- * exact JSON field names/wrapper - only that requests.get()-style plain
- * HTTP calls work for other developers. If ingestion logs an ERROR here,
- * check the message for which "area" failed and what the raw response
- * looked like, and adjust ukgrid_find_assoc_field()'s patterns above if
- * EirGrid's field names differ from what's assumed.
+ * October 2026: EirGrid replaced the dashboard. The old feed at
+ * /DashboardService.svc/data now answers every request with an IIS
+ * "HTTP Error 503. The service is unavailable" page, so this reads the new
+ * dashboard's own chart API instead:
+ *
+ *   https://www.smartgriddashboard.com/api/chart/?region=ALL&chartType=default
+ *     &dateRange=day&dateFrom=29-Oct-2026&dateTo=29-Oct-2026&areas=demandactual
+ *
+ * Checked live on 29 October 2026. The response is {"Rows":[...]} and each
+ * row is {"Value":5511,"Region":"ALL","EffectiveTime":"29-Oct-2026 14:45:00",
+ * "FieldName":"SYSTEM_DEMAND"} at 15-minute intervals, with Value null for
+ * periods not yet published. Dates are whole days, not times. Rows are
+ * sorted by FieldName below, so combined requests work.
+ *
+ * Solar (SOLAR_ACTUAL) and the 24-hour fuel mix were added on 29 October
+ * 2026: ENTSO-E only publishes Ireland's wind, hydro and peat in near real
+ * time (no gas), so the Ireland page's mix is now built from EirGrid.
  *
  * Data licence: EirGrid Group's Open Data Licence requires the attribution
  * "Supported by EirGrid Group Data" wherever this data is shown (already
@@ -783,137 +808,167 @@ function ukgrid_eirgrid_time_to_mysql(string $t): ?string
  */
 function ukgrid_ingest_eirgrid(PDO $pdo, array $config, int $timeoutSeconds = 20): array
 {
-    $base = rtrim($config['sources']['eirgrid_base'] ?? 'https://www.smartgriddashboard.com/DashboardService.svc', '/');
+    $base = trim((string) ($config['sources']['eirgrid_base'] ?? ''));
+    if ($base === '' || stripos($base, 'DashboardService.svc') !== false) {
+        $base = 'https://www.smartgriddashboard.com/api/chart/';
+    }
+    $base = rtrim($base, '/') . '/';
 
+    // Whole days only. Asking from the day 4 hours ago keeps a 4-hour
+    // overlap after midnight, which covers any missed runs.
     $now = new DateTime('now', new DateTimeZone('Europe/Dublin'));
-    // Round down to the last 15-minute settlement-period boundary. Confirmed
-    // live (via tools/full-refresh.php) that this API is picky about this:
-    // an off-grid datefrom/dateto like "19:12" doesn't get snapped to the
-    // nearest real period - it comes back with EffectiveTime stamps of
-    // 15:12, 15:27, 15:42, 15:57... (i.e. every 15 minutes from the exact
-    // off-grid minute given) and EVERY one of those has Value: null, since
-    // none of them are real settlement periods. Every one of the 5 areas
-    // below failed with "no usable data points" for exactly this reason
-    // until this rounding was added - a plain new DateTime('now') only
-    // lands on :00/:15/:30/:45 by chance.
-    $minute = (int) $now->format('i');
-    $now->setTime((int) $now->format('H'), $minute - ($minute % 15), 0);
-    $from = (clone $now)->modify('-4 hours'); // overlap covers any missed runs
-    $dateFrom = $from->format('d-M-Y H:i');
-    $dateTo = $now->format('d-M-Y H:i');
+    $from = (clone $now)->modify('-4 hours');
+    $dateFrom = $from->format('d-M-Y');
+    $dateTo = $now->format('d-M-Y');
 
-    // area => [table, category-or-null (null means the readings_ie_demand table)]
+    // area => [FieldName to keep, where it goes]. Some areas return more
+    // than one field (interconnection returns each cable plus the net
+    // total), so only the named field is kept.
     $areas = [
-        'demandactual' => ['readings_ie_demand', null],
-        'generationactual' => ['readings_ie_generation', 'TOTAL'],
-        'windactual' => ['readings_ie_generation', 'WIND'],
-        'interconnection' => ['readings_ie_generation', 'INTERCONNECTION'],
-        'co2intensity' => ['readings_ie_co2', null],
+        'demandactual' => ['SYSTEM_DEMAND', 'demand'],
+        'generationactual' => ['GEN_EXP', 'gen:TOTAL'],
+        'windactual' => ['WIND_ACTUAL', 'gen:WIND'],
+        'solaractual' => ['SOLAR_ACTUAL', 'gen:SOLAR'],
+        'interconnection' => ['INTER_NET', 'gen:INTERCONNECTION'],
+        'co2intensity' => ['CO2_INTENSITY', 'co2'],
     ];
+    // The dashboard's own 24-hour fuel mix: one MWh total per fuel for the
+    // 24 hours to EffectiveTime, whatever dates are asked for (checked live
+    // 29 October 2026: coal 0, gas 44,417, net import 4,422, other fossil
+    // 3,126, renewables 64,740 MWh at 15:00).
+    $fuelFields = ['FUEL_COAL' => 'COAL', 'FUEL_GAS' => 'GAS', 'FUEL_NET_IMPORT' => 'NET_IMPORT', 'FUEL_OTHER_FOSSIL' => 'OTHER_FOSSIL', 'FUEL_RENEW' => 'RENEW'];
+
+    // Fewer, combined requests (the API takes up to 4 areas at once), so a
+    // run makes 3 calls instead of 7. Any area missing from a combined
+    // answer is then asked for on its own.
+    $batches = [
+        ['demandactual', 'generationactual', 'windactual', 'solaractual'],
+        ['interconnection', 'co2intensity'],
+        ['fuelmix'],
+    ];
+    $headers = ['Eirgrid-Content-Request: Nextjs', 'Referer: https://www.smartgriddashboard.com/'];
 
     $demandStmt = $pdo->prepare('INSERT INTO readings_ie_demand (ts, mw) VALUES (:ts, :mw) ON DUPLICATE KEY UPDATE mw = VALUES(mw)');
     $genStmt = $pdo->prepare('INSERT INTO readings_ie_generation (ts, category, mw) VALUES (:ts, :category, :mw) ON DUPLICATE KEY UPDATE mw = VALUES(mw)');
     $co2Stmt = $pdo->prepare('INSERT INTO readings_ie_co2 (ts, gco2_per_kwh) VALUES (:ts, :v) ON DUPLICATE KEY UPDATE gco2_per_kwh = VALUES(gco2_per_kwh)');
+    $fuelStmt = null;
+    try {
+        // New in October 2026. Created here too, so an existing install
+        // does not need to run sql/schema.sql again.
+        $pdo->exec('CREATE TABLE IF NOT EXISTS readings_ie_fuelmix (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            ts DATETIME NOT NULL COMMENT \'UTC - end of the 24 hours\',
+            fuel VARCHAR(20) NOT NULL,
+            mwh DECIMAL(11,2) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_ts_fuel (ts, fuel),
+            KEY idx_ts (ts)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
+        $fuelStmt = $pdo->prepare('INSERT INTO readings_ie_fuelmix (ts, fuel, mwh) VALUES (:ts, :fuel, :mwh) ON DUPLICATE KEY UPDATE mwh = VALUES(mwh)');
+    } catch (Throwable $e) {
+        $fuelStmt = null;
+    }
 
     $rowsWritten = 0;
     $errors = [];
-    $isFirstArea = true;
     $completedNormally = false;
-    ukgrid_register_partial_progress_safety_net('EIRGRID', 'the 5-area loop (demand/generation/wind/interconnection/co2)', $completedNormally, $rowsWritten, $errors);
+    ukgrid_register_partial_progress_safety_net('EIRGRID', 'the EirGrid requests (demand/generation/wind/solar/interconnection/co2/fuel mix)', $completedNormally, $rowsWritten, $errors);
 
-    foreach ($areas as $area => [$table, $category]) {
-        // A gap between each of the 5 sequential requests, on the theory
-        // this was server-side rate limiting - bumped from an original
-        // 300ms to 600ms, but a live run via tools/full-refresh.php (see
-        // includes/http.php's ukgrid_http_get_json() failure messages,
-        // surfaced there even in log-capture mode - ukgrid_file_log() in
-        // includes/db.php) showed 600ms still wasn't enough, AND that which
-        // area(s) fail varies between runs rather than always being the
-        // same ones - that's a pattern of genuine intermittent flakiness on
-        // EirGrid's own dashboard backend (flat HTTP 503 "Service
-        // Unavailable" pages, not a JSON error EirGrid itself generated),
-        // not something spacing requests further apart alone reliably
-        // fixes. Kept the 600ms gap AND added one short-backoff retry per
-        // area below, since a 503 here comes back almost instantly (not a
-        // real timeout) and a second attempt a moment later clears most of
-        // them in practice.
-        if (!$isFirstArea) {
-            usleep(600000);
-        }
-        $isFirstArea = false;
-
-        $url = $base . '/data?area=' . urlencode($area) . '&region=ALL&datefrom=' . urlencode($dateFrom) . '&dateto=' . urlencode($dateTo);
-        $data = ukgrid_http_get_json($url, $timeoutSeconds);
+    $fetch = function (array $areaList) use ($base, $dateFrom, $dateTo, $timeoutSeconds, $headers): ?array {
+        $url = $base . '?region=ALL&chartType=default&dateRange=day&dateFrom=' . urlencode($dateFrom) . '&dateTo=' . urlencode($dateTo) . '&areas=' . implode(',', array_map('urlencode', $areaList));
+        $data = ukgrid_http_get_json($url, $timeoutSeconds, $headers);
         if ($data === null) {
-            usleep(900000); // one retry after a short pause - see the comment above
-            $data = ukgrid_http_get_json($url, $timeoutSeconds);
+            usleep(1500000); // one retry after a pause
+            $data = ukgrid_http_get_json($url, $timeoutSeconds, $headers);
         }
         if ($data === null) {
-            $errors[] = "{$area}: request failed or returned invalid JSON, even after one retry.";
-            continue;
+            return null;
         }
-        $series = ukgrid_eirgrid_extract_series($data);
-        if ($series === null) {
-            $errors[] = "{$area}: couldn't find a data series in the response. Top-level keys seen: " . implode(', ', array_keys((array) $data));
-            continue;
-        }
+        return ukgrid_eirgrid_extract_series($data) ?? [];
+    };
 
-        $areaRows = 0;
-        $sampleItem = null; // captured for diagnostics if nothing usable is found below
-        $nullValueCount = 0; // items where every other field looked right but Value itself was null/blank
-        $fieldNamesSeen = []; // distinct FieldName values seen, e.g. "SYSTEM_DEMAND" - see comment below
+    // FieldName => list of [ts, value] across every response
+    $byField = [];
+    $collect = function (array $series) use (&$byField) {
         foreach ($series as $point) {
             if (!is_array($point)) {
                 continue;
             }
-            if ($sampleItem === null) {
-                $sampleItem = $point;
-            }
-            $fieldName = ukgrid_find_assoc_field($point, ['fieldname']);
-            if ($fieldName !== null && !in_array((string) $fieldName, $fieldNamesSeen, true)) {
-                $fieldNamesSeen[] = (string) $fieldName;
-            }
+            $field = strtoupper((string) (ukgrid_find_assoc_field($point, ['fieldname']) ?? ''));
             $rawTime = ukgrid_find_assoc_field($point, ['effectivetime', 'time']);
             $rawValue = ukgrid_find_assoc_field($point, ['value']);
-            if ($rawTime !== null && ($rawValue === null || $rawValue === '' || !is_numeric($rawValue))) {
-                $nullValueCount++;
-            }
-            if ($rawTime === null || $rawValue === null || $rawValue === '' || !is_numeric($rawValue)) {
+            if ($field === '' || $rawTime === null || $rawValue === null || $rawValue === '' || !is_numeric($rawValue)) {
                 continue;
             }
             $tsSql = ukgrid_eirgrid_time_to_mysql((string) $rawTime);
-            if ($tsSql === null) {
+            if ($tsSql !== null) {
+                $byField[$field][$tsSql] = (float) $rawValue;
+            }
+        }
+    };
+
+    $first = true;
+    foreach ($batches as $batch) {
+        if (!$first) {
+            usleep(700000);
+        }
+        $first = false;
+        $series = $fetch($batch);
+        if ($series !== null) {
+            $collect($series);
+        }
+        // Ask again, one area at a time, for anything this batch did not return
+        foreach ($batch as $area) {
+            $have = $area === 'fuelmix' ? isset($byField['FUEL_GAS']) : isset($byField[$areas[$area][0]]);
+            if ($have || count($batch) === 1 && $series !== null) {
                 continue;
             }
-
-            if ($table === 'readings_ie_demand') {
-                $demandStmt->execute(['ts' => $tsSql, 'mw' => (float) $rawValue]);
-            } elseif ($table === 'readings_ie_generation') {
-                $genStmt->execute(['ts' => $tsSql, 'category' => $category, 'mw' => (float) $rawValue]);
-            } else {
-                $co2Stmt->execute(['ts' => $tsSql, 'v' => (float) $rawValue]);
+            usleep(700000);
+            $one = $fetch([$area]);
+            if ($one === null) {
+                $errors[] = "{$area}: request failed or returned invalid JSON, even after one retry.";
+                continue;
             }
-            $areaRows++;
+            $collect($one);
         }
-
-        if ($areaRows === 0) {
-            // The actual keys/values of a real item, not just a count - this
-            // is what tells us EirGrid's real field names next time this
-            // logs, instead of having to guess again. See
-            // ukgrid_find_assoc_field()'s doc comment above. Also reports
-            // how many items had a real timestamp but a null/blank Value
-            // (EirGrid genuinely not having published a figure yet for that
-            // period, vs. FieldName(s) actually present - if there's more
-            // than one distinct FieldName mixed into one area's response,
-            // that's a sign this needs to filter by FieldName rather than
-            // reading every item's Value regardless of which field it is).
-            $sample = $sampleItem !== null
-                ? 'sample item: ' . mb_substr((string) json_encode($sampleItem), 0, 500)
-                : 'series was empty';
-            $errors[] = "{$area}: response parsed but no usable data points were found (checked " . count($series) . " item(s), {$nullValueCount} had a null/blank value). FieldName(s) seen: " . (empty($fieldNamesSeen) ? 'none' : implode(', ', $fieldNamesSeen)) . ". {$sample}";
-        }
-        $rowsWritten += $areaRows;
     }
+
+    foreach ($areas as $area => [$field, $dest]) {
+        $points = $byField[$field] ?? [];
+        if (!$points) {
+            if (!preg_grep('/^' . $area . ':/', $errors)) {
+                $errors[] = "{$area}: no {$field} values with a figure in the response.";
+            }
+            continue;
+        }
+        foreach ($points as $tsSql => $v) {
+            if ($dest === 'demand') {
+                $demandStmt->execute(['ts' => $tsSql, 'mw' => $v]);
+            } elseif ($dest === 'co2') {
+                $co2Stmt->execute(['ts' => $tsSql, 'v' => $v]);
+            } else {
+                $genStmt->execute(['ts' => $tsSql, 'category' => substr($dest, 4), 'mw' => $v]);
+            }
+            $rowsWritten++;
+        }
+    }
+
+    $fuelRows = 0;
+    foreach ($fuelFields as $field => $fuel) {
+        foreach ($byField[$field] ?? [] as $tsSql => $v) {
+            if ($fuelStmt) {
+                $fuelStmt->execute(['ts' => $tsSql, 'fuel' => $fuel, 'mwh' => $v]);
+                $fuelRows++;
+            }
+        }
+    }
+    if (!$fuelStmt) {
+        $errors[] = 'fuelmix: could not create or write the readings_ie_fuelmix table - run sql/schema.sql.';
+    } elseif ($fuelRows === 0 && !preg_grep('/^fuelmix:/', $errors)) {
+        $errors[] = 'fuelmix: no fuel figures in the response.';
+    }
+    $rowsWritten += $fuelRows;
 
     $status = $rowsWritten > 0 ? 'OK' : 'ERROR';
     $completedNormally = true; // tells the shutdown safety net above this run's already been logged - don't log it twice
@@ -1069,6 +1124,222 @@ function ukgrid_ingest_eia(PDO $pdo, array $config, int $timeoutSeconds = 15): a
 }
 
 /**
+ * Open Electricity API (formerly OpenNEM) - Australia's National
+ * Electricity Market (AEMO NEM: NSW, QLD, VIC, SA, TAS - NOT Western
+ * Australia's separate WEM market). Requires a free API key (register at
+ * https://platform.openelectricity.org.au/sign-up) - see
+ * includes/config.php.example's openelectricity_api_key/base.
+ *
+ * Unlike ukgrid_ingest_eia() above, this one WAS verified against the live
+ * API with a working key while building this integration (2026-09), so the
+ * endpoint paths, query params and response shapes below are confirmed
+ * from a real response rather than reconstructed from documentation alone.
+ * If Open Electricity changes their API later, check includes/refresh.log
+ * for the first clue.
+ *
+ * Two requests per run:
+ *  1. GET /v4/data/network/NEM?metrics=power&interval=5m&secondary_grouping=fueltech_group
+ *     - NEM-wide generation by fuel technology group (coal, gas, wind,
+ *       solar, hydro, distillate, bioenergy, pumps, battery_charging,
+ *       battery_discharging). The live response also included an unlisted
+ *       "battery" group whose value was, in every sample checked, exactly
+ *       battery_discharging minus battery_charging - a convenience net
+ *       figure, not an independent category. Deliberately ignored here to
+ *       avoid double-counting; battery_charging/battery_discharging are
+ *       stored separately instead, same as every other fueltech group.
+ *  2. GET /v4/market/network/NEM?metrics=price&metrics=demand&interval=5m&primary_grouping=network_region
+ *     - price ($/MWh) and demand (MW) PER REGION - there's no single "NEM
+ *       price", each region sets its own spot price. Demand is summed
+ *       across the five regions for a NEM-wide total; price is combined
+ *       into a demand-weighted average (sum(price_i * demand_i) /
+ *       sum(demand_i)) rather than a plain mean, so a light-load region
+ *       (Tasmania, South Australia) doesn't move the headline price as
+ *       much as NSW or Victoria.
+ *
+ * Both endpoints want date_start/date_end as TIMEZONE-NAIVE, NEM-LOCAL
+ * (fixed UTC+10, no daylight saving - AEMO's market clock never changes,
+ * even though some of the states it covers observe their own DST)
+ * timestamps - passing a 'Z' or '+10:00' suffix gets a 400 "Date start
+ * must be timezone naive and in network time" back. The response's own
+ * timestamps DO carry a "+10:00" suffix though - see
+ * ukgrid_openelectricity_local_to_utc_mysql() below for converting those
+ * back to UTC for storage.
+ */
+function ukgrid_ingest_openelectricity(PDO $pdo, array $config, int $timeoutSeconds = 15): array
+{
+    $apiKey = trim((string) ($config['sources']['openelectricity_api_key'] ?? ''));
+    if ($apiKey === '' || $apiKey === 'CHANGE-ME') {
+        ukgrid_log_ingest('OPENELECTRICITY', 'OK', 0, 'openelectricity_api_key not set - skipping (Australia page stays on illustrative data until you add one, see includes/config.php.example).');
+        return ['rows' => 0, 'errors' => []];
+    }
+
+    $base = rtrim($config['sources']['openelectricity_base'] ?? 'https://api.openelectricity.org.au/v4', '/');
+    $errors = [];
+    $rowsWritten = 0;
+    $completedNormally = false;
+    ukgrid_register_partial_progress_safety_net('OPENELECTRICITY', 'its two requests (network power, market price/demand)', $completedNormally, $rowsWritten, $errors);
+
+    // NEM local time is a fixed UTC+10 offset year-round - see this
+    // function's docblock.
+    $nemNow = time() + 10 * 3600;
+    $nemStart = gmdate('Y-m-d\TH:i:s', $nemNow - 40 * 60); // 40 minutes covers a couple of missed 5-min runs
+    $nemEnd = gmdate('Y-m-d\TH:i:s', $nemNow);
+
+    // ---------- generation by fuel technology group ----------
+    $powerUrl = $base . '/data/network/NEM'
+        . '?metrics=power&interval=5m&secondary_grouping=fueltech_group'
+        . '&date_start=' . urlencode($nemStart) . '&date_end=' . urlencode($nemEnd);
+    $powerData = ukgrid_http_get_json_auth($powerUrl, $apiKey, $timeoutSeconds);
+    if ($powerData === null || empty($powerData['success'])) {
+        $errors[] = 'network power request failed' . ($powerData !== null && isset($powerData['error']) ? (': ' . $powerData['error']) : ' (check the API key is valid, or see includes/refresh.log for the raw HTTP error).');
+    } else {
+        $series = $powerData['data'][0]['results'] ?? null;
+        if (!is_array($series)) {
+            $errors[] = 'network power: unexpected response shape - top-level keys seen: ' . implode(', ', array_keys((array) $powerData));
+        } else {
+            $genStmt = $pdo->prepare('INSERT INTO readings_au_generation (ts, category, mw) VALUES (:ts, :category, :mw) ON DUPLICATE KEY UPDATE mw = VALUES(mw)');
+            $groupsSeen = [];
+            $areaRows = 0;
+            foreach ($series as $result) {
+                $group = $result['columns']['fueltech_group'] ?? null;
+                // Skip the unlisted net "battery" rollup - see this
+                // function's docblock for why (avoids double-counting
+                // against battery_charging/battery_discharging).
+                if ($group === null || $group === 'battery') {
+                    continue;
+                }
+                if (!in_array($group, $groupsSeen, true)) {
+                    $groupsSeen[] = $group;
+                }
+                $points = $result['data'] ?? [];
+                if (!is_array($points) || empty($points)) {
+                    continue;
+                }
+                $last = end($points); // most recent 5-min point in the window
+                if (!is_array($last) || count($last) < 2 || !is_numeric($last[1])) {
+                    continue;
+                }
+                $tsSql = ukgrid_openelectricity_local_to_utc_mysql((string) $last[0]);
+                if ($tsSql === null) {
+                    continue;
+                }
+                $genStmt->execute(['ts' => $tsSql, 'category' => (string) $group, 'mw' => (float) $last[1]]);
+                $areaRows++;
+            }
+            if ($areaRows === 0) {
+                $errors[] = 'network power: response parsed but no usable fueltech_group rows were found. Groups actually seen: ' . (empty($groupsSeen) ? 'none' : implode(', ', $groupsSeen)) . '. If that list looks very different from coal/gas/wind/solar/hydro/distillate/bioenergy/pumps/battery_charging/battery_discharging, Open Electricity has changed their fueltech_group codes - update ukgrid_ingest_openelectricity() to match.';
+            }
+            $rowsWritten += $areaRows;
+        }
+    }
+
+    // ---------- price + demand, per region ----------
+    $marketUrl = $base . '/market/network/NEM'
+        . '?metrics=price&metrics=demand&interval=5m&primary_grouping=network_region'
+        . '&date_start=' . urlencode($nemStart) . '&date_end=' . urlencode($nemEnd);
+    $marketData = ukgrid_http_get_json_auth($marketUrl, $apiKey, $timeoutSeconds);
+    if ($marketData === null || empty($marketData['success'])) {
+        $errors[] = 'market price/demand request failed' . ($marketData !== null && isset($marketData['error']) ? (': ' . $marketData['error']) : '.');
+    } else {
+        $metricBlocks = $marketData['data'] ?? null;
+        if (!is_array($metricBlocks)) {
+            $errors[] = 'market price/demand: unexpected response shape.';
+        } else {
+            $demandByTsRegion = []; // [ts_sql][region] => mw
+            $priceByTsRegion = [];  // [ts_sql][region] => price
+            foreach ($metricBlocks as $block) {
+                $metric = $block['metric'] ?? null;
+                $results = $block['results'] ?? [];
+                if (!is_array($results)) {
+                    continue;
+                }
+                foreach ($results as $result) {
+                    $region = $result['columns']['region'] ?? null;
+                    $points = $result['data'] ?? [];
+                    if ($region === null || !is_array($points)) {
+                        continue;
+                    }
+                    foreach ($points as $point) {
+                        if (!is_array($point) || count($point) < 2 || !is_numeric($point[1])) {
+                            continue;
+                        }
+                        $tsSql = ukgrid_openelectricity_local_to_utc_mysql((string) $point[0]);
+                        if ($tsSql === null) {
+                            continue;
+                        }
+                        if ($metric === 'demand') {
+                            $demandByTsRegion[$tsSql][$region] = (float) $point[1];
+                        } elseif ($metric === 'price') {
+                            $priceByTsRegion[$tsSql][$region] = (float) $point[1];
+                        }
+                    }
+                }
+            }
+
+            if (empty($demandByTsRegion)) {
+                $errors[] = 'market price/demand: response parsed but no usable demand rows were found - check the "metrics"/"primary_grouping" params are still accepted (see this function\'s docblock).';
+            } else {
+                $demandStmt = $pdo->prepare('INSERT INTO readings_au_demand (ts, mw) VALUES (:ts, :mw) ON DUPLICATE KEY UPDATE mw = VALUES(mw)');
+                $priceStmt = $pdo->prepare('INSERT INTO readings_au_price (ts, price_aud_mwh) VALUES (:ts, :price) ON DUPLICATE KEY UPDATE price_aud_mwh = VALUES(price_aud_mwh)');
+                $areaRows = 0;
+                foreach ($demandByTsRegion as $tsSql => $regionDemands) {
+                    $totalDemand = array_sum($regionDemands);
+                    if ($totalDemand <= 0) {
+                        continue;
+                    }
+                    $demandStmt->execute(['ts' => $tsSql, 'mw' => $totalDemand]);
+                    $areaRows++;
+
+                    $regionPrices = $priceByTsRegion[$tsSql] ?? [];
+                    if (!empty($regionPrices)) {
+                        $weightedSum = 0.0;
+                        $weightTotal = 0.0;
+                        foreach ($regionDemands as $region => $mw) {
+                            if (isset($regionPrices[$region])) {
+                                $weightedSum += $regionPrices[$region] * $mw;
+                                $weightTotal += $mw;
+                            }
+                        }
+                        if ($weightTotal > 0) {
+                            $priceStmt->execute(['ts' => $tsSql, 'price' => $weightedSum / $weightTotal]);
+                            $areaRows++;
+                        }
+                    }
+                }
+                $rowsWritten += $areaRows;
+                if ($areaRows === 0) {
+                    $errors[] = 'market price/demand: parsed rows but every region\'s demand summed to zero or less - unexpected, treating as no usable data.';
+                }
+            }
+        }
+    }
+
+    $status = $rowsWritten > 0 ? 'OK' : 'ERROR';
+    $completedNormally = true;
+    ukgrid_log_ingest('OPENELECTRICITY', $status, $rowsWritten, implode('; ', $errors));
+    return ['rows' => $rowsWritten, 'errors' => $errors];
+}
+
+/**
+ * Converts an Open Electricity timestamp (NEM-local, fixed UTC+10, e.g.
+ * "2026-09-20T01:15:00+10:00") to a UTC MySQL DATETIME string, matching
+ * every other readings_* table's "ts is always UTC" convention.
+ */
+function ukgrid_openelectricity_local_to_utc_mysql(string $localTs): ?string
+{
+    // Strip a trailing "+10:00"/"+1000" offset if present (the RESPONSE
+    // carries one even though the REQUEST params must not - see this
+    // function's docblock), then treat whatever's left as NEM-local
+    // (UTC+10).
+    $stripped = preg_replace('/[+\-]\d{2}:?\d{2}$/', '', $localTs);
+    $ts = strtotime($stripped . ' UTC');
+    if ($ts === false) {
+        return null;
+    }
+    return gmdate('Y-m-d H:i:s', $ts - 10 * 3600);
+}
+
+/**
  * ENTSO-E generation-type ("psrType") codes, per the Transparency
  * Platform's published code list - stable and unchanged for many years.
  * Used both to give readable labels in the frontend (via
@@ -1141,6 +1412,11 @@ function ukgrid_entsoe_parse_points(string $xmlBody, string $valueField): array
     foreach ($xml->TimeSeries as $series) {
         $seriesCount++;
         $psrType = isset($series->MktPSRType->psrType) ? (string) $series->MktPSRType->psrType : null;
+        // In an A75 (actual generation per type) document, a TimeSeries
+        // carrying outBiddingZone_Domain.mRID (and no inBiddingZone one) is
+        // CONSUMPTION for that type - e.g. pumped storage while pumping -
+        // not generation. See the generation branch of ukgrid_ingest_entsoe().
+        $isConsumption = isset($series->{'outBiddingZone_Domain.mRID'}) && !isset($series->{'inBiddingZone_Domain.mRID'});
         foreach ($series->Period as $period) {
             $start = (string) ($period->timeInterval->start ?? '');
             $resolutionRaw = (string) ($period->resolution ?? 'PT60M');
@@ -1161,6 +1437,7 @@ function ukgrid_entsoe_parse_points(string $xmlBody, string $valueField): array
                     'psrType' => $psrType,
                     'ts' => gmdate('Y-m-d H:i:s', $ts),
                     'value' => (float) $value,
+                    'consumption' => $isConsumption,
                 ];
             }
         }
@@ -1208,6 +1485,31 @@ function ukgrid_entsoe_resolution_seconds(string $resolution): ?int
  * building this).
  */
 /**
+ * When each ENTSO-E country was last attempted, for
+ * ukgrid_ingest_entsoe()'s round-robin ordering. Stored as a small JSON
+ * file beside includes/refresh.log (already writable on any install where
+ * logging works); every failure here is silently ignored and just means
+ * ordering falls back to data age.
+ */
+function ukgrid_entsoe_attempts_path(): string
+{
+    return __DIR__ . '/entsoe_attempts.json';
+}
+function ukgrid_entsoe_attempts_read(): array
+{
+    $path = ukgrid_entsoe_attempts_path();
+    if (!is_readable($path)) return [];
+    $data = json_decode((string) @file_get_contents($path), true);
+    return is_array($data) ? $data : [];
+}
+function ukgrid_entsoe_attempts_mark(string $countryCode): void
+{
+    $data = ukgrid_entsoe_attempts_read();
+    $data[$countryCode] = time();
+    @file_put_contents(ukgrid_entsoe_attempts_path(), json_encode($data), LOCK_EX);
+}
+
+/**
  * Epoch timestamp of $countryCode's most recent ENTSO-E reading, across all
  * three per-metric tables - or 0 if it's never had one (COALESCE falls back
  * to "1970-01-01", which sorts first as "most in need of a refresh" either
@@ -1221,15 +1523,28 @@ function ukgrid_entsoe_country_latest_ts(PDO $pdo, string $countryCode): int
 {
     static $stmt = null;
     if ($stmt === null) {
+        // Freshness is judged on ACTUAL readings only (generation and
+        // demand), and only up to now. Day-ahead prices used to count too,
+        // but they're published for the whole of tomorrow - so any country
+        // whose price fetch had worked looked "fresh" until the end of the
+        // next day, got skipped by $skipFresherThanMinutes and sorted to the
+        // back of the queue, and its demand/generation went a day or more
+        // without being fetched (Spain and Portugal, Oct 2026, showed
+        // "Not enough recorded history" on every History tab because of
+        // this). A country that only fetches price falls back to price <= now.
         $stmt = $pdo->prepare(
             'SELECT GREATEST(
-                COALESCE((SELECT MAX(ts) FROM readings_entsoe_price WHERE country_code = :cc1), "1970-01-01"),
-                COALESCE((SELECT MAX(ts) FROM readings_entsoe_generation WHERE country_code = :cc2), "1970-01-01"),
-                COALESCE((SELECT MAX(ts) FROM readings_entsoe_demand WHERE country_code = :cc3), "1970-01-01")
+                COALESCE((SELECT MAX(ts) FROM readings_entsoe_generation WHERE country_code = :cc2 AND ts <= UTC_TIMESTAMP()), "1970-01-01"),
+                COALESCE((SELECT MAX(ts) FROM readings_entsoe_demand WHERE country_code = :cc3 AND ts <= UTC_TIMESTAMP()), "1970-01-01"),
+                CASE WHEN EXISTS (SELECT 1 FROM readings_entsoe_generation WHERE country_code = :cc4)
+                       OR EXISTS (SELECT 1 FROM readings_entsoe_demand WHERE country_code = :cc5)
+                     THEN "1970-01-01"
+                     ELSE COALESCE((SELECT MAX(ts) FROM readings_entsoe_price WHERE country_code = :cc1 AND ts <= UTC_TIMESTAMP()), "1970-01-01")
+                END
             ) AS latest'
         );
     }
-    $stmt->execute(['cc1' => $countryCode, 'cc2' => $countryCode, 'cc3' => $countryCode]);
+    $stmt->execute(['cc1' => $countryCode, 'cc2' => $countryCode, 'cc3' => $countryCode, 'cc4' => $countryCode, 'cc5' => $countryCode]);
     $latest = $stmt->fetchColumn();
     if ($latest === false) {
         return 0;
@@ -1241,7 +1556,7 @@ function ukgrid_entsoe_country_latest_ts(PDO $pdo, string $countryCode): int
 /**
  * $skipFresherThanMinutes: if > 0, a country whose own data is already
  * newer than this many minutes is left out of this run entirely, rather
- * than always considering all 6 configured countries.
+ * than always considering all 12 configured countries.
  *
  * $maxCountriesPerRun: if > 0, caps how many of the (not-skipped) countries
  * actually get fetched THIS call, prioritising whichever have gone longest
@@ -1255,13 +1570,13 @@ function ukgrid_entsoe_country_latest_ts(PDO $pdo, string $countryCode): int
  * anything has ever been fetched. $skipFresherThanMinutes alone isn't
  * enough to guarantee that: on a cold start (or after a long outage) every
  * country is equally overdue, so nothing gets skipped and this would still
- * attempt the full 17 requests in one go. That's exactly what caused this
+ * attempt the full 35 requests in one go. That's exactly what caused this
  * page's countries to stay illustrative even after cron/fetch_entsoe.php
  * was fixed - on-demand refresh has no cron script's set_time_limit()
  * override, so PHP's default execution limit (commonly ~30s on shared
- * hosting for a normal web request) could still kill a 17-request cold-start
+ * hosting for a normal web request) could still kill a 35-request cold-start
  * run partway through, silently favouring whichever countries happen to be
- * listed first in entsoe_countries (Ireland, France) over the rest.
+ * listed first in entsoe_countries over the rest.
  * $maxCountriesPerRun=1 caps every on-demand call - cold start included -
  * to at most 3 requests, and staleness-based ordering (rather than config
  * order) means repeated triggers naturally rotate through every country
@@ -1272,11 +1587,14 @@ function ukgrid_entsoe_country_latest_ts(PDO $pdo, string $countryCode): int
  * set_time_limit(450), so it always refreshes every configured country in
  * full regardless of how fresh each already is.
  */
-function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25, int $skipFresherThanMinutes = 0, int $maxCountriesPerRun = 0): array
+function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25, int $skipFresherThanMinutes = 0, int $maxCountriesPerRun = 0, ?string $onlyCountry = null): array
 {
+    // $onlyCountry: fetch just this one configured country (e.g. "ES"),
+    // regardless of freshness - used by tools/full-refresh.php so it can
+    // go through every country explicitly, one per request, in order.
     $token = trim((string) ($config['sources']['entsoe_api_token'] ?? ''));
     if ($token === '' || $token === 'CHANGE-ME') {
-        ukgrid_log_ingest('ENTSOE', 'OK', 0, 'entsoe_api_token not set - skipping (Ireland\'s SEM price/mix and all ten ENTSO-E country pages - France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal - stay on illustrative/no data until you add one, see includes/config.php.example).');
+        ukgrid_log_ingest('ENTSOE', 'OK', 0, 'entsoe_api_token not set - skipping (Ireland\'s SEM price/mix and all eleven other ENTSO-E country pages - France, Netherlands, Belgium, Norway, Denmark, Germany, Spain, Italy, Sweden, Portugal, Poland - stay on illustrative/no data until you add one, see includes/config.php.example).');
         return ['rows' => 0, 'errors' => []];
     }
 
@@ -1297,14 +1615,31 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
         if (($countryCfg['domain'] ?? null) === null || empty($countryCfg['fetch'] ?? [])) {
             continue;
         }
+        if ($onlyCountry !== null && $countryCode !== $onlyCountry) {
+            continue;
+        }
         $latestTs = ukgrid_entsoe_country_latest_ts($pdo, $countryCode);
-        if ($skipFresherThanMinutes > 0 && $latestTs > (time() - $skipFresherThanMinutes * 60)) {
+        if ($onlyCountry === null && $skipFresherThanMinutes > 0 && $latestTs > (time() - $skipFresherThanMinutes * 60)) {
             continue; // already fresh enough - don't spend this run's time budget re-fetching it
         }
         $candidates[$countryCode] = $latestTs;
     }
-    asort($candidates); // oldest/never-fetched (lowest timestamp) first
-    $toFetch = array_keys($candidates);
+    // Order: least recently ATTEMPTED first, then oldest data. Ordering by
+    // data age alone let one country whose requests keep failing (so its
+    // data never gets newer) take every capped run, starving the rest;
+    // remembering when each country was last tried gives a true round
+    // robin. The attempt times live in a small JSON file next to
+    // refresh.log - if that can't be written, ordering falls back to data
+    // age only, as before.
+    $attempts = ukgrid_entsoe_attempts_read();
+    $order = array_keys($candidates);
+    usort($order, function ($a, $b) use ($attempts, $candidates) {
+        $ta = $attempts[$a] ?? 0;
+        $tb = $attempts[$b] ?? 0;
+        if ($ta !== $tb) return $ta <=> $tb;
+        return $candidates[$a] <=> $candidates[$b];
+    });
+    $toFetch = $order;
     if ($maxCountriesPerRun > 0) {
         $toFetch = array_slice($toFetch, 0, $maxCountriesPerRun);
     }
@@ -1313,7 +1648,11 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
     // refresh cycles and TSOs that publish with a delay - see
     // entsoe_staleness_minutes in config.php.example for the matching
     // frontend-facing threshold.
-    $periodStart = gmdate('YmdHi', time() - 6 * 3600);
+    // Normally the last 6 hours, but when a country's latest actual
+    // reading is older than that (no visitors for a while, or earlier
+    // failed requests), reach back to just before that reading - capped
+    // at 24 hours - so the gap gets filled in rather than left as a hole
+    // in the History charts.
     $periodEnd = gmdate('YmdHi', time() + 3600); // a little into the future - day-ahead prices are known in advance
 
     $priceStmt = $pdo->prepare('INSERT INTO readings_entsoe_price (ts, country_code, price_eur_mwh) VALUES (:ts, :cc, :v) ON DUPLICATE KEY UPDATE price_eur_mwh = VALUES(price_eur_mwh)');
@@ -1331,17 +1670,38 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
     // cron/fetch_entsoe.php's docblock) motivated adding it.
     ukgrid_register_partial_progress_safety_net('ENTSOE', 'entsoe_countries', $completedNormally, $rowsWritten, $errors);
 
+    // Day-ahead prices are set per BIDDING ZONE, which isn't always the
+    // same area as a country's load/generation data. Italy is the case
+    // that bites: '10YIT-GRTN-----B' is Terna's whole-country control
+    // area, which ENTSO-E has generation and load for but no prices
+    // ("No matching data found for ENERGY_PRICES"), because Italy is split
+    // into several price zones. A country can set 'price_domain' in
+    // entsoe_countries; without one, Italy defaults to the North zone
+    // (IT-North, 10Y1001A1001A73I - Italy's largest zone by demand), so an
+    // existing config.php works without editing.
+    $defaultPriceDomains = ['10YIT-GRTN-----B' => '10Y1001A1001A73I'];
+
     foreach ($toFetch as $countryCode) {
         $countryCfg = $countries[$countryCode];
         $domain = $countryCfg['domain'];
+        $priceDomain = $countryCfg['price_domain'] ?? ($defaultPriceDomains[$domain] ?? $domain);
         $fetch = $countryCfg['fetch'];
+        $latestActual = $candidates[$countryCode] ?? 0;
+        $startTs = time() - 6 * 3600;
+        if ($latestActual > 0 && $latestActual < $startTs) {
+            $startTs = max(time() - 24 * 3600, $latestActual - 3600);
+        } elseif ($latestActual === 0) {
+            $startTs = time() - 24 * 3600;
+        }
+        $periodStart = gmdate('YmdHi', $startTs);
+        ukgrid_entsoe_attempts_mark($countryCode);
 
         foreach ($fetch as $kind) {
             // Same reasoning as ukgrid_ingest_eirgrid()'s inter-request
             // gap: several sequential requests to the same host back-to-
             // back risks looking like abuse even though ENTSO-E's stated
             // limit (400 req/min) is generous - this whole function makes
-            // at most 18 requests (6 countries x 3 kinds) per run either way.
+            // at most 35 requests (12 countries, up to 3 kinds each) per run either way.
             if (!$isFirstRequest) {
                 usleep(200000);
             }
@@ -1358,7 +1718,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
             // only one of them is actually registered.
             if ($kind === 'price') {
                 $url = $base . '?securityToken=' . urlencode($token)
-                    . '&documentType=A44&in_Domain=' . urlencode($domain) . '&out_Domain=' . urlencode($domain)
+                    . '&documentType=A44&in_Domain=' . urlencode($priceDomain) . '&out_Domain=' . urlencode($priceDomain)
                     . '&periodStart=' . $periodStart . '&periodEnd=' . $periodEnd;
                 $valueField = 'price.amount';
             } elseif ($kind === 'generation') {
@@ -1393,6 +1753,16 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
                 } elseif ($kind === 'demand') {
                     $demandStmt->execute(['ts' => $point['ts'], 'cc' => $countryCode, 'v' => $point['value']]);
                 } else { // generation
+                    // Skip consumption series (see ukgrid_entsoe_parse_points()).
+                    // They share the same psrType as the generation series,
+                    // so with the (ts, country, psr) unique key and ON
+                    // DUPLICATE KEY UPDATE, whichever of the two came last in
+                    // the document used to overwrite the other - which could
+                    // put pumped storage's PUMPING load into the mix table and
+                    // donut as if it were generation.
+                    if (!empty($point['consumption'])) {
+                        continue;
+                    }
                     $psr = $point['psrType'] ?? 'UNK';
                     $genStmt->execute(['ts' => $point['ts'], 'cc' => $countryCode, 'psr' => $psr, 'v' => $point['value']]);
                 }
@@ -1404,7 +1774,14 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
 
     $status = $rowsWritten > 0 ? 'OK' : 'ERROR';
     $completedNormally = true; // tells the shutdown safety net above this run's already been logged - don't log it twice
-    ukgrid_log_ingest('ENTSOE', $status, $rowsWritten, implode('; ', $errors));
+    // Name the country (or countries) in the log line, so the pipeline
+    // history and tools/full-refresh.php show which one each run covered.
+    $countryNote = $toFetch ? 'Countries: ' . implode(', ', $toFetch) . '.' : 'No country was due.';
+    if ($onlyCountry !== null && !$toFetch) {
+        $countryNote = $onlyCountry . ' is not configured (domain/fetch missing) in entsoe_countries.';
+        $status = 'ERROR';
+    }
+    ukgrid_log_ingest('ENTSOE', $status, $rowsWritten, trim($countryNote . ' ' . implode('; ', $errors)));
     return ['rows' => $rowsWritten, 'errors' => $errors];
 }
 
@@ -1545,7 +1922,27 @@ function ukgrid_ingest_ieso(PDO $pdo, array $config, int $timeoutSeconds = 20): 
     }
 
     // ---------- generation by fuel type (hourly) ----------
-    $fuelBody = ukgrid_http_get_raw($fuelUrl, $timeoutSeconds);
+    // IESO's GenOutputbyFuelHourly is a year-to-date file that grows all
+    // year (about 6MB by October, ~22KB per day). Downloading all of it
+    // timed out (8s, 3 Oct 2026), and with a longer timeout the request
+    // ran past the web host's own time limit on tools/full-refresh.php,
+    // which then returned an HTML error page instead of a result. Only the
+    // last few days are ever needed, so ask for just the end of the file
+    // (an HTTP Range request) and rebuild a small valid document from the
+    // complete <DailyData> days in it. If the server ignores the Range
+    // header it sends the whole file, which is parsed as before.
+    $tailBytes = 250000; // about 10 days
+    $fuelBody = ukgrid_http_get_raw($fuelUrl, max($timeoutSeconds, 12), ['Range: bytes=-' . $tailBytes]);
+    if ($fuelBody !== null && stripos(ltrim($fuelBody), '<?xml') !== 0 && stripos(ltrim($fuelBody), '<Document') !== 0) {
+        $first = strpos($fuelBody, '<DailyData>');
+        $last = strrpos($fuelBody, '</DailyData>');
+        $fuelBody = ($first !== false && $last !== false && $last > $first)
+            ? '<Document><DocBody>' . substr($fuelBody, $first, $last + strlen('</DailyData>') - $first) . '</DocBody></Document>'
+            : null;
+        if ($fuelBody === null) {
+            $errors[] = 'GenOutputbyFuelHourly: the end-of-file range had no complete <DailyData> day in it.';
+        }
+    }
     if ($fuelBody === null) {
         $errors[] = 'GenOutputbyFuelHourly request failed.';
     } else {
@@ -1600,5 +1997,175 @@ function ukgrid_ingest_ieso(PDO $pdo, array $config, int $timeoutSeconds = 20): 
     $status = $rowsWritten > 0 ? 'OK' : 'ERROR';
     $completedNormally = true; // tells the shutdown safety net above this run's already been logged - don't log it twice
     ukgrid_log_ingest('IESO', $status, $rowsWritten, implode('; ', $errors));
+    return ['rows' => $rowsWritten, 'errors' => $errors];
+}
+
+/**
+ * SEMO (Single Electricity Market Operator, sem-o.com) - the all-island
+ * (Republic of Ireland + Northern Ireland) wholesale electricity market
+ * operator. Unlike EirGrid's dashboard (demand/generation/wind/GB
+ * interconnection, see ukgrid_ingest_eirgrid()) or ENTSO-E's day-ahead
+ * price (already wired up for pages/ireland.html), this covers something
+ * neither of those gives: real, ex-post settlement pricing at 5-minute
+ * granularity - the Imbalance Price / System Marginal Price, i.e. what
+ * generators/suppliers are actually paid/charged for being out of balance
+ * with their day-ahead position, distinct from the day-ahead price itself.
+ *
+ * SEMO publishes this (and every other market report) through a genuinely
+ * public, keyless JSON+XML "Static/Dynamic Reports" API - confirmed live
+ * during this integration's development: a real, unauthenticated request
+ * against reports.sem-o.com returned real, current data for report
+ * DPuG_ID=BM-025 ("Imbalance Price Report (Imbalance Pricing Period)"),
+ * published roughly every 5 minutes, about 15-30 minutes after each
+ * settlement period ends. Two-step fetch: (1) query the report list for
+ * the most recent BM-025 items, (2) fetch each item's own XML resource
+ * file. Documented at https://www.sem-o.com/sites/semo/files/documents/general-publications/SEMO-Website-Report-API.pdf
+ *
+ * Report XML shape (one <PUB_5MinImbalPrc> element per file, confirmed via
+ * a real fetch of a real, current resource file):
+ *   <OutboundData ... Date="2026-09-20" PublishTime="2026-09-20T12:12:42">
+ *     <PUB_5MinImbalPrc StartTime="2026-09-20T11:50:00" EndTime="2026-09-20T11:55:00"
+ *       NetImbalanceVolume="-30.252" ImbalancePrice="24.26"
+ *       TotalUnitAvailability="9500.327"
+ *       OperatingReserveRequirement="503.964" .../>
+ *   </OutboundData>
+ *
+ * Timestamps in these reports carry no timezone suffix. Treated as UTC
+ * here, matching this codebase's ENTSO-E convention (also unsuffixed
+ * ISO-8601 in its raw XML) and every readings_* table's "ts is always UTC"
+ * rule - this wasn't independently confirmed against SEMO's own written
+ * documentation (their API guide doesn't state a timezone explicitly), so
+ * if ingest_log or pages/ireland.html's SEM imbalance price ever looks
+ * exactly 1 hour off during BST (Ireland is UTC+1 in summer), that's the
+ * first thing to check and fix here.
+ *
+ * The report list's own sort_by=PublishTime&order_by=DESC gave
+ * inconsistent results while this was being built (two otherwise-identical
+ * requests a short time apart returned different "most recent" items) -
+ * rather than trust it, this fetches a 12-item page, re-sorts by
+ * PublishTime client-side, and processes every item from roughly the last
+ * hour (not just the newest one) every run - deliberately small (unlike
+ * e.g. ukgrid_ingest_eia()'s multi-day backfill window) since this can run
+ * from an ordinary on-demand page-load refresh, not just cron, and each
+ * item needs its own separate XML-file fetch rather than one bulk call.
+ * ON DUPLICATE KEY UPDATE makes repeated, overlapping runs safe either way.
+ */
+function ukgrid_ingest_semo(PDO $pdo, array $config, int $timeoutSeconds = 20): array
+{
+    $listBase = rtrim($config['sources']['semo_reports_api_base'] ?? 'https://reports.sem-o.com/api/v1/documents/static-reports', '/');
+    $resourceBase = rtrim($config['sources']['semo_resource_base'] ?? 'https://reports.sem-o.com/documents', '/');
+
+    $errors = [];
+    $rowsWritten = 0;
+    $completedNormally = false;
+    ukgrid_register_partial_progress_safety_net('SEMO', 'the report-list fetch and per-report XML parse', $completedNormally, $rowsWritten, $errors);
+
+    $listUrl = $listBase . '?DPuG_ID=BM-025&page_size=12&sort_by=PublishTime&order_by=DESC';
+    $listData = ukgrid_http_get_json($listUrl, $timeoutSeconds);
+    if ($listData === null) {
+        $completedNormally = true;
+        ukgrid_log_ingest('SEMO', 'ERROR', 0, 'report-list request failed (check semo_reports_api_base is reachable, or see includes/refresh.log for the raw HTTP error).');
+        return ['rows' => 0, 'errors' => ['report-list request failed.']];
+    }
+
+    $items = $listData['items'] ?? null;
+    if (!is_array($items)) {
+        $completedNormally = true;
+        $msg = 'report-list: unexpected response shape - top-level keys seen: ' . implode(', ', array_keys((array) $listData));
+        ukgrid_log_ingest('SEMO', 'ERROR', 0, $msg);
+        return ['rows' => 0, 'errors' => [$msg]];
+    }
+
+    // Re-sort by PublishTime ourselves - see this function's docblock for
+    // why the API's own sort_by/order_by wasn't trusted as-is - and only
+    // keep items from roughly the last 4 hours, so a stale or misordered
+    // response can't silently write ancient history into the table.
+    usort($items, function ($a, $b) {
+        return strcmp((string) ($b['PublishTime'] ?? ''), (string) ($a['PublishTime'] ?? ''));
+    });
+    $cutoff = time() - 3600; // 1 hour - heavy overlap for a source refreshed every 15 minutes, without making an on-demand page-load refresh fetch dozens of small XML files
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO readings_ie_semo_imbalance
+           (ts, imbalance_price_eur_mwh, net_imbalance_volume_mwh, total_unit_availability_mw, operating_reserve_requirement_mw)
+         VALUES (:ts, :price, :niv, :avail, :orr)
+         ON DUPLICATE KEY UPDATE
+           imbalance_price_eur_mwh = VALUES(imbalance_price_eur_mwh),
+           net_imbalance_volume_mwh = VALUES(net_imbalance_volume_mwh),
+           total_unit_availability_mw = VALUES(total_unit_availability_mw),
+           operating_reserve_requirement_mw = VALUES(operating_reserve_requirement_mw)'
+    );
+
+    $resourcesTried = 0;
+    $sampleAttrs = null;
+    foreach ($items as $item) {
+        $publishTime = (string) ($item['PublishTime'] ?? '');
+        $publishTs = $publishTime !== '' ? strtotime($publishTime . ' UTC') : false;
+        if ($publishTs !== false && $publishTs < $cutoff) {
+            break; // sorted descending (by us, above) - everything after this is even older
+        }
+        $resourceName = (string) ($item['ResourceName'] ?? '');
+        if ($resourceName === '') {
+            continue;
+        }
+        $resourcesTried++;
+        if ($resourcesTried > 1) {
+            usleep(200000); // a couple dozen small XML files, not one bulk call - be polite about it
+        }
+
+        $xmlBody = ukgrid_http_get_raw($resourceBase . '/' . rawurlencode($resourceName), $timeoutSeconds);
+        if ($xmlBody === null) {
+            $errors[] = "{$resourceName}: fetch failed.";
+            continue;
+        }
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string($xmlBody);
+        if ($xml === false) {
+            libxml_clear_errors();
+            $snippet = trim(preg_replace('/\s+/', ' ', mb_substr($xmlBody, 0, 200)));
+            $errors[] = "{$resourceName}: XML parse failure. Raw response started with: \"{$snippet}\"";
+            continue;
+        }
+
+        foreach ($xml->PUB_5MinImbalPrc as $row) {
+            $attrs = $row->attributes();
+            if ($sampleAttrs === null) {
+                $sampleAttrs = [];
+                foreach ($attrs as $k => $v) {
+                    $sampleAttrs[$k] = (string) $v;
+                }
+            }
+            $startTime = (string) ($attrs['StartTime'] ?? '');
+            $price = (string) ($attrs['ImbalancePrice'] ?? '');
+            if ($startTime === '' || $price === '' || !is_numeric($price)) {
+                continue;
+            }
+            $ts = strtotime($startTime . ' UTC'); // see this function's docblock re: assumed UTC
+            if ($ts === false) {
+                continue;
+            }
+            $niv = (string) ($attrs['NetImbalanceVolume'] ?? '');
+            $avail = (string) ($attrs['TotalUnitAvailability'] ?? '');
+            $orr = (string) ($attrs['OperatingReserveRequirement'] ?? '');
+            $stmt->execute([
+                'ts' => gmdate('Y-m-d H:i:s', $ts),
+                'price' => (float) $price,
+                'niv' => is_numeric($niv) ? (float) $niv : null,
+                'avail' => is_numeric($avail) ? (float) $avail : null,
+                'orr' => is_numeric($orr) ? (float) $orr : null,
+            ]);
+            $rowsWritten++;
+        }
+    }
+
+    if ($resourcesTried === 0) {
+        $errors[] = 'no BM-025 report items found within the last hour in the report list (checked ' . count($items) . ' item(s) total) - either SEMO has a publishing gap, or the DPuG_ID/report code has changed.';
+    } elseif ($rowsWritten === 0) {
+        $errors[] = 'fetched ' . $resourcesTried . ' report file(s) but found no usable PUB_5MinImbalPrc row(s). Attributes seen on the last parsed row: ' . ($sampleAttrs !== null ? json_encode($sampleAttrs) : 'none');
+    }
+
+    $status = $rowsWritten > 0 ? 'OK' : 'ERROR';
+    $completedNormally = true;
+    ukgrid_log_ingest('SEMO', $status, $rowsWritten, implode('; ', $errors));
     return ['rows' => $rowsWritten, 'errors' => $errors];
 }

@@ -57,6 +57,7 @@ if (!$latestTs) {
         'generation_mw' => null,
         'interconnection_mw' => null,
         'mix_mw' => new stdClass(),
+        'mix_ts' => null,
     ]);
     exit;
 }
@@ -87,12 +88,62 @@ function ukgrid_us_nearest(PDO $pdo, string $valueCol, string $ts, int $windowMi
 $genTotal = ukgrid_us_nearest($pdo, 'mw', $latestTs, $stalenessMinutes, 'TOTAL');
 $interconnection = ukgrid_us_nearest($pdo, 'mw', $latestTs, $stalenessMinutes, 'INTERCONNECTION');
 
-$fuelTypes = ['COL', 'NG', 'NUC', 'OIL', 'WAT', 'SUN', 'WND', 'OTH', 'UNK'];
+// Every fuel-type category the EIA has reported (not just the original
+// nine: newer EIA-930 codes such as battery storage, pumped storage and
+// geothermal used to be ingested but never returned, so they were missing
+// from BOTH the mix table and the donut), all read at ONE timestamp - the
+// latest hour, within the window, that has at least three-quarters as many
+// fuel types as the most complete hour does (so a half-published latest
+// hour isn't used). Looking each fuel up independently as "nearest within +/- 2 days"
+// could stitch a single donut together from different days' readings.
 $mix = [];
-foreach ($fuelTypes as $fuel) {
-    $v = ukgrid_us_nearest($pdo, 'mw', $latestTs, $stalenessMinutes, $fuel);
-    if ($v !== null) {
-        $mix[$fuel] = (float) $v;
+$mixTs = null;
+$covStmt = $pdo->prepare(
+    'SELECT ts, COUNT(*) AS n FROM readings_us_generation
+     WHERE category NOT IN ("TOTAL", "INTERCONNECTION")
+       AND ts BETWEEN DATE_SUB(:ts1, INTERVAL :window1 MINUTE) AND DATE_ADD(:ts2, INTERVAL :window2 MINUTE)
+     GROUP BY ts ORDER BY ts DESC'
+);
+$covStmt->execute(['ts1' => $latestTs, 'window1' => $stalenessMinutes, 'ts2' => $latestTs, 'window2' => $stalenessMinutes]);
+$coverage = $covStmt->fetchAll();
+$maxN = 0;
+foreach ($coverage as $c) {
+    $maxN = max($maxN, (int) $c['n']);
+}
+$needN = max(1, (int) ceil($maxN * 0.75)); // "complete enough" - see above
+foreach ($coverage as $c) { // newest first
+    if ((int) $c['n'] >= $needN) {
+        $mixTs = $c['ts'];
+        break;
+    }
+}
+if ($mixTs !== null) {
+    $atStmt = $pdo->prepare('SELECT category, mw FROM readings_us_generation WHERE ts = :ts AND category NOT IN ("TOTAL", "INTERCONNECTION")');
+    $atStmt->execute(['ts' => $mixTs]);
+    foreach ($atStmt->fetchAll() as $row) {
+        $mix[$row['category']] = (float) $row['mw'];
+    }
+    // A fuel type missing at that hour falls back to its latest reading at
+    // or before it (never a later one), within the same window.
+    $catStmt = $pdo->prepare(
+        'SELECT DISTINCT category FROM readings_us_generation
+         WHERE category NOT IN ("TOTAL", "INTERCONNECTION") AND ts BETWEEN DATE_SUB(:ts1, INTERVAL :window1 MINUTE) AND :ts2'
+    );
+    $catStmt->execute(['ts1' => $mixTs, 'window1' => $stalenessMinutes, 'ts2' => $mixTs]);
+    $prevStmt = $pdo->prepare(
+        'SELECT mw FROM readings_us_generation
+         WHERE category = :cat AND ts <= :ts1 AND ts >= DATE_SUB(:ts2, INTERVAL :window1 MINUTE)
+         ORDER BY ts DESC LIMIT 1'
+    );
+    foreach ($catStmt->fetchAll(PDO::FETCH_COLUMN) as $cat) {
+        if (array_key_exists($cat, $mix)) {
+            continue;
+        }
+        $prevStmt->execute(['cat' => $cat, 'ts1' => $mixTs, 'ts2' => $mixTs, 'window1' => $stalenessMinutes]);
+        $v = $prevStmt->fetchColumn();
+        if ($v !== false && $v !== null) {
+            $mix[$cat] = (float) $v;
+        }
     }
 }
 
@@ -105,4 +156,5 @@ echo json_encode([
     'generation_mw' => $genTotal !== null ? (float) $genTotal : null,
     'interconnection_mw' => $interconnection !== null ? (float) $interconnection : null,
     'mix_mw' => empty($mix) ? new stdClass() : $mix,
+    'mix_ts' => $mixTs !== null ? gmdate('Y-m-d\TH:i:s\Z', strtotime($mixTs)) : null,
 ]);

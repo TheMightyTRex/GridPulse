@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About electricity prices - UK Grid: Live+</title>
-<meta name="description" content="How the GB wholesale electricity price is calculated, how Contracts for Difference work, and why cheaper renewables don't automatically mean cheaper bills.">
+<meta name="description" content="How the GB wholesale electricity price is calculated, how Contracts for Difference work, and why cheaper renewables do not automatically mean cheaper bills.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=20261101a">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101a">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -27,105 +28,197 @@
 <!-- End Matomo Code -->
 </head>
 <body>
-<div class="preview-banner">BETA PREVIEW: UK Grid: Live+ is in testing. <a href="data-sources.html">See data sources →</a></div>
-
 <a class="skip-link" href="#main">Skip to content</a>
 
+<!-- shell:start (written by tools/apply_shell.py - edit the menu there, not here) -->
 <div class="site-head">
 <header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="../index.html">
-      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="color:var(--accent)">
-        <path d="M24 7 38.7 15.5 38.7 32.5 24 41 9.3 32.5 9.3 15.5Z" fill="none" stroke="currentColor" stroke-width="3"/>
-        <path d="M25 13 16 25h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/>
-        <circle class="brand__mark-pulse" cx="38.5" cy="9.5" r="7" fill="var(--accent)"/>
-        <path d="M35.3 9.5h6.4M38.5 6.3v6.4" stroke="var(--accent-contrast)" stroke-width="2.2" stroke-linecap="round"/>
+  <div class="wrap site-header__bar">
+    <a class="brand ug-logo" href="../index.html" aria-label="UK Grid: Live+, home">
+      <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
+        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
+        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
+        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
       </svg>
-      <span class="brand__name">UK&nbsp;Grid: <em>Live+</em></span>
-      <span class="brand__tagline">Great Britain's electricity grid, live and over time</span>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>
     </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul id="site-nav-list" data-nav-list>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-gb-btn" aria-expanded="false" aria-controls="navgroup-gb" data-nav-group data-active="true">
+            Great Britain
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--gb" id="navgroup-gb">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-0">Live now</p>
+              <ul aria-labelledby="navhead-gb-0">
+                <li><a href="../index.html"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
+                <li><a href="electricity-prices.html" aria-current="page"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-1">By source</p>
+              <ul aria-labelledby="navhead-gb-1">
+                <li><a href="renewables.html"><span class="nav-panel__name">Renewables</span><span class="nav-panel__desc">Wind, solar and hydro</span></a></li>
+                <li><a href="fossil-fuels.html"><span class="nav-panel__name">Fossil fuels</span><span class="nav-panel__desc">Gas, coal and oil</span></a></li>
+                <li><a href="nuclear-biomass.html"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
+                <li><a href="storage.html"><span class="nav-panel__name">Storage</span><span class="nav-panel__desc">Batteries and pumped hydro</span></a></li>
+                <li><a href="interconnectors.html"><span class="nav-panel__name">Interconnectors</span><span class="nav-panel__desc">Imports and exports by country</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-2">Over time</p>
+              <ul aria-labelledby="navhead-gb-2">
+                <li><a href="history.html"><span class="nav-panel__name">History</span><span class="nav-panel__desc">From the past day to the past decade</span></a></li>
+                <li><a href="price-history.html"><span class="nav-panel__name">Historic prices</span><span class="nav-panel__desc">Wholesale prices over the years</span></a></li>
+                <li><a href="renewables-plans.html"><span class="nav-panel__name">2030 plans</span><span class="nav-panel__desc">Clean Power 2030 targets and progress</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+            Europe
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--europe" id="navgroup-europe">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-0">Linked to Great Britain</p>
+              <ul aria-labelledby="navhead-europe-0">
+                <li><a href="ireland.html"><span class="nav-panel__name">Ireland</span></a></li>
+                <li><a href="france.html"><span class="nav-panel__name">France</span></a></li>
+                <li><a href="nl.html"><span class="nav-panel__name">Netherlands</span></a></li>
+                <li><a href="belgium.html"><span class="nav-panel__name">Belgium</span></a></li>
+                <li><a href="norway.html"><span class="nav-panel__name">Norway</span></a></li>
+                <li><a href="denmark.html"><span class="nav-panel__name">Denmark</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-1">Rest of Europe</p>
+              <ul aria-labelledby="navhead-europe-1">
+                <li><a href="germany.html"><span class="nav-panel__name">Germany</span></a></li>
+                <li><a href="spain.html"><span class="nav-panel__name">Spain</span></a></li>
+                <li><a href="italy.html"><span class="nav-panel__name">Italy</span></a></li>
+                <li><a href="sweden.html"><span class="nav-panel__name">Sweden</span></a></li>
+                <li><a href="portugal.html"><span class="nav-panel__name">Portugal</span></a></li>
+                <li><a href="poland.html"><span class="nav-panel__name">Poland</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-2">Europe-wide</p>
+              <ul aria-labelledby="navhead-europe-2">
+                <li><a href="eu.html"><span class="nav-panel__name">Europe overview</span><span class="nav-panel__desc">Every country on one page</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-world-btn" aria-expanded="false" aria-controls="navgroup-world" data-nav-group>
+            Rest of the world
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--world" id="navgroup-world">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-0">Americas</p>
+              <ul aria-labelledby="navhead-world-0">
+                <li><a href="usa.html"><span class="nav-panel__name">USA</span></a></li>
+                <li><a href="canada.html"><span class="nav-panel__name">Canada</span></a></li>
+                <li><a href="south-america.html"><span class="nav-panel__name">South America</span></a></li>
+                <li><a href="americas-interconnects.html"><span class="nav-panel__name">Americas interconnectors</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-1">Asia-Pacific</p>
+              <ul aria-labelledby="navhead-world-1">
+                <li><a href="australia.html"><span class="nav-panel__name">Australia</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-solar-btn" aria-expanded="false" aria-controls="navgroup-solar" data-nav-group>
+            Plug-in solar
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--solar" id="navgroup-solar">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-0">Get started</p>
+              <ul aria-labelledby="navhead-solar-0">
+                <li><a href="plugin-solar.html"><span class="nav-panel__name">What is plug-in solar</span></a></li>
+                <li><a href="plugin-solar-considerations.html"><span class="nav-panel__name">Considerations</span></a></li>
+                <li><a href="plugin-solar-calculator.html"><span class="nav-panel__name">Energy calculator</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-1">Fitting it</p>
+              <ul aria-labelledby="navhead-solar-1">
+                <li><a href="plugin-solar-safety.html"><span class="nav-panel__name">Safety</span></a></li>
+                <li><a href="plugin-solar-mounting.html"><span class="nav-panel__name">Mounting</span></a></li>
+                <li><a href="plugin-solar-battery.html"><span class="nav-panel__name">Battery power</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-2">The rules</p>
+              <ul aria-labelledby="navhead-solar-2">
+                <li><a href="plugin-solar-registration.html"><span class="nav-panel__name">Registration</span></a></li>
+                <li><a href="plugin-solar-certification.html"><span class="nav-panel__name">Certification</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-link"><a href="comparisons.html">Compare</a></li>
+        <li class="nav-link"><a href="data-sources.html">Sources</a></li>
+        <li class="nav-link"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
     <div class="header-controls">
-      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg>
-        <span data-theme-label>Auto mode</span>
+      <button type="button" class="display-btn" data-display-toggle aria-expanded="false" aria-controls="display-panel">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Display</span>
+      </button>
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        <span data-nav-toggle-label>Menu</span>
       </button>
     </div>
   </div>
 </header>
-
-<nav class="site-nav" aria-label="Main">
-  <div class="wrap">
-    <ul id="site-nav-list" data-nav-list>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-uk-btn" aria-expanded="false" aria-controls="navgroup-uk" data-nav-group data-active="true">
-          Great Britain
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-uk">
-          <li><a href="../index.html">GB: Overview</a></li>
-          <li><a href="fossil-fuels.html">GB: Fossil fuels</a></li>
-          <li><a href="renewables.html">GB: Renewables</a></li>
-          <li><a href="nuclear-biomass.html">GB: Nuclear &amp; biomass</a></li>
-          <li><a href="interconnectors.html">GB: Interconnectors</a></li>
-          <li><a href="storage.html">GB: Storage</a></li>
-          <li><a href="history.html">GB: History</a></li>
-          <li><a href="electricity-prices.html" aria-current="page">GB: Prices</a></li>
-          <li><a href="price-history.html">GB: Historic prices</a></li>
-          <li><a href="renewables-plans.html">2030 GB plans</a></li>
-        </ul>
-      </li>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
-          Europe
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-europe">
-          <li><a href="ireland.html">Ireland</a></li>
-          <li><a href="france.html">France</a></li>
-          <li><a href="nl.html">Netherlands</a></li>
-          <li><a href="belgium.html">Belgium</a></li>
-          <li><a href="norway.html">Norway (NO2)</a></li>
-          <li><a href="denmark.html">Denmark (DK1)</a></li>
-          <li><a href="germany.html">Germany</a></li>
-          <li><a href="spain.html">Spain</a></li>
-          <li><a href="italy.html">Italy</a></li>
-          <li><a href="sweden.html">Sweden (SE3)</a></li>
-          <li><a href="portugal.html">Portugal</a></li>
-        </ul>
-      </li>
-      <li class="nav-group">
-        <button type="button" class="nav-group__toggle" id="navgroup-americas-btn" aria-expanded="false" aria-controls="navgroup-americas" data-nav-group>
-          Americas
-          <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <ul class="nav-group__menu" id="navgroup-americas">
-          <li><a href="usa.html">USA</a></li>
-          <li><a href="canada.html">Canada</a></li>
-          <li><a href="brazil.html">Brazil</a></li>
-          <li><a href="argentina.html">Argentina</a></li>
-          <li><a href="chile.html">Chile</a></li>
-          <li><a href="colombia.html">Colombia</a></li>
-          <li><a href="americas-interconnects.html">Interconnections</a></li>
-        </ul>
-      </li>
-      <li><a href="comparisons.html">Comparisons</a></li>
-      <li><a href="data-sources.html">Sources</a></li>
-      <li><a href="about.html">About</a></li>
-    </ul>
-    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
-      <span class="nav-toggle__icon" aria-hidden="true"></span>
-      <span class="visually-hidden" data-nav-toggle-label>Menu</span>
-    </button>
-  </div>
-</nav>
+<aside class="preview-banner" aria-label="Site announcement"><span class="preview-banner__tag">New</span> <a href="plugin-solar.html">Read the plug-in solar guide</a></aside>
+<div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
+  <h2 id="display-panel-heading">Display and accessibility</h2>
+  <fieldset><legend>Theme</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-theme" value="system"><span>Auto</span></label>
+      <label><input type="radio" name="pref-theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="pref-theme" value="dark"><span>Dark</span></label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Text size</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-size" value="100"><span>100%</span></label>
+      <label><input type="radio" name="pref-size" value="125"><span>125%</span></label>
+      <label><input type="radio" name="pref-size" value="150"><span>150%</span></label>
+      <label><input type="radio" name="pref-size" value="175"><span>175%</span></label>
+    </div>
+  </fieldset>
+  <label class="pref-switch"><span>Low-vision font<small>Atkinson Hyperlegible Next, designed for low vision</small></span><input type="checkbox" data-pref="readable"></label>
+  <label class="pref-switch"><span>High contrast</span><input type="checkbox" data-pref="hc"></label>
+  <label class="pref-switch"><span>Reduce motion<small>Stops the logo and loading animations</small></span><input type="checkbox" data-pref="calm"></label>
+  <label class="pref-switch"><span>Underline links</span><input type="checkbox" data-pref="underline"></label>
+  <label class="pref-switch"><span>Wider text spacing</span><input type="checkbox" data-pref="spacing"></label>
+  <div class="display-panel__foot"><button type="button" class="btn" data-pref-reset>Reset</button><button type="button" class="btn btn--primary" data-pref-done>Done</button></div>
 </div>
+</div>
+<!-- shell:end -->
 
 <main id="main">
   <div class="wrap">
 
     <section class="hero">
-      <h1>What "Price" means, and why cheaper generation doesn't always mean cheaper bills</h1>
-      <p>The Price figure on this site is the GB wholesale electricity price - what generators are paid per unit, not what you pay as a household. It's set in a way that surprises a lot of people, and it's only part of what ends up on a bill. See the full <a href="price-history.html">price history</a> for how it's moved over time.</p>
+      <h1>What "Price" means, and why cheaper generation does not always mean cheaper bills</h1>
+      <p>The Price figure on this site is the GB wholesale electricity price - what generators are paid per unit, not what you pay as a household. It is set in a way that surprises a lot of people, and it is only part of what ends up on a bill. See the full <a href="price-history.html">price history</a> for how it is moved over time.</p>
     </section>
 
     <section class="panel" aria-labelledby="what-heading">
@@ -135,18 +228,19 @@
 
     <section class="panel" aria-labelledby="merit-heading">
       <h2 id="merit-heading">How the price is set: merit order and marginal pricing</h2>
-      <p>GB's wholesale market is "pay as clear": generators bid the price they're willing to accept, cheapest first, and the market keeps accepting bids up the cost order - the <strong>merit order</strong> - until enough power is committed to meet demand. Crucially, <em>every accepted generator gets paid the price of the last, most expensive bid needed to meet demand</em> - the <strong>marginal price</strong> - not their own bid.</p>
+      <p>GB's wholesale market is "pay as clear": generators bid the price they are willing to accept, cheapest first, and the market keeps accepting bids up the cost order - the <strong>merit order</strong> - until enough power is committed to meet demand. Crucially, <em>every accepted generator gets paid the price of the last, most expensive bid needed to meet demand</em> - the <strong>marginal price</strong> - not their own bid.</p>
       <div class="chart-card">
-        <h3>Typical merit order (typical marginal cost, cheapest first)</h3>
-        <div class="chart-wrap is-loading" style="height:260px;"><canvas id="merit-order-chart"></canvas></div>
+        <h3>Cost of generating one more MWh, cheapest first</h3>
+        <div class="chart-wrap is-loading" style="height:220px;"><canvas id="merit-order-chart" role="img" aria-label="Bar chart of the cost of one more megawatt-hour: solar £0, offshore wind £1, onshore wind £6, gas £105"></canvas></div>
+        <p class="chart-caption">Fuel, carbon and variable running costs only, in £/MWh at 2021 prices, for plants starting in 2025. Gas is £43 fuel, £60 carbon and £2 running costs. Source: <a href="https://www.gov.uk/government/publications/electricity-generation-costs-2023">DESNZ Electricity Generation Costs 2023</a>, Table 10 - the newest DESNZ report that splits costs this way. DESNZ does not publish these figures for nuclear or biomass. Last checked: 29 October 2026.</p>
       </div>
-      <p>Wind and solar have near-zero marginal cost - once built, an extra unit of output costs them almost nothing - so they're accepted first. Nuclear and biomass sit in the middle. Gas-fired plant is very often the last, most expensive generator needed to balance the system, which means <strong>gas sets the wholesale price on most half-hours</strong>, even on days when gas supplies only a minority of actual generation. When gas is expensive (as during the 2021–2023 global gas crisis), it drags the price paid to <em>every</em> generator up with it, including wind and nuclear producing at near-zero cost.</p>
-      <p>This system exists because it's judged the cheapest way to run the market overall - generators don't need to guess competitors' costs to bid honestly, and it rewards low-cost, low-carbon plant with a margin that pays for further investment. But it does mean the headline price tracks gas even as gas's share of generation shrinks.</p>
+      <p>Wind and solar have near-zero marginal cost - once built, an extra unit of output costs them almost nothing - so they are accepted first. Gas-fired plant has to buy fuel and pay for its carbon, so it is very often the last, most expensive generator needed to balance the system. That means <strong>gas very often sets the wholesale price</strong>, even on days when gas supplies only a minority of actual generation. When gas is expensive (as during the 2021–2023 global gas crisis), it drags the price paid to <em>every</em> generator up with it, including wind and nuclear producing at near-zero cost.</p>
+      <p>This system exists because it is judged the cheapest way to run the market overall - generators do not need to guess competitors' costs to bid honestly, and it rewards low-cost, low-carbon plant with a margin that pays for further investment. But it does mean the headline price tracks gas even as gas's share of generation shrinks.</p>
     </section>
 
     <section class="panel" aria-labelledby="cfd-heading">
       <h2 id="cfd-heading">Contracts for Difference: decoupling renewables from the gas price</h2>
-      <p>Most new large-scale wind, solar and other low-carbon projects in GB are built under a <strong>Contract for Difference (CfD)</strong> - a government-backed contract, administered by the <strong>Low Carbon Contracts Company (LCCC)</strong>, that pays the generator a fixed <strong>strike price</strong> per MWh agreed at auction, regardless of what the wholesale market price does. It's the main mechanism the government uses to get new low-carbon generation built, because it gives developers and their lenders a predictable, bankable revenue stream instead of exposing a multi-billion-pound wind farm to volatile wholesale prices for 15–20 years.</p>
+      <p>Most new large-scale wind, solar and other low-carbon projects in GB are built under a <strong>Contract for Difference (CfD)</strong> - a government-backed contract, administered by the <strong>Low Carbon Contracts Company (LCCC)</strong>, that pays the generator a fixed <strong>strike price</strong> per MWh agreed at auction, regardless of what the wholesale market price does. It is the main mechanism the government uses to get new low-carbon generation built, because it gives developers and their lenders a predictable, bankable revenue stream instead of exposing a multi-billion-pound wind farm to volatile wholesale prices for 15–20 years.</p>
 
       <svg viewBox="0 0 640 260" role="img" aria-labelledby="cfd-svg-title" style="width:100%;height:auto;margin:1rem 0;background:var(--bg-inset);border-radius:10px;">
         <title id="cfd-svg-title">Diagram: Contracts for Difference top-up when wholesale price is below the strike price, and clawback when above it</title>
@@ -168,14 +262,14 @@
       <h3>How the mechanics actually work</h3>
       <p>A CfD generator still sells its power into the wholesale market as normal, and still receives the market price for it. Separately, every settlement period the LCCC compares that market outcome to the generator's strike price and pays - or charges - the difference:</p>
       <ul>
-        <li>If the <strong>reference price is below the strike price</strong>, the LCCC tops the generator's income up to the strike price. This top-up is funded by the <strong>CfD Supplier Obligation</strong>, a levy charged to every electricity supplier in proportion to their share of the market, which suppliers pass through to customer bills - it's part of the "policy costs" slice of the bill breakdown below.</li>
+        <li>If the <strong>reference price is below the strike price</strong>, the LCCC tops the generator's income up to the strike price. This top-up is funded by the <strong>CfD Supplier Obligation</strong>, a levy charged to every electricity supplier in proportion to their share of the market, which suppliers pass through to customer bills - it is part of the "policy costs" slice of the bill breakdown below.</li>
         <li>If the <strong>reference price is above the strike price</strong>, the generator pays the difference back to the LCCC, which reduces the levy (or funds rebates) for everyone else.</li>
       </ul>
-      <p>Two details that often get missed: the comparison uses a <strong>reference price</strong>, not the real-time system price - for most technologies this is the GB day-ahead auction price (a separate, slightly different benchmark from the balancing-mechanism "system price" that spikes during shortages), averaged over the settlement period. And since 2015, most new CfDs have included a <strong>negative pricing rule</strong>: if the wholesale price stays negative for six or more consecutive hours, the generator's payments stop, so the scheme doesn't pay renewables to keep running when the grid doesn't want the power.</p>
-      <p>CfDs are awarded competitively by sealed-bid auction ("Allocation Rounds", AR1 through AR7 so far), split into technology "pots" - established technologies like onshore wind and solar compete in one pot, offshore wind has its own pot, and emerging technologies (floating offshore wind, tidal stream) compete in a separate pot so they aren't priced out by cheaper mature technologies. Within each pot, cheapest bids win until the budget or capacity cap is used up.</p>
+      <p>Two details that often get missed: the comparison uses a <strong>reference price</strong>, not the real-time system price - for most technologies this is the GB day-ahead auction price (a separate, slightly different benchmark from the balancing-mechanism "system price" that spikes during shortages), averaged over the settlement period. And since 2015, most new CfDs have included a <strong>negative pricing rule</strong>: if the wholesale price stays negative for six or more consecutive hours, the generator's payments stop, so the scheme does not pay renewables to keep running when the grid does not want the power.</p>
+      <p>CfDs are awarded competitively by sealed-bid auction ("Allocation Rounds", AR1 through AR7 so far), split into technology "pots" - established technologies like onshore wind and solar compete in one pot, offshore wind has its own pot, and emerging technologies (floating offshore wind, tidal stream) compete in a separate pot so they are not priced out by cheaper mature technologies. Within each pot, cheapest bids win until the budget or capacity cap is used up.</p>
 
       <h3>Worked example: a contracted offshore wind farm</h3>
-      <p>Say a wind farm cleared Allocation Round 6 (September 2024) at that round's offshore wind strike price of roughly <strong>£77.50/MWh</strong> (2024 prices). Here's what happens to its income in two different half-hour periods:</p>
+      <p>Say a wind farm cleared Allocation Round 6 (September 2024) at that round's offshore wind strike price of roughly <strong>£77.50/MWh</strong> (2024 prices). Here is what happens to its income in two different half-hour periods:</p>
       <div style="overflow-x:auto;">
       <table class="mix" style="min-width:560px;">
         <caption class="visually-hidden">Worked CfD top-up and clawback example for a 500MW wind farm at a £77.50/MWh strike price</caption>
@@ -187,11 +281,11 @@
       </table>
       </div>
       <p class="chart-caption">Worked example using a real AR6 strike price and a 500MW farm producing at full output for one half-hour (0.5h × 500MW = 250MWh); actual settlement uses metered output and the day-ahead reference price for the period, not full-capacity assumptions.</p>
-      <p>Either way, the generator's <em>realised</em> income per MWh converges on £77.50 regardless of what the wholesale price does that day - that's the entire point of the contract. Across a typical year the same farm will draw top-ups on calm, low-price days and pay clawbacks on tight, high-price days; developers bid a strike price low enough to win the auction but high enough that the blended result over 15–20 years covers their costs and financing.</p>
+      <p>Either way, the generator's <em>realised</em> income per MWh converges on £77.50 regardless of what the wholesale price does that day - that is the entire point of the contract. Across a typical year the same farm will draw top-ups on calm, low-price days and pay clawbacks on tight, high-price days; developers bid a strike price low enough to win the auction but high enough that the blended result over 15–20 years covers their costs and financing.</p>
 
       <h3>What auction strike prices have actually done</h3>
       <p>Contrary to the assumption that renewables just keep getting cheaper, GB's CfD offshore wind strike prices <em>rose</em> sharply between the mid-2020s auctions after several years of decline: from about £37/MWh (2012 prices) in AR4 (2022) to about £59/MWh in AR6 (September 2024), and further to roughly £90/MWh in AR7 (results announced January 2026). This reflects higher interest rates, global supply-chain and turbine-cost inflation, and stronger competition for the same shipyards and cable factories from other countries' offshore wind programmes - not a change in the underlying economics of wind itself. See the <a href="renewables-plans.html">2030 plans page</a> for the full history of auction rounds and capacity awarded.</p>
-      <p>Either way, CfDs only smooth the price <em>paid to contracted generators</em>; they don't change how the wholesale market sets its clearing price for everyone else, which is still driven by the marginal, usually gas-fired, plant on the grid at that moment.</p>
+      <p>Either way, CfDs only smooth the price <em>paid to contracted generators</em>; they do not change how the wholesale market sets its clearing price for everyone else, which is still driven by the marginal, usually gas-fired, plant on the grid at that moment.</p>
       <h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
       <ul style="font-size:.85rem;color:var(--text-muted);">
         <li><a href="https://www.lowcarboncontracts.uk/">Low Carbon Contracts Company</a> - CfD settlement mechanics and the Supplier Obligation levy.</li>
@@ -202,17 +296,17 @@
     </section>
 
     <section class="panel" aria-labelledby="bill-heading">
-      <h2 id="bill-heading">So if renewables are cheaper, why isn't electricity cheaper?</h2>
+      <h2 id="bill-heading">So if renewables are cheaper, why is not electricity cheaper?</h2>
       <p>Two separate effects are at work, and both matter.</p>
       <h3>1. Marginal pricing means the wholesale price reflects the last unit, not the average</h3>
-      <p>Even on a windy day when most electricity comes from near-zero-marginal-cost wind, the wholesale price is usually still set by the last, most expensive unit of gas needed - so the <em>average cost of generation</em> can fall while the <em>price paid for every unit</em> stays tied to gas. Cheaper renewables reduce how <em>often</em> and how <em>much</em> gas is needed, and via CfDs some of that saving does flow through, but it isn't a direct pound-for-pound pass-through to the wholesale price.</p>
-      <h3>2. Wholesale is a shrinking share of what's actually on a bill</h3>
-      <p>A domestic bill under Ofgem's price cap is made up of far more than wholesale energy costs. For the July–September 2026 cap period, wholesale costs made up around <strong>45%</strong> of a typical direct-debit bill, with network charges, policy costs, operating costs and VAT making up the rest.</p>
+      <p>Even on a windy day when most electricity comes from near-zero-marginal-cost wind, the wholesale price is usually still set by the last, most expensive unit of gas needed - so the <em>average cost of generation</em> can fall while the <em>price paid for every unit</em> stays tied to gas. Cheaper renewables reduce how <em>often</em> and how <em>much</em> gas is needed, and via CfDs some of that saving does flow through, but it is not a direct pound-for-pound pass-through to the wholesale price.</p>
+      <h3>2. Wholesale is a shrinking share of what is actually on a bill</h3>
+      <p>A domestic bill under Ofgem's price cap is made up of far more than wholesale energy costs. For the 1 October to 31 December 2026 cap, wholesale costs (including Contracts for Difference) made up <strong>47%</strong> of a typical direct-debit bill for gas and electricity together, up from 44% in July to September. Network charges, operating costs, policy costs and VAT make up most of the rest.</p>
       <div class="chart-grid" style="grid-template-columns:1fr 1fr;">
         <div class="chart-card">
-          <h3>Approximate bill breakdown (Jul–Sep 2026 cap)</h3>
-          <div class="chart-wrap is-loading" style="height:260px;"><canvas id="bill-donut"></canvas></div>
-          <ul class="chart-legend" id="bill-legend"></ul>
+          <h3>What makes up a typical bill (1 October to 31 December 2026)</h3>
+          <div class="chart-wrap is-loading" style="height:260px;"><canvas id="bill-donut" role="img" aria-label="Bar chart of Ofgem's price cap breakdown, October to December 2026"></canvas></div>
+          <p class="chart-caption">Share of a typical £1,723 direct-debit bill for gas and electricity. Ofgem rounds each figure, so they add up to slightly more than 100%. VAT is on gas only: there is no VAT on electricity from 1 October 2026 to 31 March 2027. Source: <a href="https://www.ofgem.gov.uk/sites/default/files/2026-08/Summary-of-changes-to-energy-price-cap-1-October-to-31-December-2026.pdf">Ofgem, price cap update from 1 October 2026</a> (26 August 2026), Annex 1. Last checked: 29 October 2026.</p>
         </div>
         <div class="chart-card">
           <h3>Wholesale vs. network cost trend, early 2026</h3>
@@ -220,51 +314,34 @@
           <p class="chart-caption">Q1 = Jan–Mar 2026 cap, Q2 = Apr–Jun 2026 cap. Typical annual bill share, £.</p>
         </div>
       </div>
-      <p>Crucially, network costs have been <em>rising</em> even as wholesale costs eased through 2026 - the House of Commons Library reports wholesale costs falling from around £690 to £652 (on an annualised typical-bill basis) between the January–March and April–June 2026 cap periods, while network costs rose from around £397 to £463 over the same change, driven by new grid investment (much of it needed to connect new renewables and reinforce the network for electrification). So a fall in wholesale costs can be, and recently has been, largely offset by rising network costs - which is a big part of why "renewables are cheap now" hasn't yet translated into noticeably lower bills.</p>
-      <p>There's a genuine, actively debated policy question behind this: advocates of "market reform" or splitting the GB price zone argue the current UK-wide marginal-pricing system overstates the benefit gas retains even as it's displaced, and that regional or reformed pricing could pass more renewable savings through faster. Others argue the current system's simplicity and investor certainty are themselves valuable, and that network costs - not the pricing mechanism - are the real driver of near-term bills. This page doesn't take a side on that debate; it's presented here so you can follow the reasoning either way.</p>
+      <p>Crucially, network costs have been <em>rising</em> even as wholesale costs eased through 2026 - the House of Commons Library reports wholesale costs falling from around £690 to £652 (on an annualised typical-bill basis) between the January–March and April–June 2026 cap periods, while network costs rose from around £397 to £463 over the same change, driven by new grid investment (much of it needed to connect new renewables and reinforce the network for electrification). So a fall in wholesale costs can be, and recently has been, largely offset by rising network costs - which is a big part of why "renewables are cheap now" has not yet translated into noticeably lower bills.</p>
+      <p>There is a genuine, actively debated policy question behind this: advocates of "market reform" or splitting the GB price zone argue the current UK-wide marginal-pricing system overstates the benefit gas retains even as it is displaced, and that regional or reformed pricing could pass more renewable savings through faster. Others argue the current system's simplicity and investor certainty are themselves valuable, and that network costs - not the pricing mechanism - are the real driver of near-term bills. This page does not take a side on that debate; it is presented here so you can follow the reasoning either way.</p>
       <h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
       <ul style="font-size:.85rem;color:var(--text-muted);">
-        <li><a href="https://www.instituteforgovernment.org.uk/explainer/electricity-market">Institute for Government: how the GB electricity market works</a> - merit order and marginal pricing explainer.</li>
+        <li><a href="https://www.gov.uk/government/publications/electricity-generation-costs-2023">DESNZ: Electricity Generation Costs 2023</a> - Table 10, fuel, carbon and running costs per MWh for the merit order chart.</li>
         <li><a href="https://www.energy-uk.org.uk/">Energy UK</a> - industry explanation of why marginal pricing is used and its intended benefits.</li>
         <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-10505/">House of Commons Library: What costs make up an electricity bill?</a> - wholesale/network/policy cost breakdown and trend figures.</li>
-        <li><a href="https://www.ofgem.gov.uk/news/changes-energy-price-cap-between-1-july-and-30-september-2026">Ofgem: changes to the energy price cap, 1 July – 30 September 2026</a> - wholesale share (~45%) of the Q3 2026 cap.</li>
-        <li><a href="https://en.wikipedia.org/wiki/Contract_for_difference#Electricity_generation">Contracts for Difference (electricity generation) - Wikipedia</a>, and the <a href="https://www.lowcarboncontracts.uk/">Low Carbon Contracts Company</a>, for CfD mechanics.</li>
+        <li><a href="https://www.ofgem.gov.uk/sites/default/files/2026-08/Summary-of-changes-to-energy-price-cap-1-October-to-31-December-2026.pdf">Ofgem: energy price cap update from 1 October 2026</a> (26 August 2026) - the bill breakdown and the wholesale share (47%).</li>
+        <li><a href="https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-unit-rates-and-standing-charges">Ofgem: energy price cap unit rates and standing charges</a> - current rates and the £1,723 typical bill.</li>
+        <li><a href="https://www.lowcarboncontracts.uk/">Low Carbon Contracts Company</a> - the government-owned counterparty for Contracts for Difference.</li>
       </ul>
     </section>
 
     <section class="panel" aria-labelledby="factcheck-heading">
-      <h2 id="factcheck-heading">Factcheck: is it gas, or net-zero, driving high UK prices?</h2>
-      <p>This question has become intensely political. A widely-cited <a href="https://www.carbonbrief.org/factcheck-why-expensive-gas-not-net-zero-is-keeping-uk-electricity-prices-so-high/">factcheck by Carbon Brief</a> (a specialist climate-and-energy publication) traces through the UK's own regulator and system-operator data and concludes that expensive gas, not "green levies" or the net-zero target, is by far the biggest driver of the UK's high electricity prices. The summary below draws on that piece; it's their analysis, not ours, and the "Sources" list links to their own sourcing and the underlying documents.</p>
-
-      <h3>Why gas dominates the UK price more than elsewhere in Europe</h3>
-      <p>As explained above, GB's marginal-pricing system means the wholesale price is set by the most expensive generator still needed to meet demand - and in Great Britain, that's very often a gas plant, even though gas supplies only around a third of actual generation. Academic research puts gas as setting the price roughly 98% of the time in Great Britain, compared with 24% in Germany and just 7% in France, where nuclear more often sets the price instead.</p>
+      <h2 id="factcheck-heading">What has changed on bills since 2021</h2>
+      <p>Ofgem publishes what makes up the price cap each time it changes. Comparing the October 2021 cap with the October 2026 cap shows where the money goes now. A typical direct-debit bill for gas and electricity was £1,277 a year from 1 October 2021 and is £1,723 from 1 October 2026.</p>
       <div class="chart-card">
-        <h3>Share of hours gas sets the wholesale price, 2023</h3>
-        <div class="chart-wrap is-loading" style="height:220px;"><canvas id="gas-marginal-share-chart"></canvas></div>
-        <p class="chart-caption">Source: Zakeri and Staffell (2023), as cited by Carbon Brief. Great Britain's exposure to gas prices is structural, not a recent change.</p>
+        <h3>Share of a typical bill, October 2021 and October 2026</h3>
+        <div class="chart-wrap is-loading" style="height:300px;"><canvas id="bill-rise-drivers-chart" role="img" aria-label="Bar chart comparing the share of a typical bill by cost, October 2021 and October 2026"></canvas></div>
+        <p class="chart-caption">Share of a typical direct-debit bill for gas and electricity. 2021 shares are worked out from Ofgem's £ figures (for example wholesale £528 of £1,277). 2026 shares are Ofgem's own rounded figures. Typical use changed between the two (2021: 3,100kWh electricity and 12,000kWh gas; 2026: 2,500kWh and 9,500kWh), and Ofgem's 2026 operating costs line also includes debt and industry costs. Sources: <a href="https://www.ofgem.gov.uk/sites/default/files/2021-08/Default%20tariff%20cap%20letter%20for%201%20October%202021.pdf">Ofgem, default tariff cap update from 1 October 2021</a> (6 August 2021), Figure 1; <a href="https://www.ofgem.gov.uk/sites/default/files/2026-08/Summary-of-changes-to-energy-price-cap-1-October-to-31-December-2026.pdf">Ofgem, price cap update from 1 October 2026</a> (26 August 2026), Annex 1. Last checked: 29 October 2026.</p>
       </div>
-      <p>Because of this, GB wholesale power prices track wholesale gas prices closely - and as of the article's most recent figures, gas remained around three times more expensive than before Russia's 2022 invasion of Ukraine triggered the global gas-price spike, despite easing from its peak.</p>
-
-      <h3>What's actually driven the rise in household bills since 2021</h3>
-      <p>Under Ofgem's price cap, the average household electricity bill rose from £603 to £926 a year between summer 2021 and Carbon Brief's May 2025 analysis - an increase of £324. Breaking that rise down by cause:</p>
-      <div class="chart-card">
-        <h3>Contributions to the rise in the typical household bill since 2021</h3>
-        <div class="chart-wrap is-loading" style="height:260px;"><canvas id="bill-rise-drivers-chart"></canvas></div>
-        <p class="chart-caption">£ added per year to the average household electricity bill, summer 2021 to Carbon Brief's May 2025 analysis. Figures don't sum exactly to the £324 total due to rounding across categories in the source analysis. Source: Carbon Brief analysis of Ofgem data.</p>
-      </div>
-      <p>Wholesale costs alone account for roughly half to just over half of the increase, network charges around a fifth, and "green levies" - the policy costs that support renewables - under 6%. Even part of the rise in network charges traces back to gas rather than grid upgrades for renewables: it includes the cost of bailing out energy suppliers that collapsed during the 2022 crisis, and higher grid-balancing costs, both of which move with wholesale gas prices.</p>
-      <p>The article also notes that the UK steel industry - a frequent example cited in the high-prices debate - is fully exempt from green levies and gets relief from most network costs, so its high electricity costs relative to French or German steelmakers are, again, almost entirely down to gas.</p>
-
-      <h3>The long-term picture</h3>
-      <p>On what happens next, Carbon Brief reports that independent analysis - from system operator NESO, the Climate Change Committee, and consultancies including Aurora and E3G - broadly expects that completing the shift to a clean power system would reduce bills over time by cutting the UK's exposure to volatile gas prices, even though the near-term picture (and the government's own "up to £300" savings pledge) has become less certain. It also covers the live debate over "zonal" electricity pricing as a possible reform, where - unlike the gas-vs-net-zero question - there's genuine, unresolved disagreement among credible experts and organisations about the costs and benefits.</p>
+      <p>Wholesale costs are the biggest part of a bill and a bigger share than in 2021: 47% now, against 41%. Network charges have also grown, from 21% to 24%. Policy costs, which include support for renewables, have fallen from 12% to 6% of the bill.</p>
 
       <h3 style="font-size:.95rem;margin-top:1.5rem;">Sources</h3>
       <ul style="font-size:.85rem;color:var(--text-muted);">
-        <li><a href="https://www.carbonbrief.org/factcheck-why-expensive-gas-not-net-zero-is-keeping-uk-electricity-prices-so-high/">Carbon Brief: Factcheck - why expensive gas, not net-zero, is keeping UK electricity prices so high</a> - the full factcheck this summary is drawn from.</li>
-        <li><a href="https://www.sciencedirect.com/science/article/pii/S2352484723013057">Zakeri and Staffell (2023)</a> - academic research on how often gas sets the marginal price across European electricity markets.</li>
-        <li><a href="https://www.ofgem.gov.uk/energy-price-cap">Ofgem: the energy price cap</a> - the underlying price-cap data and component breakdown.</li>
-        <li><a href="https://www.neso.energy/document/346651/download">NESO: Clean Power 2030</a> - system operator analysis of how a clean power system would affect consumer costs.</li>
-        <li><a href="https://www.energy-uk.org.uk/wp-content/uploads/2025/03/Energy-UK-Report-How-to-cut-bills-March-2025.pdf">Energy UK: How to cut bills</a> - industry-body recommendations for reducing bills in the near term.</li>
+        <li><a href="https://www.ofgem.gov.uk/sites/default/files/2021-08/Default%20tariff%20cap%20letter%20for%201%20October%202021.pdf">Ofgem: default tariff cap update from 1 October 2021</a> - Figure 1, breakdown of the cap in £.</li>
+        <li><a href="https://www.ofgem.gov.uk/sites/default/files/2026-08/Summary-of-changes-to-energy-price-cap-1-October-to-31-December-2026.pdf">Ofgem: energy price cap update from 1 October 2026</a> - Annex 1, breakdown of the cap as a share of the bill.</li>
+        <li><a href="https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained">Ofgem: energy price cap and standing charges explained</a> - what each cost covers.</li>
       </ul>
     </section>
 
@@ -278,42 +355,43 @@
   </div>
 </footer>
 
-<script src="../assets/app.js"></script>
+<script src="../assets/app.js?v=20261101a"></script>
 <script>
 (function () {
-  // Merit order - typical marginal-cost ordering, cheapest first (£/MWh)
-  const meritLabels = ["Wind", "Solar", "Nuclear", "Biomass", "Gas (CCGT)"];
-  const meritValues = [4, 5, 22, 55, 78];
-  const meritColors = ["#2fa876", "#e0a800", "#6a5acd", "#8fae6b", "#8a5a3c"];
+  // Merit order: fuel + carbon + variable O&M, £/MWh, 2021 prices, 2025
+  // commissioning - DESNZ Electricity Generation Costs 2023, Table 10.
+  // Gas CCGT = 43 fuel + 60 carbon + 2 variable O&M.
   const meritCanvas = document.getElementById("merit-order-chart");
-  GridPreview.renderBarChart(meritCanvas, meritLabels, meritValues, meritColors, { unit: "£/MWh", thickness: 22 });
+  GridPreview.renderBarChart(meritCanvas, ["Solar", "Offshore wind", "Onshore wind", "Gas (CCGT)"], [0, 1, 6, 105],
+    ["#e0a800", "#1f8f63", "#2fa876", "#8a5a3c"], { unit: "£/MWh", decimals: 0, thickness: 22 });
   meritCanvas.closest(".chart-wrap").classList.remove("is-loading");
 
-  // Approximate bill breakdown, Jul-Sep 2026 cap (rounded split of published shares)
-  const billLabels = ["Wholesale energy", "Network charges", "Operating costs", "Policy costs", "VAT", "Other / margin"];
-  const billValues = [45, 26, 11, 7, 5, 6];
-  const billColors = ["#0a6e5c", "#d98e04", "#6a5acd", "#2fa876", "#8a5a3c", "#5b6270"];
+  // Ofgem price cap breakdown, 1 Oct - 31 Dec 2026, Annex 1 of Ofgem's
+  // 26 August 2026 letter (dual fuel, direct debit, % as published).
   const billCanvas = document.getElementById("bill-donut");
-  GridPreview.renderDonutChart(billCanvas, billLabels, billValues, billColors, { unit: "%", legendTarget: "bill-legend", centerLabel: "Jul–Sep", centerSub: "2026 cap" });
+  GridPreview.renderBarChart(billCanvas,
+    ["Wholesale (incl. CfDs)", "Networks", "Operating, debt and industry", "Policy", "VAT (gas only)", "Supplier earnings (EBIT)", "Headroom", "Levelisation"],
+    [47, 24, 17, 6, 5, 2.7, 1, 0.5],
+    ["#0a6e5c", "#d98e04", "#6a5acd", "#2fa876", "#8a5a3c", "#5b6270", "#7a7a7a", "#9a9a9a"],
+    { unit: "%", decimals: 1, thickness: 18 });
   billCanvas.closest(".chart-wrap").classList.remove("is-loading");
 
   // Wholesale vs network trend across early-2026 cap periods (House of Commons Library figures, £/year typical bill)
   const trendCanvas = document.getElementById("bill-trend-chart");
-  const trendLabels = ["Wholesale Q1", "Wholesale Q2", "Network Q1", "Network Q2"];
-  const trendValues = [690, 652, 397, 463];
-  const trendColors = ["#0a6e5c", "#3aa88f", "#d98e04", "#e8ab3d"];
-  GridPreview.renderBarChart(trendCanvas, trendLabels, trendValues, trendColors, { unit: "£", horizontal: false, thickness: 34 });
+  GridPreview.renderBarChart(trendCanvas, ["Wholesale Q1", "Wholesale Q2", "Network Q1", "Network Q2"], [690, 652, 397, 463],
+    ["#0a6e5c", "#3aa88f", "#d98e04", "#e8ab3d"], { unit: "£", horizontal: false, thickness: 34 });
   trendCanvas.closest(".chart-wrap").classList.remove("is-loading");
 
-  // Share of hours gas sets the wholesale price, 2023 (Zakeri & Staffell 2023, via Carbon Brief factcheck)
-  const gasShareCanvas = document.getElementById("gas-marginal-share-chart");
-  GridPreview.renderBarChart(gasShareCanvas, ["Great Britain", "Germany", "France"], [98, 24, 7], ["#8a5a3c", "#d98e04", "#3aa88f"], { unit: "%", thickness: 28 });
-  gasShareCanvas.closest(".chart-wrap").classList.remove("is-loading");
-
-  // Contributions to the rise in the typical household bill since 2021 (Carbon Brief analysis of Ofgem data)
-  const billDriversCanvas = document.getElementById("bill-rise-drivers-chart");
-  GridPreview.renderBarChart(billDriversCanvas, ["Wholesale costs", "Network charges", "Green levies", "Other"], [162, 63, 18, 65], ["#0a6e5c", "#d98e04", "#2fa876", "#5b6270"], { unit: "£", thickness: 28 });
-  billDriversCanvas.closest(".chart-wrap").classList.remove("is-loading");
+  // Share of a typical bill, Oct 2021 (Ofgem Figure 1 £ / £1,277) vs
+  // Oct 2026 (Ofgem Annex 1 %, as published).
+  const share = (v) => Math.round(v / 1277 * 1000) / 10;
+  const driversCanvas = document.getElementById("bill-rise-drivers-chart");
+  GridPreview.renderBarChart(driversCanvas,
+    ["Wholesale, Oct 2021", "Wholesale, Oct 2026", "Networks, Oct 2021", "Networks, Oct 2026", "Operating, Oct 2021", "Operating, Oct 2026", "Policy, Oct 2021", "Policy, Oct 2026", "VAT, Oct 2021", "VAT, Oct 2026"],
+    [share(528), 47, share(268), 24, share(204), 17, share(159), 6, share(61), 5],
+    ["#7fbfb1", "#0a6e5c", "#f0c27a", "#d98e04", "#b3a9e6", "#6a5acd", "#97d4b5", "#2fa876", "#c4a48f", "#8a5a3c"],
+    { unit: "%", decimals: 1, thickness: 16 });
+  driversCanvas.closest(".chart-wrap").classList.remove("is-loading");
 })();
 </script>
 </body>

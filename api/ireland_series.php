@@ -2,15 +2,19 @@
 /**
  * GET api/ireland_series.php?metric=demand&range=day
  *
- * metric: demand | generation | wind | transfers | emissions
+ * metric: demand | generation | wind | solar | transfers | emissions | semo_price
  * range:  same set as api/series.php (3hour | day | week | month | season |
  *         year | 5year | 10year | all) - see ukgrid_range_config() in
  *         api/_bootstrap.php.
  *
- * Bucketed history for the Ireland (all-island) sparklines on
- * pages/ireland.html, sourced from EirGrid's Smart Grid Dashboard. There's
- * no "price" metric here - see api/ireland_current.php's docblock for why
- * SEM price isn't wired up.
+ * Bucketed history for the Ireland (all-island) sparklines/History section
+ * on pages/ireland.html. demand/generation/wind/transfers/emissions are
+ * sourced from EirGrid's Smart Grid Dashboard; semo_price (EUR/MWh) is the
+ * SEM's own 5-minute imbalance/settlement price from SEMO's public Reports
+ * API - see api/ireland_current.php's docblock and includes/ingest.php's
+ * ukgrid_ingest_semo(). This is genuinely different from the day-ahead
+ * price already shown elsewhere via ENTSO-E - see this project's
+ * CHANGELOG for the distinction.
  *
  * Response shape matches api/series.php:
  *   { "ok": true, "metric": "demand", "range": "day", "unit": "GW",
@@ -27,7 +31,7 @@ if (!isset($ranges[$range])) {
     ukgrid_json_error('bad_range', 'range must be one of: ' . implode(', ', array_keys($ranges)));
 }
 
-$allowedMetrics = ['demand', 'generation', 'wind', 'transfers', 'emissions'];
+$allowedMetrics = ['demand', 'generation', 'wind', 'solar', 'transfers', 'emissions', 'semo_price'];
 if (!in_array($metric, $allowedMetrics, true)) {
     ukgrid_json_error('bad_metric', 'metric must be one of: ' . implode(', ', $allowedMetrics));
 }
@@ -95,6 +99,16 @@ switch ($metric) {
         $unit = 'GW';
         break;
 
+    case 'solar':
+        $rows = ukgrid_ie_bucketed($pdo,
+            'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/:bucket1)*:bucket2) AS bucket_ts, GREATEST(AVG(mw), 0)/1000 AS v
+             FROM readings_ie_generation WHERE category = "SOLAR" AND ts BETWEEN :from AND :to
+             GROUP BY bucket_ts ORDER BY bucket_ts ASC',
+            $params
+        );
+        $unit = 'GW';
+        break;
+
     case 'transfers':
         $rows = ukgrid_ie_bucketed($pdo,
             'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(mw)/1000 AS v
@@ -113,6 +127,16 @@ switch ($metric) {
             $params
         );
         $unit = 'g/kWh';
+        break;
+
+    case 'semo_price':
+        $rows = ukgrid_ie_bucketed($pdo,
+            'SELECT FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts)/:bucket1)*:bucket2) AS bucket_ts, AVG(imbalance_price_eur_mwh) AS v
+             FROM readings_ie_semo_imbalance WHERE ts BETWEEN :from AND :to
+             GROUP BY bucket_ts ORDER BY bucket_ts ASC',
+            $params
+        );
+        $unit = 'EUR/MWh';
         break;
 
     default:

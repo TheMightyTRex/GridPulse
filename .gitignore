@@ -20,3 +20,8 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+includes/entsoe_attempts.json
+includes/battery_units.json
+
+# Docker scheduler secrets
+docker/.env
