@@ -16,7 +16,7 @@
 <meta property="og:title" content="Netherlands - the live status of the Dutch electricity grid - Grid Pulse">
 <meta property="og:description" content="A live dashboard for the Netherlands' electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.">
 <meta property="og:url" content="https://gridpulse.info/pages/nl.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101e">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101f">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101e">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101e">
+<link rel="stylesheet" href="../assets/style.css?v=20261101f">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101f">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -298,22 +298,26 @@
 
 <!-- area:cards:start (written by tools/apply_areas.py) -->
     <div class="gp-cards">
-      <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
-        <h2 id="today-h" class="gp-card__h">Today so far</h2>
-        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
-      </section>
-      <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
-        <h2 id="recsum-h" class="gp-card__h">Records</h2>
-        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
-      </section>
-      <section class="gp-card" data-area-borders aria-labelledby="borders-h">
-        <h2 id="borders-h" class="gp-card__h">Borders</h2>
-        <div data-area-borders-body><p class="area-empty">Loading...</p></div>
-      </section>
-      <section class="gp-card" data-area-year aria-labelledby="year-h">
-        <h2 id="year-h" class="gp-card__h">This year so far</h2>
-        <div data-area-year-body><p class="area-empty">Loading...</p></div>
-      </section>
+      <div class="gp-cards__col">
+        <section class="gp-card gp-card--dark" data-area-today aria-labelledby="today-h">
+          <h2 id="today-h" class="gp-card__h">Today so far</h2>
+          <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+        </section>
+        <section class="gp-card" data-area-borders aria-labelledby="borders-h">
+          <h2 id="borders-h" class="gp-card__h">Borders</h2>
+          <div data-area-borders-body><p class="area-empty">Loading...</p></div>
+        </section>
+      </div>
+      <div class="gp-cards__col">
+        <section class="gp-card" data-area-recsum aria-labelledby="recsum-h">
+          <h2 id="recsum-h" class="gp-card__h">Records</h2>
+          <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+        </section>
+        <section class="gp-card" data-area-year aria-labelledby="year-h">
+          <h2 id="year-h" class="gp-card__h">This year so far</h2>
+          <div data-area-year-body><p class="area-empty">Loading...</p></div>
+        </section>
+      </div>
     </div>
 <!-- area:cards:end -->
 
@@ -459,9 +463,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101e"></script>
-<script src="../assets/data.js?v=20261101e"></script>
-<script src="../assets/areas.js?v=20261101e"></script>
+<script src="../assets/app.js?v=20261101f"></script>
+<script src="../assets/data.js?v=20261101f"></script>
+<script src="../assets/areas.js?v=20261101f"></script>
 <script>
 (function () {
   const COUNTRY_CODE = "NL";
