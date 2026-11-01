@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse4 - 1 November 2026
+
+- Removed `pages/argentina.html`, `pages/brazil.html`, `pages/chile.html` and `pages/colombia.html`. Nothing linked to them: they were merged into `pages/south-america.html` long ago and the old repo had already deleted them. When uploading, delete these four files from the server too.
+
 ## GridPulse3 - 1 November 2026 (dashboard layout for GB and every country)
 
 The GB home page and every country page are now shorter dashboards, with the detail on shared pages. Designed with Dave on a mockup first. Nothing shows a made-up figure.
