@@ -765,6 +765,16 @@ a.area-cal__day:hover, a.area-cal__day:focus-visible { outline: 2px solid var(--
 
 .gp-cards { display: flex; gap: 10px; margin: 0 0 1.25rem; align-items: flex-start; }
 .gp-cards__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+/* Side by side, both columns end level: the last card in each column
+   stretches, and the map shrinks or grows (down to 240px tall) so the map
+   card ends level with This year so far. */
+@media (min-width: 861px) {
+  .gp-cards { align-items: stretch; }
+  .gp-cards__col > .gp-card:last-child { flex: 1 1 auto; }
+  .gp-cards__col > .gp-card:last-child > div { flex: 1 1 auto; }
+  [data-area-borders] .gpmap-wrap { flex: 1 1 0; min-height: 240px; position: relative; }
+  [data-area-borders] .gpmap-wrap > .gpmap { position: absolute; inset: 0; width: 100%; height: 100%; }
+}
 @media (max-width: 860px) {
   .gp-cards { flex-direction: column; align-items: stretch; }
   .gp-cards__col { display: contents; }
@@ -782,7 +792,7 @@ html[data-theme="dark"] .gp-card--dark { border: 2px solid var(--border); }
 .gp-card--dark .area-facts dd { color: var(--dark-ink); }
 .gp-card .area-note { margin-top: 0; font-size: .85rem; }
 
-.gp-curve { width: 100%; height: 90px; display: block; color: var(--dark-ink); }
+.gp-curve { width: 100%; height: auto; display: block; color: var(--dark-ink); }
 .gp-curve__line { stroke: #7fb3f0; }
 .gp-curve__label { fill: var(--dark-muted); }
 

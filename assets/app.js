@@ -3500,7 +3500,8 @@
 
   /* ---------- Display and accessibility settings ---------- */
   const PREFS_KEY = "grid-live-prefs";
-  const PREF_DEFAULTS = { theme: "system", size: "100", readable: false, hc: false, calm: false, underline: true, spacing: false };
+  // Light by default (Dave, November 2026). "Auto" in the Display panel follows the system.
+  const PREF_DEFAULTS = { theme: "light", size: "100", readable: false, hc: false, calm: false, underline: true, spacing: false };
   let prefs = Object.assign({}, PREF_DEFAULTS);
 
   function loadPrefs() {
