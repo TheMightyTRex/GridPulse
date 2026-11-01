@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261101f"
+VERSION = "20261101h"
 FONTS = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">'
 
 # Menu: (group id, label, [(column heading, [(page file, link text, short description)])])
@@ -222,7 +222,12 @@ def head_block(path, base, text):
            f'<link rel="icon" href="{a}assets/gridpulse-favicon.svg" type="image/svg+xml">',
            f'<link rel="icon" href="{a}assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">',
            f'<link rel="apple-touch-icon" href="{a}assets/gridpulse-apple-touch-icon-180.png">',
-           '<meta name="theme-color" content="#14181f">']
+           '<meta name="theme-color" content="#14181f">',
+           # Set the theme before the page paints: light unless the Display
+           # panel says otherwise (assets/app.js applies the full settings).
+           '<script>(function(){var t="light";try{var p=JSON.parse(localStorage.getItem("grid-live-prefs")||"null");'
+           'if(p&&p.theme){t=p.theme}else{var o=localStorage.getItem("grid-live-theme");if(o==="dark"||o==="light")t=o}}catch(e){}'
+           'if(t!=="system")document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")})();</script>']
     if base != "abs":
         url = SITE + "/" if path.name == "index.html" and base == "root" else f"{SITE}/pages/{path.name}"
         out += [f'<link rel="canonical" href="{url}">',

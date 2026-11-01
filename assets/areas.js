@@ -652,16 +652,19 @@
     if (!d) return "";
     const pts = d.map((v, i) => [i, v]).filter((p) => p[1] != null);
     if (pts.length < 3) return "";
-    const W = 300, H = 90, n = day.series.times.length;
+    const W = 300, H = 100, n = day.series.times.length;
     const hours = (new Date(day.to) - new Date(day.from)) / 3600000;
     const slots = Math.round(hours * 60 / (day.area.bucket_minutes || 60));
     const vals = pts.map((p) => p[1]);
     const lo = Math.min(...vals), hi = Math.max(...vals);
     const x = (i) => 4 + (i / Math.max(1, slots - 1)) * (W - 8);
-    const y = (v) => hi === lo ? H / 2 : 12 + (1 - (v - lo) / (hi - lo)) * (H - 30);
+    // Room above the peak and below the low for their labels.
+    const y = (v) => hi === lo ? H / 2 : 22 + (1 - (v - lo) / (hi - lo)) * (H - 44);
     const line = pts.map((p, k) => (k ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(p[1]).toFixed(1)).join(" ");
     const iHi = pts[vals.indexOf(hi)], iLo = pts[vals.indexOf(lo)], last = pts[pts.length - 1];
-    const dot = (p, cls, fill, label, dy) => '<circle cx="' + x(p[0]).toFixed(1) + '" cy="' + y(p[1]).toFixed(1) + '" r="4" fill="' + fill + '"' + (cls ? ' class="' + cls + '"' : "") + '/><text x="' + x(p[0]).toFixed(1) + '" y="' + (y(p[1]) + dy).toFixed(1) + '" font-size="11" text-anchor="middle" class="gp-curve__label">' + label + "</text>";
+    // Labels are kept inside the chart, so none is cut off at an edge.
+    const lx = (p) => Math.max(16, Math.min(W - 16, x(p[0]))).toFixed(1);
+    const dot = (p, cls, fill, label, dy) => '<circle cx="' + x(p[0]).toFixed(1) + '" cy="' + y(p[1]).toFixed(1) + '" r="4" fill="' + fill + '"' + (cls ? ' class="' + cls + '"' : "") + '/><text x="' + lx(p) + '" y="' + Math.max(11, Math.min(H - 3, y(p[1]) + dy)).toFixed(1) + '" font-size="11" text-anchor="middle" class="gp-curve__label">' + label + "</text>";
     return '<svg class="gp-curve" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Demand so far today, from " + gw(lo) + " GW at its lowest to " + gw(hi) + " GW at its peak") + '">' +
       '<path d="' + line + '" fill="none" class="gp-curve__line" stroke-width="2.5" stroke-linejoin="round"/>' +
       '<circle cx="' + x(iHi[0]).toFixed(1) + '" cy="' + y(iHi[1]).toFixed(1) + '" r="3" fill="none" stroke="#4fd18b" stroke-width="2" class="gp-ping"/>' +
@@ -757,7 +760,7 @@
       const dir = v == null ? "No reading" : (Math.abs(v) < 1 ? "No flow" : (v > 0 ? "In " : "Out ") + gw(Math.abs(v)) + " GW");
       return '<li><span>' + esc(n.label) + (n.cables && n.cables.length ? " <small>(" + esc(n.cables.join(", ")) + ")</small>" : "") + '</span><strong class="' + (v > 0 ? "is-in" : v < 0 ? "is-out" : "") + '">' + esc(dir) + "</strong></li>";
     }).join("");
-    body.innerHTML = '<p class="gp-card__big">' + esc(head) + "</p>" + mapSvg(map, area, by) +
+    body.innerHTML = '<p class="gp-card__big">' + esc(head) + "</p>" + '<div class="gpmap-wrap">' + mapSvg(map, area, by) + "</div>" +
       '<p class="gpmap-key"><span><i class="gpmap-key__in"></i>Into ' + esc(shortName(area)) + '</span><span><i class="gpmap-key__out"></i>Out of ' + esc(shortName(area)) + "</span><span>Thicker = more power</span></p>" +
       (rows ? '<ul class="gp-list">' + rows + "</ul>" : "") +
       '<p class="area-note">' + (latest ? "Latest reading " + clock(latest, area.tz) + ". " : "") +

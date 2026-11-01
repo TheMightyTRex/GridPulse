@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse6 - 1 November 2026
+
+- **Both card columns now end level.** On wider screens the map in the Interconnectors / Borders card shrinks or grows (down to 240 px tall) so its card lines up with the bottom of This year so far. Where a column is shorter, its last card stretches to match.
+- **Today so far chart:** the Peak, Low and Now labels are kept inside the chart, so none is cut off at the top or the sides.
+- **Light mode by default.** The site now opens in light mode unless the Display panel says otherwise. "Auto" still follows the device's setting, and anyone who already chose Auto or Dark keeps their choice. A tiny script in each page's head sets the theme before the page draws, so there's no flash of dark.
+- Cache-busting version bumped to 20261101h.
+
 ## GridPulse5 - 1 November 2026
 
 - **The four cards flow without gaps.** They now sit in two columns that stack on their own: Today so far and the map on the left, Records and This year so far on the right (Today and This year when a country has no map). A short card no longer leaves white space beside a tall one. Below 860 px wide the columns merge and the cards stack in reading order: Today, Records, Borders, This year.
