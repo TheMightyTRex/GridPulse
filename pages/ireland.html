@@ -16,7 +16,7 @@
 <meta property="og:title" content="Ireland: Live - the live status of the all-island electricity system">
 <meta property="og:description" content="A live dashboard for the island of Ireland's Single Electricity Market, with generation mix, history and records.">
 <meta property="og:url" content="https://gridpulse.info/pages/ireland.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
+<link rel="stylesheet" href="../assets/style.css?v=20261101c">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -233,13 +233,23 @@
 </div>
 <!-- shell:end -->
 
-<main id="main">
+<main id="main" data-area="IE">
   <div class="wrap">
 
     <section class="hero">
       <h1>Ireland: the live status of the all-island electricity system</h1>
       <p>The island of Ireland runs a single, synchronous grid spanning both jurisdictions - the Republic of Ireland and Northern Ireland - balanced together as the Single Electricity Market (SEM) by EirGrid and SONI. It is one of the windiest grids in Europe and has to manage that without the cushioning of a large synchronous neighbour.</p>
     </section>
+
+<!-- area:now:start (written by tools/apply_areas.py) -->
+    <section class="home-hero area-now" data-area-now aria-label="Right now">
+      <div class="home-hero__main">
+        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data...</span></p>
+        <p class="area-now__big"><span class="home-hero__share"><span data-area-now-share>-</span>%</span> <span class="home-hero__lead">of Ireland's power is renewable right now</span></p>
+      </div>
+      <div class="home-hero__card"><p data-area-now-summary>Loading live data...</p></div>
+    </section>
+<!-- area:now:end -->
 
     <p class="home-hero__pill page-pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Data as of</span> <span id="stat-time" class="is-loading-text">Loading live data…</span></p>
     <dl class="status-grid" aria-label="Current Ireland grid status">
@@ -251,6 +261,10 @@
       <div class="stat"><dt>GB interconnect</dt><dd class="is-loading-value"><span id="stat-transfers">–</span><small>GW</small></dd><dd class="stat__extra"><div class="stat-band-slot"><span id="stat-transfers-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap is-loading"><canvas id="spark-transfers" aria-hidden="true"></canvas></div></dd></div>
     </dl>
     <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Each figure’s trend line covers the last 3 hours. See <a href="#ie-sources">data sources</a>.</p>
+
+<!-- area:figures:start (written by tools/apply_areas.py) -->
+    <p class="download-row" data-area-figures></p>
+<!-- area:figures:end -->
 
     <section class="panel" aria-labelledby="mix-heading">
       <h2 id="mix-heading">Generation mix right now</h2>
@@ -281,6 +295,27 @@
       </div>
       <p class="chart-caption" id="fuel24-caption">EirGrid's own fuel mix for the last 24 hours. Figures appear here when the next reading arrives.</p>
     </section>
+
+<!-- area:replay:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="replay-heading">
+      <h2 id="replay-heading">Replay today</h2>
+      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
+      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+    </section>
+<!-- area:replay:end -->
+
+<!-- area:cards:start (written by tools/apply_areas.py) -->
+    <div class="home-cards">
+      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h">Today so far</h2>
+        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+      </section>
+      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h">Records</h2>
+        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+    </div>
+<!-- area:cards:end -->
 
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
@@ -324,6 +359,25 @@
       <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
       <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
     </section>
+
+<!-- area:later:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="flows-heading">
+      <h2 id="flows-heading">Cross-border flows</h2>
+      <p class="chart-caption">The net flow between the island of Ireland and Great Britain today, from EirGrid.</p>
+      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" aria-labelledby="annual-heading">
+      <h2 id="annual-heading">Long-term history</h2>
+      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
+      <h2 id="area-records-heading">Records</h2>
+      <p class="chart-caption" data-area-records-since></p>
+      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
+      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=IE">Browse every day in the archive</a></p>
+    </section>
+<!-- area:later:end -->
 
     <section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the all-island system</h2>
@@ -385,8 +439,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101b"></script>
-<script src="../assets/data.js?v=20261101b"></script>
+<script src="../assets/app.js?v=20261101c"></script>
+<script src="../assets/data.js?v=20261101c"></script>
+<script src="../assets/areas.js?v=20261101c"></script>
 <script>
 (function () {
   // demand/generation/emissions/transfers come from EirGrid via

@@ -16,7 +16,7 @@
 <meta property="og:title" content="Sweden - the live status of the Swedish electricity grid - Grid Pulse">
 <meta property="og:description" content="A live dashboard for Sweden's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.">
 <meta property="og:url" content="https://gridpulse.info/pages/sweden.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261101b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261101b">
+<link rel="stylesheet" href="../assets/style.css?v=20261101c">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101c">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -233,13 +233,23 @@
 </div>
 <!-- shell:end -->
 
-<main id="main">
+<main id="main" data-area="SE">
   <div class="wrap">
 
     <section class="hero">
       <h1>Sweden: the live status of the Swedish electricity grid</h1>
       <p>Sweden's grid, operated by Svenska kraftnät, runs on one of the lowest-carbon generation mixes of any country worldwide, dominated by hydro and nuclear with a fast-growing wind fleet. Sweden is split into four price zones (SE1-SE4); this page tracks SE3, the southern-central zone around Stockholm. It is not physically interconnected to Great Britain, so it is included here for comparison rather than as one of GB's own interconnector partners. Demand, generation, day-ahead price and generation mix below are live from the ENTSO-E Transparency Platform, covering the SE3 zone specifically.</p>
     </section>
+
+<!-- area:now:start (written by tools/apply_areas.py) -->
+    <section class="home-hero area-now" data-area-now aria-label="Right now">
+      <div class="home-hero__main">
+        <p class="home-hero__pill"><span class="home-hero__dot" aria-hidden="true"></span><span class="home-hero__updated">Live, updated</span> <span data-area-now-time>Loading live data...</span></p>
+        <p class="area-now__big"><span class="home-hero__share"><span data-area-now-share>-</span>%</span> <span class="home-hero__lead">of Sweden's (SE3) power is renewable right now</span></p>
+      </div>
+      <div class="home-hero__card"><p data-area-now-summary>Loading live data...</p></div>
+    </section>
+<!-- area:now:end -->
 
     <p class="data-status-banner is-loading" id="se-status-banner"><span class="dot" aria-hidden="true"></span>Loading live data…</p>
 
@@ -250,6 +260,10 @@
       <div class="stat"><dt>Generation</dt><dd class="is-loading-value"><span id="stat-generation">–</span><small>GW</small></dd><dd class="stat__extra"><div class="stat-band-slot"><span id="stat-generation-band" class="stat-band" hidden></span></div><div class="stat__spark chart-wrap is-loading"><canvas id="spark-generation" aria-hidden="true"></canvas></div></dd></div>
     </dl>
     <p class="chart-caption" style="margin-top:-.5rem;" id="stat-caption">Loading live data…</p>
+
+<!-- area:figures:start (written by tools/apply_areas.py) -->
+    <p class="download-row" data-area-figures></p>
+<!-- area:figures:end -->
 
     <section class="panel" aria-labelledby="mix-heading">
       <h2 id="mix-heading">Generation mix right now</h2>
@@ -275,6 +289,27 @@
       </div>
       <p class="chart-caption">Generation by source right now, ranked highest to lowest.</p>
     </section>
+
+<!-- area:replay:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="replay-heading">
+      <h2 id="replay-heading">Replay today</h2>
+      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
+      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+    </section>
+<!-- area:replay:end -->
+
+<!-- area:cards:start (written by tools/apply_areas.py) -->
+    <div class="home-cards">
+      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h">Today so far</h2>
+        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+      </section>
+      <section class="home-card home-card--records" data-area-recsum aria-labelledby="recsum-h">
+        <h2 id="recsum-h">Records</h2>
+        <div data-area-recsum-body><p class="area-empty">Loading...</p></div>
+      </section>
+    </div>
+<!-- area:cards:end -->
 
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
@@ -315,6 +350,25 @@
       <div id="panel-5year" role="tabpanel" aria-labelledby="tab-5year" tabindex="0" hidden></div>
       <div id="panel-10year" role="tabpanel" aria-labelledby="tab-10year" tabindex="0" hidden></div>
     </section>
+
+<!-- area:later:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="flows-heading">
+      <h2 id="flows-heading">Cross-border flows</h2>
+      <p class="chart-caption">Physical flows across each border today, from the ENTSO-E Transparency Platform. Borders are fetched one at a time, so each one updates every few hours.</p>
+      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" aria-labelledby="annual-heading">
+      <h2 id="annual-heading">Long-term history</h2>
+      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
+      <h2 id="area-records-heading">Records</h2>
+      <p class="chart-caption" data-area-records-since></p>
+      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
+      <p class="download-row"><a class="btn" data-area-archive-link href="archive.html?area=SE">Browse every day in the archive</a></p>
+    </section>
+<!-- area:later:end -->
 
     <section class="panel" aria-labelledby="about-heading">
       <h2 id="about-heading">About the Swedish grid</h2>
@@ -371,8 +425,9 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261101b"></script>
-<script src="../assets/data.js?v=20261101b"></script>
+<script src="../assets/app.js?v=20261101c"></script>
+<script src="../assets/data.js?v=20261101c"></script>
+<script src="../assets/areas.js?v=20261101c"></script>
 <script>
 (function () {
   const COUNTRY_CODE = "SE";

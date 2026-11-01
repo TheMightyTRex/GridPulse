@@ -180,6 +180,22 @@ Both resolve to `null` if there's no live data, so every call site should keep i
 
 The attribution text required by Elexon's licence is already in the footer of every page and on the Data sources page - nothing further to do there, just don't remove it.
 
+## Country features: daily summaries, records, flows and yearly history
+
+Added for Grid Pulse in November 2026. Nothing to set up: the tables are created on first use (they are also in `sql/schema.sql`).
+
+| Job | What it does | Runs from | How often |
+|---|---|---|---|
+| `DAILY` | Summarises today and yesterday for every country into `daily_summary`, then fills in older days, 30 per run. Database only. | page loads and the scheduler | every 30 minutes |
+| `FLOWS` | ENTSO-E cross-border physical flows, one border per run, into `readings_flow`. | the scheduler only (`cron/run-due.php`) | every 4 minutes, so each border every 2 to 3 hours |
+| `ANNUAL` | Yearly generation by fuel from Eurostat, NESO, EIA, IESO and Open Electricity, one country per run, into `annual_mix`. | the scheduler only | every 2 hours, each country refreshed every 30 days |
+
+- `tools/data-jobs.php` (password-protected) shows each job's state and what each source last returned, with "Fetch now" buttons. Check it after the first day.
+- The first runs of `DAILY` backfill every stored day. With a year or more of readings this takes a few hours of scheduler runs.
+- The USA and Australia yearly figures are stored but not shown until they have been checked against EIA's and Open Electricity's own totals. To show them, check a few years on `tools/data-jobs.php`, then add a `checked` date to that source in `ukgrid_annual_sources()` (`includes/flows_annual.php`).
+- Pages: `pages/archive.html?area=FR` (calendar of every stored day) and `pages/day.html?area=FR&date=2026-10-25` (one day). Area codes: GB, IE, FR, NL, BE, NO, DK, DE, ES, IT, SE, PT, PL, US, CA, AU.
+- The shared sections on the country pages are written by `python3 tools/apply_areas.py` (run it after `tools/apply_shell.py`) and filled in by `assets/areas.js`.
+
 ## Security notes
 
 - `includes/.htaccess` blocks direct web access to the `includes/` folder. This is defence-in-depth - PHP files execute rather than serve as source anyway - but costs nothing to keep.

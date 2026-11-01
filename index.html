@@ -16,7 +16,7 @@
 <meta property="og:title" content="Grid Pulse - the live status of Great Britain's electricity grid">
 <meta property="og:description" content="A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.">
 <meta property="og:url" content="https://gridpulse.info/">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261101c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -25,8 +25,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261101b">
-<link rel="stylesheet" href="assets/design-c.css?v=20261101b">
+<link rel="stylesheet" href="assets/style.css?v=20261101c">
+<link rel="stylesheet" href="assets/design-c.css?v=20261101c">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -234,7 +234,7 @@
 </div>
 <!-- shell:end -->
 
-<main id="main">
+<main id="main" data-area="GB">
   <div class="wrap">
 
     <section class="home-hero" aria-labelledby="home-h1">
@@ -310,6 +310,14 @@
 
     </section>
 
+<!-- area:replay:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="replay-heading">
+      <h2 id="replay-heading">Replay today</h2>
+      <p class="chart-caption">Move the slider to see the generation mix at any point so far today.</p>
+      <div data-area-replay><p class="area-empty">Loading live data...</p></div>
+    </section>
+<!-- area:replay:end -->
+
     <div class="home-cards">
       <a class="home-card home-card--solar" href="pages/plugin-solar.html">
         <span class="home-card__eyebrow">New</span>
@@ -328,6 +336,15 @@
       </section>
     </div>
 
+<!-- area:cards:start (written by tools/apply_areas.py) -->
+    <div class="home-cards home-cards--one">
+      <section class="home-card home-card--today" data-area-today aria-labelledby="today-h">
+        <h2 id="today-h">Today so far</h2>
+        <div data-area-today-body><p class="area-empty">Loading live data...</p></div>
+      </section>
+    </div>
+<!-- area:cards:end -->
+
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Generation mix over the last 24 hours</h2>
       <div class="chart-wrap is-loading" style="height:300px;">
@@ -342,6 +359,25 @@
       <p>Demand, generation, price, emissions, transfers and the generation mix, from the past day to the past decade - now on its own dashboard with more charts, the current UK season, and data you can copy to the clipboard.</p>
       <p><a href="pages/history.html">Open the History dashboard →</a></p>
     </section>
+
+<!-- area:later:start (written by tools/apply_areas.py) -->
+    <section class="panel" aria-labelledby="flows-heading">
+      <h2 id="flows-heading">Cross-border flows</h2>
+      <p class="chart-caption">Electricity through each of Great Britain's interconnectors today, grouped by country, from Elexon.</p>
+      <div data-area-flows><div data-area-flows-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" aria-labelledby="annual-heading">
+      <h2 id="annual-heading">Long-term history</h2>
+      <p class="chart-caption">Electricity generated each year, by source, from each country's official yearly statistics.</p>
+      <div data-area-annual><div data-area-annual-body><p class="area-empty">Loading...</p></div></div>
+    </section>
+    <section class="panel" id="area-records" aria-labelledby="area-records-heading">
+      <h2 id="area-records-heading">Records since we started recording</h2>
+      <p class="chart-caption" data-area-records-since></p>
+      <div data-area-records><div data-area-records-body><p class="area-empty">Loading...</p></div></div>
+      <p class="download-row"><a class="btn" data-area-archive-link href="pages/archive.html?area=GB">Browse every day in the archive</a></p>
+    </section>
+<!-- area:later:end -->
 
     <section aria-labelledby="types-heading">
       <h2 id="types-heading">Explore by energy type</h2>
@@ -553,8 +589,9 @@
   </div>
 </footer>
 
-<script src="assets/app.js?v=20261101b"></script>
-<script src="assets/data.js?v=20261101b"></script>
+<script src="assets/app.js?v=20261101c"></script>
+<script src="assets/data.js?v=20261101c"></script>
+<script src="assets/areas.js?v=20261101c"></script>
 <script>
 (function () {
 

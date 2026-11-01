@@ -215,6 +215,35 @@
           }
         });
       });
+
+      // Keep the chosen range in the address (?range=week), so a copied
+      // link or a reload reopens the same view. Only the first range
+      // tablist on a page uses the address.
+      if (!document.querySelector("[data-tablist][data-url-range]")) {
+        tablist.setAttribute("data-url-range", "");
+        tablist.addEventListener("rangechange", (e) => {
+          try {
+            const u = new URL(window.location.href);
+            if (e.detail && e.detail.range && e.detail.range !== tabs[0].getAttribute("data-range")) u.searchParams.set("range", e.detail.range);
+            else u.searchParams.delete("range");
+            history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+          } catch (err) { /* ignore */ }
+        });
+        let wanted = null;
+        try { wanted = new URLSearchParams(window.location.search).get("range"); } catch (err) { /* ignore */ }
+        const idx = wanted ? tabs.findIndex((tab) => tab.getAttribute("data-range") === wanted) : -1;
+        if (idx > 0) {
+          // After the page's own scripts have wired their rangechange
+          // listeners (they run after app.js's DOMContentLoaded handler).
+          setTimeout(() => {
+            tabs[idx].click();
+            if (window.location.hash) {
+              const target = document.getElementById(window.location.hash.slice(1));
+              if (target) target.scrollIntoView();
+            }
+          }, 0);
+        }
+      }
     });
   }
 
@@ -427,6 +456,8 @@
   }
   window.GridPreview = window.GridPreview || {};
   window.GridPreview.redrawAll = redrawAll;
+  window.GridPreview.registerChart = registerChart;
+  window.GridPreview.prepareCanvas = prepareCanvas;
 
   let resizeTimer;
   window.addEventListener("resize", () => {
@@ -630,6 +661,12 @@
         max += span * 0.1;
       }
       const sc = signedColors();
+      // Widen the left margin to fit the longest y-axis label (long labels
+      // such as "€120/MWh" were cut off at the canvas edge).
+      {
+        const yt = tickValues || Array.from({ length: 5 }, (_, k) => min + ((max - min) * k) / 4);
+        pad.l = Math.max(pad.l, 14 + Math.max(...yt.map((v) => ctx.measureText(formatAxisValue(v, opts.unit)).width)));
+      }
       const plotW = w - pad.l - pad.r;
       const plotH = h - pad.t - pad.b;
       const xAt = (i) => pad.l + (n > 1 ? plotW * (i / (n - 1)) : plotW / 2);
@@ -978,6 +1015,10 @@
       }
       let max = runningMax > 0 ? runningMax * 1.1 : 1;
       const min = 0;
+      {
+        const yt = Array.from({ length: 5 }, (_, k) => min + ((max - min) * k) / 4);
+        pad.l = Math.max(pad.l, 14 + Math.max(...yt.map((v) => ctx.measureText(formatAxisValue(v, opts.unit)).width)));
+      }
       const plotW = w - pad.l - pad.r;
       const plotH = h - pad.t - pad.b;
       const xAt = (i) => pad.l + (n > 1 ? plotW * (i / (n - 1)) : plotW / 2);
@@ -2525,6 +2566,7 @@
       ["copy", "Copy as text"],
       ["png", "Download PNG"],
       ["csv", "Download CSV"],
+      ["link", "Copy link"],
     ].map(([action, label]) => (
       `<button type="button" class="copy-btn chart-toolbar__btn" data-chart-action="${action}">` +
       `<span data-copy-label>${label}</span></button>`
@@ -2577,7 +2619,29 @@
       downloadChartSnapshotPng(canvas, canvas._exportSpec);
       announceCopyResult(pngBtn, true);
     });
+
+    const linkBtn = toolbar.querySelector('[data-chart-action="link"]');
+    if (linkBtn) {
+      linkBtn.addEventListener("click", () => {
+        copyText(chartLink(canvas)).then(() => announceCopyResult(linkBtn, true)).catch(() => announceCopyResult(linkBtn, false));
+      });
+    }
   }
+
+  /** A link that reopens this chart: the page, its query (the range tab
+      is already kept there - see initTabs - plus ?date= on day pages) and
+      the nearest heading above the chart as the #anchor. */
+  function chartLink(canvas) {
+    let anchor = "";
+    const section = canvas.closest("section[aria-labelledby], section[id], [data-chart-anchor]");
+    if (section) {
+      anchor = section.getAttribute("data-chart-anchor") || section.getAttribute("aria-labelledby") || section.id || "";
+    }
+    const u = new URL(window.location.href);
+    u.hash = anchor ? "#" + anchor : "";
+    return u.toString();
+  }
+  window.GridPreview.chartLink = chartLink;
   window.GridPreview.attachChartExport = attachChartExport;
 
   /* ---------- External links: open in a new tab, mark it clearly ---------- */
@@ -2818,7 +2882,44 @@
   window.GridPreview.computeShareSeries = computeShareSeries;
 
   /** Triggers a browser download of in-memory text as a file - no server round trip, just a Blob + a momentary off-screen link click. Shared by every "download data" button on the site. */
+  /* Source and licence lines at the top of every CSV the site makes.
+     A page can name its own with data-csv-source / data-csv-licence on
+     <body>; otherwise the page's file name picks one below. */
+  const CSV_ATTRIBUTION = {
+    gb: ["Elexon Insights Solution (BMRS), NESO Data Portal and the Carbon Intensity API (NESO and the University of Oxford)",
+         "Contains BMRS data © Elexon Limited copyright and database right " + new Date().getFullYear() + ". NESO data under the NESO Open Data Licence."],
+    ie: ["EirGrid Smart Grid Dashboard (all-island) and the ENTSO-E Transparency Platform (price)",
+         "EirGrid data reused under EirGrid's website terms. ENTSO-E data reused under the ENTSO-E Transparency Platform terms and conditions."],
+    entsoe: ["ENTSO-E Transparency Platform", "Reused under the ENTSO-E Transparency Platform terms and conditions. Source: ENTSO-E."],
+    us: ["U.S. Energy Information Administration (EIA)", "EIA data is public domain. Source: U.S. Energy Information Administration."],
+    ca: ["IESO (Independent Electricity System Operator, Ontario) public reports", "Reused under the IESO's terms of use for public reports."],
+    au: ["Open Electricity (openelectricity.org.au)", "CC BY-NC 4.0 - non-commercial use only. Attribution: Open Electricity."],
+  };
+  const CSV_PAGE_KIND = {
+    "ireland.html": "ie", "usa.html": "us", "canada.html": "ca", "australia.html": "au",
+    "france.html": "entsoe", "nl.html": "entsoe", "belgium.html": "entsoe", "norway.html": "entsoe", "denmark.html": "entsoe",
+    "germany.html": "entsoe", "spain.html": "entsoe", "italy.html": "entsoe", "sweden.html": "entsoe", "portugal.html": "entsoe",
+    "poland.html": "entsoe", "eu.html": "entsoe",
+  };
+  function csvAttribution() {
+    const b = document.body ? document.body.dataset : {};
+    let src = b.csvSource, lic = b.csvLicence;
+    if (!src) {
+      const file = (window.location.pathname.split("/").pop() || "index.html");
+      const kind = CSV_PAGE_KIND[file] || "gb";
+      [src, lic] = CSV_ATTRIBUTION[kind];
+    }
+    const lines = ["Source: " + src];
+    if (lic) lines.push("Licence: " + lic);
+    lines.push("From: Grid Pulse, " + window.location.origin + window.location.pathname + ", downloaded " + new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC");
+    return lines.map(csvField).join("\r\n") + "\r\n\r\n";
+  }
+  window.GridPreview.csvAttribution = csvAttribution;
+
   function downloadTextFile(filename, content, mimeType) {
+    if (mimeType && /csv/.test(mimeType) && typeof content === "string" && content.indexOf("Source: ") !== 0 && content.indexOf('"Source: ') !== 0) {
+      content = csvAttribution() + content;
+    }
     const blob = new Blob([content], { type: mimeType || 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
