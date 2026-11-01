@@ -3375,6 +3375,17 @@
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
     targets.forEach((el) => io.observe(el));
+    // Panels written in later (the Borders, Records and day pages build theirs
+    // after the data arrives) would otherwise stay hidden, so watch for them too.
+    if ("MutationObserver" in window) {
+      new MutationObserver((muts) => {
+        muts.forEach((m) => m.addedNodes.forEach((n) => {
+          if (n.nodeType !== 1) return;
+          if (n.matches(".panel, .source-card") && !n.classList.contains("is-visible")) io.observe(n);
+          n.querySelectorAll(".panel:not(.is-visible), .source-card:not(.is-visible)").forEach((el) => io.observe(el));
+        }));
+      }).observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   /* Every page sets live figures by writing straight into an element whose

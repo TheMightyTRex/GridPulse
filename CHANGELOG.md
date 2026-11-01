@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse9 - 1 November 2026
+
+- **Border maps show every link roughly where it really runs.** On the Borders card of every country and on each Borders page, each interconnector is now drawn at its real place: subsea cables between their two landing points (for example IFA from Folkestone to Calais, Viking Link from Lincolnshire to Jutland, NordLink from Norway to Schleswig-Holstein), and land borders at their main crossing. Before, one line ran from the middle of the country to the middle of each neighbour.
+- Great Britain's map shows each cable separately (IFA, IFA2 and ElecLink to France, Moyle, East-West and Greenlink to Ireland), with its own direction and thickness from Elexon's per-cable readings. The flows API now returns `cable_latest_mw` for this.
+- Other countries publish one total per border, so where a border has two links (France-Spain, Spain-Portugal), both lines show the border total. The Borders page says so under the map.
+- Selecting or focusing a line names the link and its current flow (for example "Viking Link, Denmark: in 1.2 GW").
+- Fix: panels that a page builds after the data arrives (the map and table on the Borders pages, and similar) could stay invisible until a reload, because the fade-in only watched panels that were there at the start. It now watches for new panels too.
+- Fix: at 175% text on a phone, the long "Interconnectors (net import)" label in the mix legend pushed the page sideways. It now wraps.
+- Positions are approximate, to within a few kilometres, from the operators' and project pages for each link. They are not exact cable routes.
+- Cache-busting version bumped to 20261101o.
+
 ## GridPulse8 - 1 November 2026
 
 - "Loading live data…" inside the black "Live, updated" pill was grey on black in light mode (and grey on white in dark mode). Loading text inside dark pills and cards now uses the pill's own text colour.

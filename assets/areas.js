@@ -713,27 +713,60 @@
     }
     return mapCache[code];
   }
-  /** SVG map: home country white, neighbours grey, sea transparent, one animated line per neighbour. */
+  /** SVG map: home country white, neighbours grey, sea transparent. Each
+   *  interconnector is drawn roughly where it really is (cable landing points,
+   *  or the main crossing on a land border), from the builder's `links`.
+   *  Borders without a known position fall back to a line between the two
+   *  countries' centres. */
   function mapSvg(map, area, flowsBy, opts) {
     opts = opts || {};
     const h = map.pts[map.home];
+    const links = map.links || {};
     let lines = "", dashes = "", tags = "";
     let max = 0;
-    map.neighbours.forEach((c) => { const f = flowsBy[c]; if (f && f.latest_mw != null) max = Math.max(max, Math.abs(f.latest_mw)); });
+    map.neighbours.forEach((c) => {
+      const f = flowsBy[c];
+      if (!f) return;
+      if (f.cable_latest_mw) Object.values(f.cable_latest_mw).forEach((v) => { if (v != null) max = Math.max(max, Math.abs(v)); });
+      else if (f.latest_mw != null) max = Math.max(max, Math.abs(f.latest_mw));
+    });
+    const curve = (a, b, bend) => {
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+      return "M" + a[0] + "," + a[1] + " Q" + (mx - dy * bend).toFixed(1) + "," + (my + dx * bend).toFixed(1) + " " + b[0] + "," + b[1];
+    };
+    const draw = (d, v, title) => {
+      const t = "<title>" + esc(title) + "</title>";
+      if (v == null || Math.abs(v) < 1) {
+        lines += '<path d="' + d + '" class="gpmap-idle">' + t + "</path>";
+        return;
+      }
+      const w = 2 + (max ? (Math.abs(v) / max) * 5 : 0);
+      lines += '<path d="' + d + '" class="' + (v > 0 ? "gpmap-in" : "gpmap-out") + '" stroke-width="' + w.toFixed(1) + '">' + t + "</path>";
+      dashes += '<path d="' + d + '" class="gpmap-dash' + (v > 0 ? " is-in" : "") + '"/>';
+    };
+    const say = (v) => v == null ? "no reading" : Math.abs(v) < 1 ? "no flow" : (v > 0 ? "in " : "out ") + gw(Math.abs(v)) + " GW";
     map.neighbours.forEach((c) => {
       const p = map.pts[c];
       if (!p) return;
       const f = flowsBy[c];
-      const mx = (h[0] + p[0]) / 2, my = (h[1] + p[1]) / 2;
-      const dx = p[0] - h[0], dy = p[1] - h[1];
-      const d = "M" + h[0] + "," + h[1] + " Q" + (mx - dy * 0.15).toFixed(1) + "," + (my + dx * 0.15).toFixed(1) + " " + p[0] + "," + p[1];
       const v = f && f.latest_mw != null ? f.latest_mw : null;
-      if (v == null || Math.abs(v) < 1) {
-        lines += '<path d="' + d + '" class="gpmap-idle"/>';
+      const ls = links[c];
+      if (ls && ls.length) {
+        ls.forEach((l) => {
+          // Per-cable readings where they exist (GB); otherwise the border total.
+          const cv = f && f.cable_latest_mw && l.name in f.cable_latest_mw ? f.cable_latest_mw[l.name] : v;
+          const len = Math.hypot(l.to[0] - l.from[0], l.to[1] - l.from[1]);
+          // Very short land crossings get a little length so the dashes show.
+          let a = l.from, b = l.to;
+          if (len < 14) {
+            const ux = len ? (b[0] - a[0]) / len : 1, uy = len ? (b[1] - a[1]) / len : 0, grow = (14 - len) / 2;
+            a = [+(a[0] - ux * grow).toFixed(1), +(a[1] - uy * grow).toFixed(1)];
+            b = [+(b[0] + ux * grow).toFixed(1), +(b[1] + uy * grow).toFixed(1)];
+          }
+          draw(curve(a, b, len > 40 ? 0.12 : 0.05), cv, (l.name ? l.name + ", " : "") + (f ? f.label : c) + ": " + say(cv));
+        });
       } else {
-        const w = 2 + (max ? (Math.abs(v) / max) * 5 : 0);
-        lines += '<path d="' + d + '" class="' + (v > 0 ? "gpmap-in" : "gpmap-out") + '" stroke-width="' + w.toFixed(1) + '"/>';
-        dashes += '<path d="' + d + '" class="gpmap-dash' + (v > 0 ? " is-in" : "") + '"/>';
+        draw(curve(h, p, 0.15), v, (f ? f.label : c) + ": " + say(v));
       }
       const lab = c;
       const tw = 10 + lab.length * 8;
@@ -741,7 +774,7 @@
     });
     const land = map.land.map((l) => '<path d="' + l[0] + '" class="' + (l[1] ? "gpmap-home" : "gpmap-land") + '"/>').join("");
     const label = '<text x="' + h[0] + '" y="' + (h[1] + 5) + '" text-anchor="middle" class="gpmap-homelabel">' + esc(shortName(area)) + "</text>";
-    return '<svg class="gpmap' + (opts.big ? " gpmap--big" : "") + '" viewBox="0 0 ' + map.w + " " + map.h + '" role="img" aria-label="' + esc("Map of " + shortName(area) + " and its neighbours. Each line shows the flow across that border: amber into " + shortName(area) + ", blue out. Moving dashes show the direction. Grey dashed lines have no reading.") + '">' +
+    return '<svg class="gpmap' + (opts.big ? " gpmap--big" : "") + '" viewBox="0 0 ' + map.w + " " + map.h + '" role="img" aria-label="' + esc("Map of " + shortName(area) + " and its neighbours. Each line is an interconnector, drawn roughly where it runs: amber into " + shortName(area) + ", blue out. Moving dashes show the direction. Grey dashed lines have no reading.") + '">' +
       land + lines + dashes + tags + label + "</svg>";
   }
 
@@ -1016,7 +1049,10 @@
     const by = {};
     flows.neighbours.forEach((n) => { by[n.code] = n; });
     host.innerHTML = (map ? '<section class="panel" aria-labelledby="bmap-h"><h2 id="bmap-h">Right now</h2>' + mapSvg(map, area, by, { big: true }) +
-      '<p class="gpmap-key"><span><i class="gpmap-key__in"></i>Into ' + esc(shortName(area)) + '</span><span><i class="gpmap-key__out"></i>Out of ' + esc(shortName(area)) + "</span><span>Thicker = more power</span><span>Grey dashes = no reading</span></p></section>" : "") +
+      '<p class="gpmap-key"><span><i class="gpmap-key__in"></i>Into ' + esc(shortName(area)) + '</span><span><i class="gpmap-key__out"></i>Out of ' + esc(shortName(area)) + "</span><span>Thicker = more power</span><span>Grey dashes = no reading</span></p>" +
+      '<p class="area-note">Each line is drawn roughly where the link runs, not its exact route.' +
+      (map.neighbours.some((c) => map.links && map.links[c] && map.links[c].length > 1 && !(by[c] && by[c].cable_latest_mw)) ? " Where a border has more than one link and only a total is published, each line shows that total." : "") +
+      "</p></section>" : "") +
       '<section class="panel" aria-labelledby="flows-heading"><h2 id="flows-heading">Today, border by border</h2><div data-area-flows-body></div></section>';
     renderFlows(host.querySelector("[data-area-flows-body]").parentNode, area, flows);
   }
