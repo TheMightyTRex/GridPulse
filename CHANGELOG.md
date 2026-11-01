@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse10 - 1 November 2026
+
+- **Donuts and bar charts are solid colour.** The donuts (Replay today, and the donut in the downloaded snapshot) and every bar chart (the replay bars, the merit order, sun hours by month, the country comparisons) now fill each slice or bar with one flat colour instead of fading. Line charts, the last 24 hours stacked chart and the sparklines keep their fade.
+- The "Live" pill now reads "Live, updated at: <time>" on Great Britain and every country page.
+- Cache-busting version bumped to 20261101r.
+
 ## GridPulse9 - 1 November 2026
 
 - **Border maps show every link roughly where it really runs.** On the Borders card of every country and on each Borders page, each interconnector is now drawn at its real place: subsea cables between their two landing points (for example IFA from Folkestone to Calais, Viking Link from Lincolnshire to Jutland, NordLink from Norway to Schleswig-Holstein), and land borders at their main crossing. Before, one line ran from the middle of the country to the middle of each neighbour.

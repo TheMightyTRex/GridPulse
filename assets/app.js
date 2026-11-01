@@ -1696,13 +1696,7 @@
           const y = pad.t + i * gap + (gap - barH) / 2;
           const bw = Math.max(plotW * (v / maxV), 2);
           const barColor = colorFor(i);
-          // Fade toward the axis (zero) the same way the line/area charts
-          // fade toward their baseline - full colour at the tip (the
-          // actual value), lighter back at the zero end.
-          const grad = ctx.createLinearGradient(pad.l + bw, 0, pad.l, 0);
-          grad.addColorStop(0, barColor);
-          grad.addColorStop(1, hexToRgba(barColor, 0.5));
-          ctx.fillStyle = grad;
+          ctx.fillStyle = barColor; // solid, no fade
           roundRectPath(ctx, pad.l, y, bw, barH, 4);
           ctx.fill();
           ctx.fillStyle = colors.text;
@@ -1724,12 +1718,7 @@
           const x = pad.l + i * gap + (gap - barW) / 2;
           const y = pad.t + plotH - bh;
           const barColor = colorFor(i);
-          // Same "full colour at the value, fading toward the baseline"
-          // treatment as the horizontal bars above and the line/area charts.
-          const grad = ctx.createLinearGradient(0, y, 0, pad.t + plotH);
-          grad.addColorStop(0, barColor);
-          grad.addColorStop(1, hexToRgba(barColor, 0.5));
-          ctx.fillStyle = grad;
+          ctx.fillStyle = barColor; // solid, no fade
           roundRectPath(ctx, x, y, barW, bh, 4);
           ctx.fill();
           ctx.fillStyle = colors.text;
@@ -1847,13 +1836,8 @@
         ctx.arc(cx, cy, r, segStart, segEnd);
         ctx.arc(cx, cy, innerR, segEnd, segStart, true);
         ctx.closePath();
-        // Radial fade from the hole outward - lighter near the centre, full
-        // colour at the rim - the same treatment used by every other chart
-        // type on the site (lines, stacked areas, bars).
-        const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, r);
-        grad.addColorStop(0, hexToRgba(colors[i], 0.5));
-        grad.addColorStop(1, colors[i]);
-        ctx.fillStyle = grad;
+        // Solid fill: each slice is its source's own colour, edge to edge.
+        ctx.fillStyle = colors[i];
         ctx.fill();
         ctx.restore();
 
@@ -2073,7 +2057,7 @@
    *     group rather than vanishing from the table.
    *
    * rows: [{ label, mw, group, color }] - color must be a literal hex (it
-   *       feeds the donut's canvas gradient, which cannot resolve var()).
+   *       feeds the donut's canvas fill, which cannot resolve var()).
    * opts: tbodyId, donutId, legendId, barId (required); donutCaptionId,
    *       statusCaptionId, statusCaptionHtml (optional);
    *       groups: [{ key, label, color }] in table order;
@@ -3004,14 +2988,11 @@
       const start = angle + gap / 2;
       const end = angle + sweep - gap / 2;
       if (end > start && v > 0) {
-        const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
-        grad.addColorStop(0, hexToRgba(colors[i], 0.55));
-        grad.addColorStop(1, colors[i]);
         ctx.beginPath();
         ctx.arc(cx, cy, outerR, start, end);
         ctx.arc(cx, cy, innerR, end, start, true);
         ctx.closePath();
-        ctx.fillStyle = grad;
+        ctx.fillStyle = colors[i];
         ctx.fill();
       }
       angle += sweep;

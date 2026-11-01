@@ -1856,7 +1856,7 @@ table.mix tr.group-row td, table.mix tr.group-row th { border-top: 1px solid var
 .ps-sunbar { display: flex; align-items: flex-end; gap: 3px; height: 90px; }
 .ps-sunbar > div {
   flex: 1;
-  background: linear-gradient(180deg, var(--solar), color-mix(in srgb, var(--solar) 55%, transparent));
+  background: var(--solar);
   border-radius: 3px 3px 0 0;
   animation: ps-grow .8s cubic-bezier(.2,.8,.2,1) both;
 }
