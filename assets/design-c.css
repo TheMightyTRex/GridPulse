@@ -928,3 +928,7 @@ html.pref-calm .gp-ping { opacity: 0; }
    and hidden labels inside them can't push the page sideways. */
 .area-table-scroll { position: relative; }
 .area-table-scroll > table { display: table; overflow: visible; }
+/* Loading text inside a dark pill or card takes the pill's own text colour
+   (it was grey on black in light mode, and grey on white in dark mode). */
+.home-hero__pill .is-loading-text, .page-pill .is-loading-text,
+.gp-card--dark .is-loading-text, .panel.gp-dark .is-loading-text { color: inherit; }

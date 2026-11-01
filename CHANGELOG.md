@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse8 - 1 November 2026
+
+- "Loading live data…" inside the black "Live, updated" pill was grey on black in light mode (and grey on white in dark mode). Loading text inside dark pills and cards now uses the pill's own text colour.
+- The new sections say "Loading…" with a proper ellipsis, the same as the rest of the site.
+- Cache-busting version bumped to 20261101l.
+
 ## GridPulse7 - 1 November 2026 (speed, accessibility and Matomo)
 
 **Speed**
