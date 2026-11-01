@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse7 - 1 November 2026 (speed, accessibility and Matomo)
+
+**Speed**
+- **The API answers first, then refreshes.** When a data source was overdue, the visitor who happened to load the page used to wait while the site fetched it (up to about 5 seconds on the France page). Now the reply goes out straight away from what is already stored, and the refresh runs after it has been sent. The scheduler keeps the stored figures fresh anyway. To go back to the old way, add `'after_response' => false` to the `'refresh'` section of config.php.
+- **Browsers keep the site's files.** The root `.htaccess` now tells browsers to keep CSS and JS for a year (their addresses change with every release, so updates still arrive), and images and the border maps for a week. Repeat visits no longer ask the server for every file. Pages themselves are never kept, so new versions always show.
+- The border maps are loaded with the release version, so they can be kept but refresh after an update.
+- Checked: the host already compresses files (gzip), so no change was needed there.
+
+**Accessibility** (checked with axe in light, dark, high contrast light and dark, and 175% text with wider spacing, the low-vision font and underlined links on a phone; every focusable element shows a focus ring)
+- The "How the records have climbed" chart has a "Show each step as a list" option, and no longer says "hover" (the content design system says "select", and hovering doesn't work on a keyboard or phone).
+- The month-by-month chart reads out each month's share to screen readers.
+- Wide tables (best of each year, the day archive lists) now scroll inside their own box, which can take keyboard focus, and no longer push the page sideways at large text sizes.
+- Record values, interconnector rows and pop-up messages wrap instead of running off a narrow screen.
+
+**Matomo**
+- New tracking code on every page (all 49, including the error pages), pointing at `www.gridpulse.info/stat/`. The script is in `<head>`; the `<noscript>` image is straight after `<body>`, because an image isn't allowed in `<head>`. `tools/apply_shell.py` now writes both, so new pages get them too.
+- Cache-busting version bumped to 20261101k.
+
 ## GridPulse6 - 1 November 2026
 
 - **Both card columns now end level.** On wider screens the map in the Interconnectors / Borders card shrinks or grows (down to 240 px tall) so its card lines up with the bottom of This year so far. Where a column is shorter, its last card stretches to match.

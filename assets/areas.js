@@ -28,6 +28,12 @@
     return base && base !== s ? base : "api/";
   })();
   const ROOT = API.replace(/api\/$/, "");
+  // The release version from this script's own address (?v=...), added to
+  // the map files so browsers can keep them but fetch new ones after an update.
+  const VER = (function () {
+    const m = (document.currentScript ? document.currentScript.src : "").match(/[?&]v=([0-9a-z]+)/);
+    return m ? "?v=" + m[1] : "";
+  })();
 
   const GROUPS = {
     wind: ["Wind", "#2fa876"], solar: ["Solar", "#e0a800"], hydro: ["Hydro", "#2a8fbd"],
@@ -362,7 +368,7 @@
 
     // Best of each year: shaded by how close each year came to the record.
     if (rec.years.length) {
-      html += '<h3 class="area-sub">Best of each year</h3><div class="area-table-scroll"><table class="area-years"><caption class="visually-hidden">Best value of each record type, by year</caption><thead><tr><th scope="col">Record</th>' +
+      html += '<h3 class="area-sub" id="best-years-h">Best of each year</h3><div class="area-table-scroll" tabindex="0" role="region" aria-labelledby="best-years-h"><table class="area-years"><caption class="visually-hidden">Best value of each record type, by year</caption><thead><tr><th scope="col">Record</th>' +
         rec.years.map((y) => '<th scope="col" class="num">' + esc(y) + "</th>").join("") + "</tr></thead><tbody>";
       rec.board.forEach((r) => {
         html += '<tr><th scope="row">' + esc(r.label) + "</th>";
@@ -602,7 +608,7 @@
     Object.keys(months).sort().reverse().forEach((mk) => {
       const mName = new Date(mk + "-15T12:00:00Z").toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
       html += '<details class="area-month"' + (mk === Object.keys(months).sort().pop() ? " open" : "") + "><summary>" + esc(mName) + " (" + months[mk].length + (months[mk].length === 1 ? " day" : " days") + ")</summary>" +
-        '<div class="area-table-scroll"><table class="area-daylist"><thead><tr><th scope="col">Day</th><th scope="col">Largest source</th><th scope="col" class="num">Renewable</th>' +
+        '<div class="area-table-scroll" tabindex="0" role="region" aria-label="' + esc(mName) + ', every day">' + '<table class="area-daylist"><thead><tr><th scope="col">Day</th><th scope="col">Largest source</th><th scope="col" class="num">Renewable</th>' +
         (area.has_demand ? '<th scope="col" class="num">Average demand</th>' : "") + (area.has_price ? '<th scope="col" class="num">Average price</th>' : "") + "</tr></thead><tbody>" +
         months[mk].slice().reverse().map((d) => '<tr><th scope="row"><a href="' + dayLink(code, d.day) + '">' + esc(shortDate(d.day)) + "</a>" + (d.coverage < 0.9 ? ' <small>(part day)</small>' : "") + "</th><td>" + esc(d.largest ? groupLabel(d.largest, area) : "-") + '</td><td class="num">' + pct(d.renewable_share, 1) + "</td>" +
           (area.has_demand ? '<td class="num">' + (d.demand_avg_mw != null ? gw(d.demand_avg_mw) + " GW" : "-") + "</td>" : "") +
@@ -703,7 +709,7 @@
   const mapCache = {};
   async function getMap(code) {
     if (!(code in mapCache)) {
-      mapCache[code] = fetch(ROOT + "assets/maps/" + code + ".json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
+      mapCache[code] = fetch(ROOT + "assets/maps/" + code + ".json" + VER).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     }
     return mapCache[code];
   }
@@ -809,7 +815,7 @@
       cols += '<text x="' + (x + 6.5).toFixed(1) + '" y="69" font-size="8" text-anchor="middle" class="gp-axis">' + "JFMAMJJASOND"[m - 1] + "</text>";
     }
     const avg = ly ? '<line x1="0" x2="' + W + '" y1="' + sy(ly.renewable_share).toFixed(1) + '" y2="' + sy(ly.renewable_share).toFixed(1) + '" class="gp-avg"/><text x="2" y="' + Math.max(8, sy(ly.renewable_share) - 3).toFixed(1) + '" font-size="8" text-anchor="start" class="gp-axis gp-avg-label">' + (yr.year - 1) + " same dates</text>" : "";
-    const monthsSvg = '<svg class="gp-months" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Renewable share in each month this year. The current month is so far.">' +
+    const monthsSvg = '<svg class="gp-months" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Renewable share by month this year: " + months.map((m) => new Date(Date.UTC(2000, m.month - 1, 15)).toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + " " + m.renewable_share + "%").join(", ") + ". The current month is so far.") + '">' +
       '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" class="gp-base"/>' + avg + cols + "</svg>";
     const best = ty.best_month ? new Date(Date.UTC(2000, ty.best_month.month - 1, 15)).toLocaleDateString("en-GB", { month: "long", timeZone: "UTC" }) + " " + ty.best_month.renewable_share + "%" : "-";
     // Long-term mini chart (only when the yearly source has been checked)
@@ -912,7 +918,8 @@
     return '<svg class="gp-step" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Step chart of the " + r.label.toLowerCase() + " record since recording started. It was broken " + (steps.length - 1) + " times.") + '">' + grid + yl +
       '<path d="' + d + '" fill="none" stroke="' + st[1] + '" stroke-width="3" class="gp-draw"/>' + dots +
       '<circle cx="' + x(lastS.day).toFixed(1) + '" cy="' + y(lastS.value).toFixed(1) + '" r="4" fill="none" stroke="' + st[1] + '" stroke-width="2" class="gp-ping"/></svg>' +
-      '<p class="area-note">From ' + esc(longDate(settle)) + ", 30 days after this site started recording. Each step is a new record (" + (steps.length - 1) + " since then). Hover a dot for its date. Current record: " + esc(fmtRecord(r, area)) + ", " + esc(when(r.ts, area)) + ".</p>";
+      '<p class="area-note">From ' + esc(longDate(settle)) + ", 30 days after this site started recording. Each step is a new record (" + (steps.length - 1) + " since then). Current record: " + esc(fmtRecord(r, area)) + ", " + esc(when(r.ts, area)) + ".</p>" +
+      '<details class="gp-steps"><summary>Show each step as a list</summary><ol>' + steps.map((s) => "<li>" + esc(when(s.ts, area)) + ": " + esc(fmtPrev(r, s.value)) + (s.start ? " (the record on this date)" : "") + "</li>").join("") + "</ol></details>";
   }
   function breaksByMonth(rec) {
     const counts = {};

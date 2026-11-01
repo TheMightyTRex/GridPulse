@@ -14,8 +14,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261101h"
-FONTS = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">'
+VERSION = "20261101k"
+FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
+# Loaded normally, so text draws once in Archivo instead of jumping from a
+# fallback font. The preconnect lines in each page keep it quick.
+FONTS = '<link href="' + FONTS_URL + '" rel="stylesheet">'
 
 # Menu: (group id, label, [(column heading, [(page file, link text, short description)])])
 GROUPS = [
@@ -207,6 +210,30 @@ DISPLAY_PANEL = """<div id="display-panel" class="display-panel" role="dialog" a
 </div>"""
 
 SITE = "https://gridpulse.info"
+
+# Matomo analytics (Dave's code, November 2026). The script goes in <head>;
+# the <noscript> image goes straight after <body>, because an <img> isn't
+# allowed inside <head> and browsers would move it anyway.
+MATOMO = """<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.gridpulse.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->"""
+MATOMO_NOSCRIPT = """<!-- Matomo noscript -->
+<noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="//www.gridpulse.info/stat/matomo.php?idsite=1&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Matomo noscript -->"""
+MATOMO_BLOCK = re.compile(r'<!-- Matomo -->.*?<!-- End Matomo Code -->', re.S)
+MATOMO_NS_BLOCK = re.compile(r'<!-- Matomo noscript -->.*?<!-- End Matomo noscript -->\n?', re.S)
 HEAD_BLOCK = re.compile(r'<!-- head:start.*?<!-- head:end -->\n?', re.S)
 OLD_ICON = re.compile(r'<link rel="icon" href="[^"]*logo\.svg" type="image/svg\+xml">\n?')
 
@@ -271,7 +298,13 @@ def main():
         else:
             new = OLD_ICON.sub("", new, count=1)
             new = re.sub(r'(</title>\n(?:<meta name="description" content="[^"]*">\n)?)', lambda m: m.group(1) + hb, new, count=1)
-        new = re.sub(r'<link href="https://fonts\.googleapis\.com/css2\?[^"]*" rel="stylesheet">', FONTS, new)
+        if MATOMO_BLOCK.search(new):
+            new = MATOMO_BLOCK.sub(lambda m: MATOMO, new, count=1)
+        else:
+            new = new.replace("</head>", MATOMO + "\n</head>", 1)
+        new = MATOMO_NS_BLOCK.sub("", new)
+        new = re.sub(r"(<body[^>]*>\n?)", lambda m: m.group(1) + MATOMO_NOSCRIPT + "\n", new, count=1)
+        new = re.sub(r'<link rel="preload" as="style" href="https://fonts\.googleapis\.com/css2\?family=Archivo[^"]*" onload="[^"]*"><noscript><link href="[^"]*" rel="stylesheet"></noscript>|<link href="https://fonts\.googleapis\.com/css2\?family=Archivo[^"]*" rel="stylesheet">', lambda m: FONTS, new)
         if "design-c.css" not in new:
             new = re.sub(r'(<link rel="stylesheet" href="((?:\.\./)?)assets/style\.css\?v=[0-9a-z]+">)',
                          lambda m: m.group(1) + '\n<link rel="stylesheet" href="' + m.group(2) + 'assets/design-c.css?v=' + VERSION + '">', new, count=1)

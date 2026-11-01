@@ -94,7 +94,36 @@ header('Cache-Control: public, max-age=60'); // these values change at most ever
 // site. Correctness (every page can independently keep its own data
 // fresh with no cron job needed) matters more than the few extra
 // already-cheap, indexed lookups this costs on a normal page load.
-ukgrid_maybe_refresh(ukgrid_db(), ukgrid_load_config());
+// Speed (November 2026): by default the refresh now runs AFTER the reply
+// has been sent, so a visitor never waits for an outside data source. The
+// reply uses what is already stored (the scheduler keeps that fresh); the
+// next request gets the new figures. Set 'refresh' => ['after_response'
+// => false] in config.php to go back to refreshing first.
+$ukgridCfg = ukgrid_load_config();
+if (($ukgridCfg['refresh']['after_response'] ?? true) && PHP_SAPI !== 'cli') {
+    ob_start();
+    register_shutdown_function(function () use ($ukgridCfg) {
+        $body = ob_get_clean();
+        if (!headers_sent()) {
+            header('Content-Length: ' . strlen((string) $body));
+            header('Connection: close');
+        }
+        echo $body;
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        flush();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
+        ignore_user_abort(true);
+        ukgrid_maybe_refresh(ukgrid_db(), $ukgridCfg);
+    });
+} else {
+    ukgrid_maybe_refresh(ukgrid_db(), $ukgridCfg);
+}
 
 function ukgrid_json_error(string $code, string $message, int $httpStatus = 400): void
 {
