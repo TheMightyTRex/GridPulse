@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sources - UK Grid: Live+</title>
+<meta name="description" content="Where UK Grid: Live+'s data comes from, its licensing terms, and how it is kept up to date.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css?v=20261101a">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261101a">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.ukgridlive.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- shell:start (written by tools/apply_shell.py - edit the menu there, not here) -->
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap site-header__bar">
+    <a class="brand ug-logo" href="../index.html" aria-label="UK Grid: Live+, home">
+      <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
+        <g transform="rotate(-45 24 24)"><circle class="ug-ring" cx="24" cy="24" r="18" stroke="#ffd54a" stroke-width="5" stroke-linecap="round"/></g>
+        <path class="ug-bolt" d="M26.5 11 15 27h8.5l-2.5 10.5L33 21h-8.5l2-10Z" fill="#ffffff"/>
+        <circle class="ug-ping" cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+        <circle cx="38" cy="10" r="4.5" fill="#4fd18b"/>
+      </svg>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">UK Grid</span><span class="brand__tag ug-tag">Live+</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul id="site-nav-list" data-nav-list>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-gb-btn" aria-expanded="false" aria-controls="navgroup-gb" data-nav-group>
+            Great Britain
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--gb" id="navgroup-gb">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-0">Live now</p>
+              <ul aria-labelledby="navhead-gb-0">
+                <li><a href="../index.html"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
+                <li><a href="electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-1">By source</p>
+              <ul aria-labelledby="navhead-gb-1">
+                <li><a href="renewables.html"><span class="nav-panel__name">Renewables</span><span class="nav-panel__desc">Wind, solar and hydro</span></a></li>
+                <li><a href="fossil-fuels.html"><span class="nav-panel__name">Fossil fuels</span><span class="nav-panel__desc">Gas, coal and oil</span></a></li>
+                <li><a href="nuclear-biomass.html"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
+                <li><a href="storage.html"><span class="nav-panel__name">Storage</span><span class="nav-panel__desc">Batteries and pumped hydro</span></a></li>
+                <li><a href="interconnectors.html"><span class="nav-panel__name">Interconnectors</span><span class="nav-panel__desc">Imports and exports by country</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-2">Over time</p>
+              <ul aria-labelledby="navhead-gb-2">
+                <li><a href="history.html"><span class="nav-panel__name">History</span><span class="nav-panel__desc">From the past day to the past decade</span></a></li>
+                <li><a href="price-history.html"><span class="nav-panel__name">Historic prices</span><span class="nav-panel__desc">Wholesale prices over the years</span></a></li>
+                <li><a href="renewables-plans.html"><span class="nav-panel__name">2030 plans</span><span class="nav-panel__desc">Clean Power 2030 targets and progress</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+            Europe
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--europe" id="navgroup-europe">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-0">Linked to Great Britain</p>
+              <ul aria-labelledby="navhead-europe-0">
+                <li><a href="ireland.html"><span class="nav-panel__name">Ireland</span></a></li>
+                <li><a href="france.html"><span class="nav-panel__name">France</span></a></li>
+                <li><a href="nl.html"><span class="nav-panel__name">Netherlands</span></a></li>
+                <li><a href="belgium.html"><span class="nav-panel__name">Belgium</span></a></li>
+                <li><a href="norway.html"><span class="nav-panel__name">Norway</span></a></li>
+                <li><a href="denmark.html"><span class="nav-panel__name">Denmark</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-1">Rest of Europe</p>
+              <ul aria-labelledby="navhead-europe-1">
+                <li><a href="germany.html"><span class="nav-panel__name">Germany</span></a></li>
+                <li><a href="spain.html"><span class="nav-panel__name">Spain</span></a></li>
+                <li><a href="italy.html"><span class="nav-panel__name">Italy</span></a></li>
+                <li><a href="sweden.html"><span class="nav-panel__name">Sweden</span></a></li>
+                <li><a href="portugal.html"><span class="nav-panel__name">Portugal</span></a></li>
+                <li><a href="poland.html"><span class="nav-panel__name">Poland</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-2">Europe-wide</p>
+              <ul aria-labelledby="navhead-europe-2">
+                <li><a href="eu.html"><span class="nav-panel__name">Europe overview</span><span class="nav-panel__desc">Every country on one page</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-world-btn" aria-expanded="false" aria-controls="navgroup-world" data-nav-group>
+            Rest of the world
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--world" id="navgroup-world">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-0">Americas</p>
+              <ul aria-labelledby="navhead-world-0">
+                <li><a href="usa.html"><span class="nav-panel__name">USA</span></a></li>
+                <li><a href="canada.html"><span class="nav-panel__name">Canada</span></a></li>
+                <li><a href="south-america.html"><span class="nav-panel__name">South America</span></a></li>
+                <li><a href="americas-interconnects.html"><span class="nav-panel__name">Americas interconnectors</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-1">Asia-Pacific</p>
+              <ul aria-labelledby="navhead-world-1">
+                <li><a href="australia.html"><span class="nav-panel__name">Australia</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-solar-btn" aria-expanded="false" aria-controls="navgroup-solar" data-nav-group>
+            Plug-in solar
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--solar" id="navgroup-solar">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-0">Get started</p>
+              <ul aria-labelledby="navhead-solar-0">
+                <li><a href="plugin-solar.html"><span class="nav-panel__name">What is plug-in solar</span></a></li>
+                <li><a href="plugin-solar-considerations.html"><span class="nav-panel__name">Considerations</span></a></li>
+                <li><a href="plugin-solar-calculator.html"><span class="nav-panel__name">Energy calculator</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-1">Fitting it</p>
+              <ul aria-labelledby="navhead-solar-1">
+                <li><a href="plugin-solar-safety.html"><span class="nav-panel__name">Safety</span></a></li>
+                <li><a href="plugin-solar-mounting.html"><span class="nav-panel__name">Mounting</span></a></li>
+                <li><a href="plugin-solar-battery.html"><span class="nav-panel__name">Battery power</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-2">The rules</p>
+              <ul aria-labelledby="navhead-solar-2">
+                <li><a href="plugin-solar-registration.html"><span class="nav-panel__name">Registration</span></a></li>
+                <li><a href="plugin-solar-certification.html"><span class="nav-panel__name">Certification</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-link"><a href="comparisons.html">Compare</a></li>
+        <li class="nav-link"><a href="data-sources.html" aria-current="page">Sources</a></li>
+        <li class="nav-link"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-controls">
+      <button type="button" class="display-btn" data-display-toggle aria-expanded="false" aria-controls="display-panel">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Display</span>
+      </button>
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        <span data-nav-toggle-label>Menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+<aside class="preview-banner" aria-label="Site announcement"><span class="preview-banner__tag">New</span> <a href="plugin-solar.html">Read the plug-in solar guide</a></aside>
+<div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
+  <h2 id="display-panel-heading">Display and accessibility</h2>
+  <fieldset><legend>Theme</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-theme" value="system"><span>Auto</span></label>
+      <label><input type="radio" name="pref-theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="pref-theme" value="dark"><span>Dark</span></label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Text size</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-size" value="100"><span>100%</span></label>
+      <label><input type="radio" name="pref-size" value="125"><span>125%</span></label>
+      <label><input type="radio" name="pref-size" value="150"><span>150%</span></label>
+      <label><input type="radio" name="pref-size" value="175"><span>175%</span></label>
+    </div>
+  </fieldset>
+  <label class="pref-switch"><span>Low-vision font<small>Atkinson Hyperlegible Next, designed for low vision</small></span><input type="checkbox" data-pref="readable"></label>
+  <label class="pref-switch"><span>High contrast</span><input type="checkbox" data-pref="hc"></label>
+  <label class="pref-switch"><span>Reduce motion<small>Stops the logo and loading animations</small></span><input type="checkbox" data-pref="calm"></label>
+  <label class="pref-switch"><span>Underline links</span><input type="checkbox" data-pref="underline"></label>
+  <label class="pref-switch"><span>Wider text spacing</span><input type="checkbox" data-pref="spacing"></label>
+  <div class="display-panel__foot"><button type="button" class="btn" data-pref-reset>Reset</button><button type="button" class="btn btn--primary" data-pref-done>Done</button></div>
+</div>
+</div>
+<!-- shell:end -->
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Sources</h1>
+      <p>UK Grid: Live+ combines three public APIs to build a full picture of Great Britain's electricity grid, plus EirGrid's Smart Grid Dashboard for Ireland, the EIA API for the USA, IESO for Ontario (Canada), the Open Electricity API for Australia's National Electricity Market, and the ENTSO-E Transparency Platform for eleven more European countries. Nothing here is proprietary - the GB feeds are the same ones that power Kate Morley's original <a href="https://grid.iamkate.com/">National Grid: Live</a>.</p>
+      <div class="callout">
+        <span class="callout__icon" aria-hidden="true">i</span>
+        <p>Numbers here occasionally differ from grid.iamkate.com, even though the sources match. <a href="about.html#why-differ">See why on the About page →</a></p>
+      </div>
+      <div class="callout">
+        <span class="callout__icon" aria-hidden="true">i</span>
+        <p>The <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a>, the pan-European grid data hub, powers the Ireland page's SEM price and generation-mix figures, plus eleven standalone country pages: five for Great Britain's direct electrical interconnectors (France, Netherlands, Belgium, Norway and Denmark), and six more added purely for cross-country comparison, with no electrical link to GB (Germany, Spain, Italy, Sweden, Portugal and Poland). See the country sections below for exactly what is live on each.</p>
+      </div>
+      <div class="callout">
+        <span class="callout__icon" aria-hidden="true">i</span>
+        <p>Canada, Australia and South America have also been added, but at different stages: Ontario (Canada) has a working live feed via IESO, and Australia's National Electricity Market has a working live feed via the Open Electricity API; Brazil, Argentina, Chile and Colombia are informational pages only, with no live data wired up yet. See the Canada, Australia and South America sections below.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="uk-sources-heading" style="margin-bottom:1.25rem;">
+      <h2 id="uk-sources-heading" style="font-size:1.05rem;margin-bottom:0;">Great Britain</h2>
+    </section>
+
+    <div class="panel-grid panel-grid--3">
+      <section class="panel source-card" aria-labelledby="src-elexon">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EL</span>
+          <h2 id="src-elexon"><a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a></h2>
+        </div>
+        <p>Reports power generation connected to the national transmission network, interconnector imports and exports, and wholesale pricing.</p>
+        <div class="source-card__meta">
+          <span>JSON</span>
+          <span>5-30 min granularity</span>
+          <span>Refreshed every 15 min</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: generation by fuel type, interconnector flows, pumped storage, market price.</p>
+        <p class="licence-note"><strong>Licence requirement:</strong> <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-neso">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">NE</span>
+          <h2 id="src-neso"><a href="https://www.neso.energy/data-portal">NESO Data Portal</a></h2>
+        </div>
+        <p>Estimates power generation from embedded solar and wind - generation connected to the local distribution network rather than the national transmission network, which Elexon does not directly measure.</p>
+        <div class="source-card__meta">
+          <span>CSV</span>
+          <span>30 min granularity</span>
+          <span>Revised retrospectively</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: embedded solar and wind estimates, demand.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-carbon">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">CI</span>
+          <h2 id="src-carbon"><a href="https://carbonintensity.org.uk/">Carbon Intensity API</a></h2>
+        </div>
+        <p>A project by the National Energy System Operator and the University Of Oxford Department Of Computer Science, estimating the carbon intensity of electricity generation in grams of carbon dioxide per kilowatt-hour.</p>
+        <div class="source-card__meta">
+          <span>JSON</span>
+          <span>30 min granularity</span>
+          <span>Refreshed every 30 min</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: emissions figures and historical carbon-intensity charts.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-tec">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">TR</span>
+          <h2 id="src-tec"><a href="https://www.neso.energy/data-portal/transmission-entry-capacity-tec-register/tec_register">NESO TEC Register</a></h2>
+        </div>
+        <p>The project-by-project register of generation contracted to connect to Great Britain's transmission system - name, connection site, capacity, status, technology, and expected connection date.</p>
+        <div class="source-card__meta">
+          <span>CSV / API</span>
+          <span>Project-level</span>
+          <span>Updated twice weekly</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: context and citation on the <a href="renewables-plans.html">2030 GB plans</a> page's grid connection queue section. Not wired into the live pipeline - it is a reference link, not a polled data source.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="ie-sources-heading2" style="margin-top:1.25rem;">
+      <h2 id="ie-sources-heading2" style="font-size:1.05rem;margin-bottom:0;">Ireland</h2>
+      <p>The island of Ireland runs its own synchronous grid, so the GB sources above do not cover it. The <a href="ireland.html">Ireland page</a>'s demand, generation, wind, GB interconnection and emissions figures are live-wired to EirGrid's Smart Grid Dashboard; its SEM price stat, generation-mix breakdown, 24-hour mix chart and History section are now live too, via ENTSO-E (see the Europe section further down).</p>
+    </section>
+
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-eirgrid">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EG</span>
+          <h2 id="src-eirgrid"><a href="https://www.smartgriddashboard.com/">EirGrid Smart Grid Dashboard</a></h2>
+        </div>
+        <p>Live demand, generation, wind, GB interconnection and carbon intensity for the island of Ireland (Republic of Ireland and Northern Ireland together), published under EirGrid's Open Data Licence. Public and keyless.</p>
+        <div class="source-card__meta">
+          <span>JSON</span>
+          <span>Refreshed every 15 min</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: Ireland's status-strip stats and their 3-hour sparklines.</p>
+        <p class="licence-note"><strong>Attribution required by the licence:</strong> "Supported by EirGrid Group Data" - included in the Ireland page's footer.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-soni">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">SO</span>
+          <h2 id="src-soni">SONI</h2>
+        </div>
+        <p>EirGrid's Northern Ireland transmission system operator counterpart - jointly manages the Single Electricity Market (SEM) with EirGrid. Northern Ireland's contribution is already folded into the all-island EirGrid figures above rather than fetched separately.</p>
+        <div class="source-card__meta">
+          <span>Not called directly</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: covered via the all-island EirGrid feed.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-semo">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">SM</span>
+          <h2 id="src-semo"><a href="https://www.sem-o.com/">SEMO</a></h2>
+        </div>
+        <p>The Single Electricity Market Operator publishes wholesale day-ahead and intraday market pricing for the island of Ireland through its Website Report API. It is public and keyless, but the exact report identifier for day-ahead index prices is not confirmed yet.</p>
+        <div class="source-card__meta">
+          <span>Not currently called</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: nothing directly - the same SEM day-ahead price is also published via ENTSO-E (see the Europe section below), which is what the Ireland page's SEM price stat now actually uses.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="usa-sources-heading2" style="margin-top:1.25rem;">
+      <h2 id="usa-sources-heading2" style="font-size:1.05rem;margin-bottom:0;">USA</h2>
+      <p>The US does not have a single national grid operator the way GB or Ireland do - it runs three separate interconnections and around 66 balancing authorities within them - so there is no single feed to point at. The <a href="usa.html">USA page</a> deliberately uses one source only, the EIA API below, for demand, generation, total interchange, the generation mix, the 24-hour mix chart and the History section (typically ~1 day behind). Wholesale price and emissions are not published by the EIA at all, so those two are shown as "not available" rather than a placeholder - see <a href="usa.html#usa-sources">the USA page's own data sources section</a> for exactly why.</p>
+    </section>
+
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-eia">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EI</span>
+          <h2 id="src-eia"><a href="https://www.eia.gov/opendata/">EIA API</a></h2>
+        </div>
+        <p>The US Energy Information Administration's own free API, including the Hourly Electric Grid Monitor (EIA-930) - the closest thing to a single national demand/generation figure, summing the lower-48 states' balancing authorities. Does not cover Alaska, Hawaii or US territories (they are outside EIA-930's balancing-authority coverage), and does not publish price or emissions data at all.</p>
+        <div class="source-card__meta">
+          <span>JSON/CSV</span>
+          <span>Hourly, ~1 day lag</span>
+          <span>Free, registration required</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the USA page's demand, generation, total interchange, generation mix, 24-hour mix chart and History section. Requires the site operator's own free API key (see includes/config.php.example) - shows "not enough recorded history yet" rather than a placeholder figure if one is not set or ingestion has not run yet.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-gridstatus">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">GS</span>
+          <h2 id="src-gridstatus"><a href="https://www.gridstatus.io/">gridstatus.io</a></h2>
+        </div>
+        <p>An open-source project (plus a hosted API with a free tier) that normalises near-real-time data from CAISO, ERCOT, PJM, MISO, SPP, NYISO and ISO-NE into one schema. Closer to real-time than the EIA, but covers specific regions rather than one national number.</p>
+        <div class="source-card__meta">
+          <span>JSON</span>
+          <span>Near real-time</span>
+          <span>Free tier: 500k rows/month</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: nothing - not used by this site. Showing seven-plus regional figures instead of one lower-48 total is not a trade-off this page makes; the USA page sticks to the single EIA source above by design.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-isos">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">IS</span>
+          <h2 id="src-isos">Individual ISOs</h2>
+        </div>
+        <p>CAISO's OASIS, ERCOT, PJM's Data Miner 2, NYISO and ISO-NE each publish their own free feeds directly - each with a different format, granularity and registration process, which is exactly the fragmentation gridstatus.io exists to paper over.</p>
+        <div class="source-card__meta">
+          <span>Varies by ISO</span>
+          <span>Not currently called</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: nothing - same reasoning as gridstatus.io above, see the <a href="usa.html#usa-sources">USA page's own data sources section</a> for the full picture.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="europe-sources-heading2" style="margin-top:1.25rem;">
+      <h2 id="europe-sources-heading2" style="font-size:1.05rem;margin-bottom:0;">Europe (eleven countries, via ENTSO-E)</h2>
+      <p>All eleven of these pages are powered by the single ENTSO-E source below rather than eleven separate integrations. The first five sit at the far end of one of Great Britain's direct electrical interconnectors; the other six have no electrical link to GB at all and are included purely so the <a href="comparisons.html">Comparisons page</a> has more to compare against:</p>
+      <p style="font-weight:600;margin-bottom:.25rem;">GB-interconnected:</p>
+      <ul>
+        <li><strong><a href="france.html">France</a></strong> (IFA / IFA2 / ElecLink) - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="nl.html">Netherlands</a></strong> (BritNed) - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="belgium.html">Belgium</a></strong> (Nemo Link) - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="norway.html">Norway (NO2)</a></strong> (North Sea Link) - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="denmark.html">Denmark (DK1)</a></strong> (Viking Link) - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+      </ul>
+      <p style="font-weight:600;margin-bottom:.25rem;">Not GB-interconnected - added for comparison only:</p>
+      <ul>
+        <li><strong><a href="germany.html">Germany</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="spain.html">Spain</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="italy.html">Italy</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="sweden.html">Sweden (SE3)</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="portugal.html">Portugal</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+        <li><strong><a href="poland.html">Poland</a></strong> - demand, generation, day-ahead price, generation mix, 24-hour mix chart and History all live.</li>
+      </ul>
+      <p>Emissions intensity and GB-specific interconnector flow are not published by ENTSO-E for any of these bidding zones, so rather than show a permanently illustrative placeholder for either, none of these eleven pages show them at all.</p>
+    </section>
+
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-entsoe">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">EN</span>
+          <h2 id="src-entsoe"><a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a></h2>
+        </div>
+        <p>The pan-European grid data hub - every TSO connected to the Continental Europe or Nordic synchronous areas is required by EU regulation to publish here. Covers actual total load (demand), actual generation per fuel type, and day-ahead price, per bidding zone.</p>
+        <div class="source-card__meta">
+          <span>XML</span>
+          <span>Load/generation: ~1-3hr lag. Price: daily</span>
+          <span>Free, registration + email approval required</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: all eleven European country pages' demand, generation, price, mix, 24-hour mix chart and History, plus Ireland's SEM price and generation-mix gap-fill (see the Ireland section above). Requires the site operator's own free API token, obtained through a short registration-plus-email process - shows "not enough recorded history yet" rather than a placeholder figure on every page above if one is not set or ingestion has not run yet.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="canada-sources-heading" style="margin-top:1.25rem;">
+      <h2 id="canada-sources-heading" style="font-size:1.05rem;margin-bottom:0;">Canada</h2>
+      <p>Canada has no single national grid operator - each province runs its own. The <a href="canada.html">Canada page</a> only covers Ontario, via its system operator IESO, and shows demand and generation mix live. Wholesale price, emissions and transfers are not available - see <a href="canada.html#ca-sources">the Canada page's own data sources section</a> for exactly why.</p>
+    </section>
+
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-ieso">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">IE</span>
+          <h2 id="src-ieso"><a href="https://www.ieso.ca/power-data/data-directory">IESO</a></h2>
+        </div>
+        <p>Ontario's Independent Electricity System Operator publishes real-time demand and hourly generation-by-fuel-type reports. Public and keyless.</p>
+        <div class="source-card__meta">
+          <span>XML</span>
+          <span>Demand: 5 min. Generation: hourly</span>
+          <span>Free, keyless</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the Canada page's demand, generation mix and History section (Ontario only). No price, emissions or interprovincial transfer figures - IESO's pricing is set through a complex multi-mechanism structure this install does not parse, and it does not publish an emissions figure at all. Only the "most recent" report aliases are polled, so History for this page builds up gradually over time rather than starting with years of backlog like the GB pages.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="sa-sources-heading" style="margin-top:1.25rem;">
+      <h2 id="sa-sources-heading" style="font-size:1.05rem;margin-bottom:0;">South America</h2>
+      <p>Brazil, Argentina, Chile and Colombia each have a real national system operator that publishes an open data portal, but none of the four is wired up to this site yet - building and testing a parser for each is real work that has not been done. Rather than fabricate figures or show a broken placeholder, the <a href="south-america.html">South America page</a> instead gives real background on each country's grid and links directly to where its live data actually is:</p>
+      <ul>
+        <li><strong><a href="south-america.html#brazil">Brazil</a></strong> - <a href="https://dados.ons.org.br/">ONS Dados Abertos</a>, the open data portal of Operador Nacional do Sistema Elétrico.</li>
+        <li><strong><a href="south-america.html#argentina">Argentina</a></strong> - <a href="https://cammesaweb.cammesa.com/">CAMMESA</a>, Argentina's wholesale electricity market administrator.</li>
+        <li><strong><a href="south-america.html#chile">Chile</a></strong> - <a href="https://www.coordinador.cl/">Coordinador Eléctrico Nacional</a>, Chile's independent system coordinator.</li>
+        <li><strong><a href="south-america.html#colombia">Colombia</a></strong> - <a href="https://www.simem.co/">SIMEM</a>, Colombia's wholesale energy market information system, run by XM.</li>
+      </ul>
+      <p>None of these four sources are currently called by this site.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="americas-interconnects-sources-heading" style="margin-top:1.25rem;">
+      <h2 id="americas-interconnects-sources-heading" style="font-size:1.05rem;margin-bottom:0;">Americas interconnections</h2>
+      <p>The <a href="americas-interconnects.html">Interconnections page</a> is a reference page, not a live dashboard - it has no stats and calls no API. It summarises publicly documented facts about how North and South American grids are (and are not) electrically linked to each other, sourced from operator and industry publications rather than any single feed; see the page itself for its own source list. Nothing on that page, or on any Americas page, is electrically connected to Great Britain's grid - these countries are tracked purely so the <a href="comparisons.html">Comparisons page</a> has more to compare.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="australia-sources-heading" style="margin-top:1.25rem;">
+      <h2 id="australia-sources-heading" style="font-size:1.05rem;margin-bottom:0;">Australia</h2>
+      <p>The <a href="australia.html">Australia page</a> covers AEMO's National Electricity Market (NEM) only - New South Wales, Queensland, Victoria, South Australia and Tasmania. It does not cover Western Australia (a separate market, the WEM) or the Northern Territory. Demand, a demand-weighted average spot price across the NEM's five regions, the generation mix, the 24-hour mix chart and the History section are all live.</p>
+    </section>
+
+    <div class="panel-grid panel-grid--3" style="margin-top:1.25rem;">
+      <section class="panel source-card" aria-labelledby="src-openelectricity">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">OE</span>
+          <h2 id="src-openelectricity"><a href="https://openelectricity.org.au/">Open Electricity API</a></h2>
+        </div>
+        <p>Formerly OpenNEM - a free, well-documented REST API covering AEMO's National Electricity Market: 5-minute generation by facility/fuel technology, regional spot price and regional demand. Requires a free account and API key.</p>
+        <div class="source-card__meta">
+          <span>JSON</span>
+          <span>5 min</span>
+          <span>Free, needs a key</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the Australia page's demand, spot price, generation mix, 24-hour mix chart and History section. Requires the site operator's own free API key (see includes/config.php.example) - shows no live data until one is set and ingestion has run. <strong>Licence: <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></strong> (non-commercial use, with attribution) - stricter than every other source on this site, all of which are free for any use, including commercial. See <a href="about.html">About</a> for the full disclosure.</p>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="attribution-heading" style="margin-top:1.25rem;">
+      <h2 id="attribution-heading">Full attribution statement</h2>
+      <p>Shown in the footer of every Great Britain-focused page on this site - every other country page (Ireland, USA, Canada, Australia, and all eleven European pages) cites its own sources instead, in its own footer:</p>
+      <blockquote style="margin:0;padding:.9rem 1.1rem;border-left:3px solid var(--accent);background:var(--bg-inset);border-radius:0 8px 8px 0;">
+        The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.
+      </blockquote>
+      <p style="margin-top:1rem;"><a href="about.html">Full credits to Kate Morley, and why the numbers differ from the original →</a></p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">The data comes from the <a href="https://bmrs.elexon.co.uk/">Elexon Insights Solution</a>, the <a href="https://www.neso.energy/data-portal">National Energy System Operator Data Portal</a>, and the <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a> (a project by the National Energy System Operator and the University Of Oxford Department Of Computer Science). <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> UK Grid: Live+ <span class="badge">Not affiliated with National Grid plc</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=20261101a"></script>
+</body>
+</html>
