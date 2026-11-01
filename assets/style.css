@@ -1,0 +1,1928 @@
+/* ==========================================================================
+   UK Grid: Live+ - shared stylesheet
+   A redesign built on the data/concept of Kate Morley's "National Grid: Live"
+   (https://grid.iamkate.com/, https://github.com/KateMorley/grid)
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* Light theme (default) */
+  --bg: #f5f6f8;
+  --bg-elevated: #ffffff;
+  --bg-inset: #eceef2;
+  --text: #1a1d23;
+  --text-muted: #5b6270;
+  --border: #dde1e7;
+  --accent: #0a6e5c;
+  --accent-contrast: #ffffff;
+  --focus-ring: #1d6fe0;
+
+  --fossil: #8a5a3c;
+  --renewable: #1f9d5a;
+  --other: #6a5acd;
+  --interconnector: #d98e04;
+  /* Was #2a8fbd - identical to --hydro, making "storage" and "hydro"
+     indistinguishable everywhere this variable is used (storage.html's
+     hero swatch, every country page's "Other & storage" table row, the
+     homepage's Storage row and nav card). Matches assets/data.js's
+     LABEL_COLORS "Battery"/"Storage" entry - keep the two in step. */
+  --storage: #0e8f7a;
+  --solar: #e0a800;
+  --wind: #2fa876;
+  --wind-offshore: #1f8f63;
+  --hydro: #2a8fbd;
+  --hydro-reservoir: #1f6f94;
+  --gas: #8a5a3c;
+  --oil: #5c4b3c;
+  --coal: #4a4a4a;
+  --nuclear: #6a5acd;
+  --biomass: #7a8f3f;
+
+  --shadow: 0 1px 3px rgba(20, 24, 33, 0.08), 0 1px 2px rgba(20, 24, 33, 0.06);
+  --radius: 10px;
+  --font-body: "Open Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Open Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Traffic-light band colours (see .stat-band below). Defined as tokens,
+     not literal hex on the class rules, because the same five-colour scale
+     needs a slightly different shade per theme to clear WCAG AA's 4.5:1
+     text-contrast minimum against its own card background - a contrast
+     audit found the original literal-hex palette actually failed AA in
+     BOTH themes (e.g. band-good's #4fae3a on a white card was only 2.82:1;
+     band-verybad's #c0392b on a dark card was only 3.03:1), not just the
+     dark theme it was originally designed against. These light-theme
+     values are each tuned to ~4.5-5.5:1 against --bg-elevated: #ffffff,
+     same hue as before, just deepened enough to read reliably as body text
+     rather than a decorative accent. */
+  --band-verygood: #1a864d;
+  --band-good: #3d862d;
+  --band-average: #9e6c00;
+  --band-bad: #b85e21;
+  --band-verybad: #be382b;
+}
+
+[data-theme="dark"] {
+  --bg: #14161c;
+  --bg-elevated: #1c1f27;
+  --bg-inset: #23262f;
+  --text: #edeef2;
+  --text-muted: #a2a8b6;
+  --border: #333846;
+  --accent: #35c299;
+  --accent-contrast: #08110d;
+  --focus-ring: #6fa8ff;
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* Lightened versions of the same five hues, each tuned to ~4.5-5.7:1
+     against --bg-elevated: #1c1f27 - see the --band-* comment in :root. */
+  --band-verygood: #1f9b59;
+  --band-good: #4eac39;
+  --band-average: #c68800;
+  --band-bad: #d9712a;
+  --band-verybad: #d96154;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161c;
+    --bg-elevated: #1c1f27;
+    --bg-inset: #23262f;
+    --text: #edeef2;
+    --text-muted: #a2a8b6;
+    --border: #333846;
+    --accent: #35c299;
+    --accent-contrast: #08110d;
+    --focus-ring: #6fa8ff;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    --band-verygood: #1f9b59;
+    --band-good: #4eac39;
+    --band-average: #c68800;
+    --band-bad: #d9712a;
+    --band-verybad: #d96154;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Belt-and-braces fix for a real CSS gotcha: the browser's own [hidden]
+   rule (display:none) and an author class like .records-list or
+   .download-row that sets its own `display` have equal specificity, so
+   without this, whichever rule is declared later in the cascade wins -
+   which on several elements here is the author class, silently defeating
+   `hidden`/`.hidden = true`. Most existing [hidden] elements on this site
+   happen to end up empty when hidden (so the bug never showed visually),
+   but it's a landmine for any hidden element that keeps static content -
+   this makes `hidden` reliably win everywhere. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+[id] { scroll-margin-top: 7rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+img, svg { max-width: 100%; }
+
+a { color: var(--accent); }
+a:not(:hover) { text-decoration-thickness: 1px; }
+.ext-link__icon { font-size: .85em; opacity: .7; }
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  padding: .75rem 1.25rem;
+  z-index: 1000;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Layout */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Sticky header + nav wrapper */
+.site-head {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  box-shadow: var(--shadow);
+}
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: .9rem;
+  padding-bottom: .9rem;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand__mark {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  overflow: visible;
+}
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.brand__name em {
+  font-style: normal;
+  color: var(--accent);
+}
+.brand__mark-pulse {
+  animation: pulse 2s ease-in-out infinite;
+  transform-origin: 24px 4.2px;
+}
+.brand__tagline {
+  font-size: .8rem;
+  color: var(--text-muted);
+  display: none;
+}
+@media (min-width: 640px) {
+  .brand__tagline { display: inline; }
+}
+
+.credit-line {
+  font-size: .82rem;
+  color: var(--text-muted);
+}
+.credit-line a { color: inherit; text-decoration-thickness: 1px; }
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .45rem .85rem;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+.theme-toggle svg { width: 16px; height: 16px; }
+.theme-toggle[data-theme-state="light"],
+.theme-toggle[data-theme-state="dark"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Primary nav */
+.site-nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.site-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav ul#site-nav-list {
+  display: flex;
+  align-items: stretch;
+  gap: .1rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.site-nav > .wrap > ul#site-nav-list > li {
+  display: flex;
+  position: relative;
+}
+.site-nav a,
+.nav-group__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .7rem .75rem;
+  min-height: 44px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  border: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  background: none;
+  cursor: pointer;
+}
+.site-nav a:hover,
+.nav-group__toggle:hover { color: var(--text); }
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Grouped dropdown items ("Energy types", "Regions", "Prices") */
+.nav-group__toggle[data-active="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.nav-group__toggle[aria-expanded="true"] {
+  color: var(--text);
+  background: var(--bg-inset);
+  border-radius: 8px 8px 0 0;
+}
+.nav-group__chevron {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  transition: transform .2s ease;
+}
+.nav-group__toggle[aria-expanded="true"] .nav-group__chevron { transform: rotate(180deg); }
+
+.nav-group__menu {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: .4rem;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 210px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 0 10px 10px 10px;
+  box-shadow: var(--shadow);
+  z-index: 70;
+}
+.nav-group__menu.is-open {
+  display: block;
+  animation: fadeInUp .16s ease both;
+}
+.nav-group__menu li { display: block; }
+.nav-group__menu a {
+  display: block;
+  padding: .6rem .7rem;
+  min-height: 0;
+  border-radius: 6px;
+  border-bottom: none;
+  color: var(--text);
+  font-weight: 500;
+  font-size: .88rem;
+  white-space: normal;
+}
+.nav-group__menu a:hover { background: var(--bg-inset); color: var(--accent); }
+.nav-group__menu a[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 700;
+  background: var(--bg-inset);
+}
+
+/* Hamburger toggle (mobile only) */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0 .8rem;
+  min-height: 40px;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex: none;
+}
+.nav-toggle:hover { border-color: var(--accent); }
+.nav-toggle__icon {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.nav-toggle__icon::before,
+.nav-toggle__icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform .2s ease, opacity .2s ease, top .2s ease;
+}
+.nav-toggle__icon::before { top: -6px; }
+.nav-toggle__icon::after { top: 6px; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__icon { background: transparent; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__icon::before { top: 0; transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__icon::after { top: 0; transform: rotate(-45deg); }
+
+/* ---------- Mobile nav layout ---------- */
+@media (max-width: 760px) {
+  .nav-toggle { display: inline-flex; }
+  .site-nav .wrap {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+  .site-nav ul#site-nav-list {
+    display: none;
+    flex-direction: column;
+    /* The desktop rule's `flex: 1` (flex-basis: 0%) otherwise wins over
+       `width: 100%` for sizing a flex item, so this never actually wrapped
+       onto its own full-width line below the hamburger button - it sat
+       squeezed onto the same row instead, and with flex-direction: column
+       making it much taller than the button, the wrap's align-items:
+       center then centered the button vertically next to that whole
+       column instead of pinning it to the top. flex-basis: 100% forces
+       the wrap, which fixes both problems at once. */
+    flex: 1 1 100%;
+    width: 100%;
+    gap: 0;
+    order: 3;
+    padding-top: .25rem;
+  }
+  .site-nav ul#site-nav-list.is-open { display: flex; }
+  .site-nav > .wrap > ul#site-nav-list > li { width: 100%; }
+  .site-nav a, .nav-group__toggle {
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: .8rem .25rem;
+  }
+  .site-nav a[aria-current="page"] { border-bottom: 1px solid var(--border); background: var(--bg-inset); }
+  .nav-group__toggle[aria-expanded="true"] { border-radius: 0; background: transparent; }
+  .nav-group__menu {
+    position: static;
+    display: none;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background: var(--bg-inset);
+    padding: 0 0 .25rem 1rem;
+  }
+  .nav-group__menu.is-open { display: block; animation: none; }
+  .nav-group__menu a { border-bottom: 1px dashed var(--border); border-radius: 0; padding: .75rem .5rem; }
+  .nav-group__menu li:last-child a { border-bottom: none; }
+}
+
+/* Hero */
+.hero {
+  padding: 2rem 0 1rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin: 0 0 .35rem;
+}
+.hero p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Live status strip */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .75rem;
+  margin: 1.5rem 0;
+}
+@media (min-width: 640px) {
+  .status-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 960px) {
+  .status-grid { grid-template-columns: repeat(6, 1fr); }
+  /* Used on the ENTSO-E country pages that don't show emissions/GB
+     interconnection (France, Netherlands, Belgium, Norway, Denmark - see
+     pages/france.html etc.) - 4 stat cards rather than the usual 6, so this
+     keeps them evenly filling the row instead of leaving empty trailing
+     columns. */
+  .status-grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+.stat {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  box-shadow: var(--shadow);
+  /* Flex column so the sparkline graph always sits flush at the bottom of
+     the card, regardless of how tall the label/value/band content above it
+     is - without this, a card whose value wraps to two lines (or whose
+     traffic-light band wraps) pushed its own graph down further than its
+     neighbours', so graphs in the same row landed at different heights. */
+  display: flex;
+  flex-direction: column;
+}
+.stat dt {
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  margin: 0 0 .25rem;
+}
+.stat dd {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.stat dd small { font-size: .7em; font-weight: 500; color: var(--text-muted); }
+/* The UK-time line under "Data as of" (see GridPreview.formatAsOfHtml in
+   assets/app.js) - sits on its own row under the local-time line above, so
+   it needs a touch of separation that a plain inline <small> wouldn't get. */
+.stat dd small.stat-time-uk { display: inline-block; margin-top: .15rem; }
+/* "Data as of" stat card while its first live fetch is still in flight -
+   the placeholder text is much longer than a normal stat value, so it
+   drops to a smaller weight/size and gently pulses to read as "still
+   working on it" rather than a finished, static value. Removed the
+   moment real data (or an error dash) replaces it. */
+.stat dd.is-loading-text {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  animation: pulseText 1.6s ease-in-out infinite;
+}
+/* Any other "Loading…" placeholder text (captions, chart notes, "Updated"
+   lines) pulses the same way, so every loading state on the site looks
+   alike. Pages remove the class once real data (or an error) arrives. */
+.is-loading-text {
+  color: var(--text-muted);
+  animation: pulseText 1.6s ease-in-out infinite;
+}
+/* A headline stat value that hasn't loaded yet: shows a dash and pulses
+   until its first real value (or an error dash) is written - see
+   initStatRefreshAnim in assets/app.js, which removes this class. */
+.stat dd.is-loading-value {
+  color: var(--text-muted);
+  animation: pulseText 1.6s ease-in-out infinite;
+}
+@keyframes pulseText {
+  0%, 100% { opacity: .5; }
+  50% { opacity: 1; }
+}
+/* Any live stat value (id="stat-*") flashes briefly whenever its text
+   actually changes after a background refresh - see initStatRefreshAnim
+   in assets/app.js, which watches these elements and toggles this class
+   on change. A quick fade-plus-colour-pulse so an updated figure reads as
+   "this just changed" rather than silently swapping under the reader's
+   eye. Skipped entirely for users who've asked for reduced motion. */
+.stat-refresh-pulse {
+  animation: statRefreshPulse .7s ease-out;
+}
+@keyframes statRefreshPulse {
+  0% { opacity: .25; color: var(--accent); }
+  100% { opacity: 1; color: inherit; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-refresh-pulse { animation: none; }
+}
+/* Traffic-light band for price/emissions/demand/generation/transfers stats
+   (see GridPreview.carbonBand/priceBand/bandFromRange/transfersBand/
+   setStatBand in assets/app.js). A coloured dot plus a short text label -
+   never colour alone - so the signal still reads for colour-blind users
+   and in either theme.
+
+   .stat-band-slot is a dedicated row, always present as its own sibling
+   after <dd> rather than trailing inline after the value text. Reserving
+   a fixed min-height here - regardless of whether the .stat-band inside
+   it is currently [hidden] - is what actually keeps every band lined up
+   at the same height across a row of stat cards: with the band inline
+   inside <dd>, its vertical position drifted with however long that
+   card's own value+unit text happened to be (e.g. Ireland's "0.22GW"
+   transfers figure sat at a different line height than GB's "£135.47
+   /MWh" price), so demand/generation's bands landed noticeably out of
+   step with price/transfers/emissions' bands in the same row. */
+.stat-band-slot {
+  min-height: 1.35rem;
+  display: flex;
+  align-items: center;
+  margin-top: .2rem;
+}
+.stat-band {
+  display: inline-flex;
+  align-items: center;
+  gap: .32em;
+  font-size: .68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.stat-band::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.stat-band.band-verygood { color: var(--band-verygood); }
+.stat-band.band-verygood::before { background: var(--band-verygood); }
+.stat-band.band-good { color: var(--band-good); }
+.stat-band.band-good::before { background: var(--band-good); }
+.stat-band.band-average { color: var(--band-average); }
+.stat-band.band-average::before { background: var(--band-average); }
+.stat-band.band-bad { color: var(--band-bad); }
+.stat-band.band-bad::before { background: var(--band-bad); }
+.stat-band.band-verybad { color: var(--band-verybad); }
+.stat-band.band-verybad::before { background: var(--band-verybad); }
+.stat { position: relative; overflow: hidden; }
+/* A stat this site can never populate for this page - e.g. pages/usa.html's
+   wholesale price/emissions, which the EIA simply doesn't publish. Muted
+   rather than styled as an error, since nothing is broken - there's just
+   no source. Deliberately distinct from is-loading-text (transient) and
+   showStatError's error styling (a fetch that should have worked didn't). */
+.stat--unavailable dd { color: var(--text-muted); font-weight: 600; font-size: 1.05rem; }
+.stat__spark.chart-wrap {
+  height: 28px;
+  /* auto margin absorbs whatever space is left in the flex column above -
+     pins the graph to the card's bottom edge instead of sitting right
+     under the value with a fixed gap (see the .stat flex-column comment). */
+  margin-top: auto;
+  padding-top: .3rem;
+  opacity: .85;
+}
+
+/* Tabs (time ranges) */
+.range-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: 1.75rem 0 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.range-tabs [role="tab"] {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  padding: .55rem .95rem;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: -1px;
+}
+.range-tabs [role="tab"]:hover { color: var(--text); background: var(--bg-inset); }
+.range-tabs [role="tab"][aria-selected="true"] {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--bg-elevated);
+}
+
+/* Panels / cards */
+.panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.4rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.25rem;
+}
+.panel h2, .panel h3 {
+  margin-top: 0;
+}
+.panel-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 860px) {
+  .panel-grid--2 { grid-template-columns: 1fr 1fr; }
+  .panel-grid--3 { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1180px) {
+  .panel-grid--3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* Generation mix panel: two full-size donuts side by side under the table */
+.chart-grid--donuts { margin-top: 1.5rem; }
+.chart-grid--donuts .chart-legend { justify-content: center; }
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+.chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+.chart-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  margin-top: 1rem;
+}
+@media (min-width: 720px) {
+  .chart-grid { grid-template-columns: 1fr 1fr; }
+}
+.chart-card {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .85rem .9rem 1rem;
+}
+.chart-card h3 {
+  margin: 0 0 .5rem;
+  font-size: .95rem;
+}
+.chart-card .chart-wrap { height: 200px; }
+
+.chart-legend {
+  list-style: none;
+  margin: .6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .9rem;
+  font-size: .82rem;
+  color: var(--text-muted);
+}
+.chart-legend .swatch {
+  display: inline-block;
+  width: .65rem;
+  height: .65rem;
+  border-radius: 2px;
+  margin-right: .35rem;
+}
+.chart-legend strong { color: var(--text); font-variant-numeric: tabular-nums; }
+.chart-legend__pct { font-variant-numeric: tabular-nums; }
+
+/* Toggle switch */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  margin: .25rem 0 1.1rem;
+  padding: .4rem;
+  margin-left: -.4rem;
+  border-radius: 8px;
+  font-size: .9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  min-height: 44px;
+}
+.toggle-row:hover { background: var(--bg-inset); }
+.toggle-row em { color: var(--text-muted); font-style: normal; }
+
+/* Alerts panel (index.html) - threshold rule rows sharing the .toggle-row
+   switch styling above, plus their own select/number-input theming since
+   those elements otherwise fall back to unstyled browser defaults that
+   clash with the site's dark/light theme. */
+.alert-rules { display: flex; flex-direction: column; gap: .2rem; }
+.alert-rule select,
+.alert-rule input[type="number"] {
+  font: inherit;
+  font-size: .9rem;
+  color: var(--text);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .25rem .5rem;
+  margin: 0 .15rem;
+}
+.alert-rule input[type="number"] { text-align: right; }
+.alert-rule select:focus-visible,
+.alert-rule input[type="number"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+/* pages/comparisons.html - the pair of dropdowns each comparison tab uses
+   to pick what's being compared (two countries, a metric + a prior
+   period, or two energy categories). Reuses the alert-rule select's exact
+   theming (border, background, focus ring) for visual consistency rather
+   than introducing a second select style. */
+.compare-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin: 1rem 0 1.25rem;
+}
+.compare-picker label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .9rem;
+  color: var(--text-muted);
+}
+.compare-picker select {
+  font: inherit;
+  font-size: .9rem;
+  color: var(--text);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .35rem .55rem;
+}
+.compare-picker select:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+/* pages/plugin-solar.html's calculator reuses .compare-picker for its own
+   inputs (a range slider and a number field) alongside the selects above -
+   these two rules give them the same border/background theming rather than
+   falling back to unstyled browser defaults. */
+.compare-picker input[type="number"] {
+  font: inherit;
+  font-size: .9rem;
+  color: var(--text);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .3rem .5rem;
+  width: 6em;
+}
+.compare-picker input[type="number"]:focus-visible,
+.compare-picker input[type="range"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.compare-picker input[type="range"] {
+  accent-color: var(--accent);
+}
+.switch {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  flex: none;
+}
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 42px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+.switch__track {
+  width: 42px;
+  height: 24px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  display: inline-block;
+  position: relative;
+  transition: background-color .18s ease, border-color .18s ease;
+}
+.switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform .18s ease, background-color .18s ease;
+}
+.switch input:checked + .switch__track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.switch input:checked + .switch__track .switch__thumb {
+  transform: translateX(18px);
+  background: var(--accent-contrast);
+}
+.switch input:focus-visible + .switch__track {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.chart-caption {
+  font-size: .8rem;
+  color: var(--text-muted);
+  margin-top: .5rem;
+}
+
+/* Real-geography interconnector maps (pages/interconnectors.html,
+   pages/americas-interconnects.html) - country/state outlines are real
+   coastline data (Natural Earth via world-atlas/us-atlas), projected and
+   cropped to the relevant region, not freehand shapes. */
+.interconnector-map, .americas-map {
+  width: 100%;
+  height: auto;
+  max-height: 560px;
+}
+.map-land path {
+  fill: var(--bg-inset);
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.sa-country path {
+  fill: color-mix(in srgb, var(--interconnector) 14%, var(--bg-inset));
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.sa-context path {
+  fill: var(--bg-inset);
+  stroke: var(--border);
+  stroke-width: .75;
+  stroke-linejoin: round;
+  opacity: .45;
+}
+.map-country-label text {
+  fill: var(--text);
+  font-weight: 700;
+}
+.map-cable path {
+  fill: none;
+  stroke: var(--interconnector);
+  stroke-width: 2.2;
+  opacity: .9;
+}
+.map-cable-dot circle {
+  fill: var(--interconnector);
+}
+.map-label text, .map-leader-group text {
+  fill: var(--text-muted);
+}
+.map-label-bg {
+  fill: var(--bg-elevated);
+  opacity: .88;
+}
+.map-leader {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+.americas-region path {
+  stroke: var(--border);
+  stroke-width: .75;
+  stroke-linejoin: round;
+}
+.americas-region--west { fill: color-mix(in srgb, var(--interconnector) 22%, var(--bg-inset)); }
+.americas-region--east { fill: color-mix(in srgb, var(--accent) 18%, var(--bg-inset)); }
+.americas-region--ercot { fill: color-mix(in srgb, #c0392b 25%, var(--bg-inset)); }
+.americas-region--quebec { fill: color-mix(in srgb, #3d63c9 26%, var(--bg-inset)); }
+.americas-region--mexico { fill: var(--bg-inset); }
+.americas-region--neutral { fill: var(--bg-inset); opacity: .55; }
+.americas-country-label text {
+  fill: var(--text);
+  font-weight: 700;
+}
+.americas-tie path {
+  fill: none;
+  stroke: var(--interconnector);
+  stroke-width: 2.4;
+}
+.americas-tie--inactive {
+  stroke-dasharray: 6 5;
+  opacity: .6;
+}
+.americas-tie-dot circle {
+  fill: var(--interconnector);
+}
+.americas-label-bg {
+  fill: var(--bg-elevated);
+  opacity: .9;
+}
+.americas-label text {
+  fill: var(--text);
+}
+.americas-country-label text {
+  fill: var(--text);
+  font-weight: 700;
+}
+.americas-legend rect {
+  stroke: var(--border);
+  stroke-width: .75;
+}
+.americas-legend text {
+  fill: var(--text-muted);
+}
+
+.period-caption {
+  font-size: .85rem;
+  color: var(--text-muted);
+  background: var(--bg-inset);
+  border-radius: 6px;
+  padding: .5rem .75rem;
+  margin: 0 0 .75rem;
+}
+.period-caption strong { color: var(--text); }
+
+/* Copy-as-text button */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: .35rem .8rem;
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: .6rem;
+}
+.copy-btn:hover { color: var(--text); border-color: var(--accent); }
+.copy-btn svg { width: 13px; height: 13px; flex: none; }
+.copy-btn.is-copied { color: var(--accent); border-color: var(--accent); }
+.copy-btn.is-copy-failed { color: #c0392b; border-color: #c0392b; }
+
+.download-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem .7rem;
+  margin: 0 0 1rem;
+}
+.download-row .copy-btn { margin-bottom: 0; }
+
+/* Universal chart export toolbar (Copy as text / Download PNG / Download
+   CSV) - auto-inserted after every .chart-wrap by assets/app.js's
+   attachChartExport(). Sits directly under the chart it belongs to,
+   wrapping onto its own line on narrow screens rather than squeezing
+   three buttons into one row. */
+.chart-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .6rem 0 1rem;
+}
+.chart-toolbar__btn { margin-bottom: 0; }
+
+/* Mix table */
+table.mix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+table.mix caption {
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+table.mix th, table.mix td {
+  text-align: left;
+  padding: .4rem .4rem;
+  border-bottom: 1px solid var(--border);
+}
+table.mix th.num, table.mix td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.mix .swatch {
+  display: inline-block;
+  width: .7rem;
+  height: .7rem;
+  border-radius: 2px;
+  margin-right: .5rem;
+}
+/* Per-source rows carry the same colour as their donut slice, so each
+   table row can be matched to its slice at a glance. */
+table.mix .swatch--row { width: .55rem; height: .55rem; margin-left: .15rem; }
+table.mix tr.group-row { font-weight: 700; }
+table.mix tr.group-row td, table.mix tr.group-row th { border-top: 1px solid var(--border); }
+
+/* Energy type cards (index → detail pages) */
+.type-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  margin: 1.5rem 0;
+}
+.type-card {
+  display: block;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent);
+}
+.type-card:hover { border-left-color: var(--accent); transform: translateY(-1px); }
+.type-card h3 { margin: 0 0 .25rem; font-size: 1.05rem; }
+.type-card p { margin: 0; color: var(--text-muted); font-size: .85rem; }
+.type-card .type-card__value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: .35rem 0;
+  font-variant-numeric: tabular-nums;
+}
+/* A plain <span>, not a nested <a> - .type-card itself is already the link
+   for the whole card. This exists purely as a visible "you can click this"
+   affordance, added after user feedback that the cards didn't read as
+   clickable on their own. */
+.type-card__cta {
+  display: inline-block;
+  margin-top: .6rem;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.type-card:hover .type-card__cta { text-decoration: underline; }
+
+/* Detail page header badge */
+.type-hero {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  margin-bottom: .5rem;
+}
+.type-hero__swatch {
+  width: 14px; height: 14px; border-radius: 3px; flex: none;
+}
+
+/* Records list */
+.records-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: .5rem;
+}
+.records-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .5rem .6rem;
+  border-bottom: 1px dashed var(--border);
+  font-size: .9rem;
+}
+.records-list li span:first-child { color: var(--text-muted); }
+.records-list li strong { font-variant-numeric: tabular-nums; }
+
+/* Long-form fact list - same copy/CSV-button convention as .records-list
+   (<li><span>label</span><strong>value</strong></li>), but for entries
+   where the "value" is a full explanatory sentence rather than a short
+   figure. .records-list's tight space-between flex row squeezes the label
+   down to an unreadable ragged wrap once the value text gets long, so
+   this uses a fixed-width label column plus a comfortable line-height
+   instead, and stacks on narrow screens rather than squeezing. Used
+   across the Plug-in Solar section's explanatory lists (Safety,
+   Considerations, Battery power, Mounting, and similar). */
+.ps-fact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ps-fact-list li {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) 1fr;
+  gap: .2rem 1.5rem;
+  padding: .75rem .6rem;
+  border-bottom: 1px dashed var(--border);
+  font-size: .9rem;
+}
+.ps-fact-list li:last-child { border-bottom: none; }
+.ps-fact-list li span:first-child {
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.35;
+  padding-top: .1rem;
+}
+.ps-fact-list li strong {
+  font-weight: 600;
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .ps-fact-list li { grid-template-columns: 1fr; gap: .3rem; }
+}
+
+.ps-ring-diagram {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem 1rem;
+  margin: 1rem 0 .5rem;
+}
+
+/* Data sources page */
+.source-card {
+  border-left: 4px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+}
+.source-card__head {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin-bottom: .3rem;
+}
+.source-card__icon {
+  flex: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: .78rem;
+  letter-spacing: .01em;
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.source-card__head h2 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+.source-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: .5rem 0 .7rem;
+}
+.source-card__meta span {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .15rem .55rem;
+  color: var(--text-muted);
+}
+.licence-note {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .85rem 1rem;
+  font-size: .88rem;
+  margin-top: auto;
+}
+
+/* Callout / pointer box (Sources + About pages) */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-elevated));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border-radius: var(--radius);
+  padding: .9rem 1.1rem;
+  margin: 1.25rem 0;
+  font-size: .92rem;
+}
+.callout__icon {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: .82rem;
+}
+.callout p {
+  margin: 0;
+}
+.callout a {
+  font-weight: 700;
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding: 2rem 0 3rem;
+  color: var(--text-muted);
+  font-size: .88rem;
+  background: var(--bg-elevated);
+}
+.site-footer a { color: var(--text-muted); }
+/* Compact data-attribution line shown in every page's footer (not just
+   index.html's fuller sitemap footer) - satisfies Elexon's licence
+   requirement sitewide rather than only on the homepage, and links through
+   to the full statement + methodology on pages/data-sources.html. */
+.footer-attribution {
+  margin: 0 0 1rem;
+}
+
+/* Wraps index.html's sources blurb - was a 2-column grid (sources + a
+   sitemap list of every page) before the sitemap column was removed as
+   redundant with the main nav; kept as a single-column wrapper purely for
+   the top margin below. */
+.footer-grid {
+  margin-top: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .15rem .55rem;
+  color: var(--text-muted);
+}
+
+.preview-banner {
+  background: #b8860b;
+  color: #1a1200;
+  text-align: center;
+  font-size: .85rem;
+  font-weight: 600;
+  padding: .5rem 1rem;
+}
+.preview-banner a { color: inherit; }
+
+/* Data-pipeline status pill, injected into the footer by initIngestStatusPill()
+   in assets/app.js. Reflects api/status.php: whether the last attempt to pull
+   data from Elexon/NESO/Carbon Intensity and write it to MySQL succeeded. */
+.ingest-status { margin: .9rem 0 0; }
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: .78rem;
+  font-weight: 600;
+}
+.status-pill__dot {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+/* Text colours from the --band-* tokens, which are tuned to 4.5:1+ against
+   --bg-elevated in both themes (the pill's background since the Oct 2026
+   accessibility sweep - the old --bg-inset background and fixed hues
+   measured 2.3-3.1:1). */
+.status-pill[data-status="success"] { color: var(--band-verygood); border-color: color-mix(in srgb, var(--band-verygood) 45%, transparent); }
+.status-pill[data-status="fail"] { color: var(--band-verybad); border-color: color-mix(in srgb, var(--band-verybad) 40%, transparent); }
+.status-pill[data-status="error"] { color: var(--text-muted); border-color: var(--border); }
+.status-pill[data-status="pending"] { color: var(--band-average); border-color: color-mix(in srgb, var(--band-average) 40%, transparent); }
+.status-pill[data-status="checking"] .status-pill__dot { opacity: .5; }
+
+/* Toast notifications, injected by showToast() in assets/app.js - used for
+   data-pipeline errors and "live data updated" confirmations. */
+.toast-container {
+  position: fixed;
+  z-index: 1000;
+  right: 1rem;
+  bottom: 1rem;
+  left: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: .6rem;
+  max-width: min(360px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: .7rem .8rem;
+  font-size: .85rem;
+  line-height: 1.4;
+  color: var(--text);
+  animation: toast-in .22s ease-out;
+}
+.toast--success { border-left-color: var(--renewable); }
+.toast--error { border-left-color: #c94a3d; }
+.toast--info { border-left-color: var(--focus-ring); }
+.toast__text { flex: 1; }
+.toast__close {
+  flex: none;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 .1rem;
+}
+.toast__close:hover, .toast__close:focus-visible { color: var(--text); }
+.toast.is-leaving { animation: toast-out .18s ease-in forwards; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+  .toast.is-leaving { animation: none; opacity: 0; }
+}
+@media (max-width: 560px) {
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hero h1 { animation: fadeInUp .5s ease both; }
+.hero p  { animation: fadeInUp .5s ease .08s both; }
+
+.status-grid .stat {
+  animation: fadeInUp .45s ease both;
+}
+.status-grid .stat:nth-child(1) { animation-delay: .03s; }
+.status-grid .stat:nth-child(2) { animation-delay: .08s; }
+.status-grid .stat:nth-child(3) { animation-delay: .13s; }
+.status-grid .stat:nth-child(4) { animation-delay: .18s; }
+.status-grid .stat:nth-child(5) { animation-delay: .23s; }
+.status-grid .stat:nth-child(6) { animation-delay: .28s; }
+
+.type-grid .type-card {
+  animation: fadeInUp .45s ease both;
+}
+.type-grid .type-card:nth-child(1) { animation-delay: .05s; }
+.type-grid .type-card:nth-child(2) { animation-delay: .1s; }
+.type-grid .type-card:nth-child(3) { animation-delay: .15s; }
+.type-grid .type-card:nth-child(4) { animation-delay: .2s; }
+.type-grid .type-card:nth-child(5) { animation-delay: .25s; }
+
+.type-card, .stat, .theme-toggle, .range-tabs [role="tab"], .metric-switch button {
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
+}
+.type-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(20,24,33,.12); }
+.stat:hover { transform: translateY(-2px); }
+.theme-toggle:active { transform: scale(.94); }
+
+/* reveal-on-scroll for panels */
+.panel, .source-card {
+  opacity: 0;
+  animation: fadeInUp .5s ease both;
+  animation-play-state: paused;
+  animation-delay: 0s;
+}
+.panel.is-visible, .source-card.is-visible {
+  animation-play-state: running;
+}
+
+/* live "pulse" indicator on the current-time stat */
+.stat--live dt::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: .4rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(10,110,92,.4); }
+  50% { opacity: .55; }
+}
+
+/* Page-level "live data unavailable" banner, shown by
+   GridPreview.showLiveDataBanner() in assets/app.js when the real backend
+   can't be reached - only used on sections that are actually meant to be
+   live (see the comment above that function). */
+.live-data-banner {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: color-mix(in srgb, #c94a3d 12%, var(--bg-elevated));
+  border: 1px solid rgba(201,74,61,.4);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: .75rem 1rem;
+  margin: 1rem 0;
+  font-size: .92rem;
+  font-weight: 600;
+}
+.live-data-banner::before {
+  content: "!";
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #c94a3d;
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 800;
+}
+
+/* Prominent "as of [time]" / "illustrative data" status pill, shown right
+   under a page's hero so it's the first thing a visitor reads - rather
+   than being buried mid-sentence inside the longer descriptive caption
+   under the status grid. .is-illustrative is the amber variant for pages
+   (or sections) that aren't wired to a live source, e.g. pages/usa.html. */
+.data-status-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-elevated));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .45rem 1.05rem;
+  margin: 0 0 1.35rem;
+  font-size: .88rem;
+  font-weight: 700;
+}
+.data-status-banner .dot {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  animation: pulse 2s ease-in-out infinite;
+}
+.data-status-banner.is-illustrative {
+  background: color-mix(in srgb, #d98e04 16%, var(--bg-elevated));
+  border-color: rgba(217,142,4,.45);
+}
+.data-status-banner.is-illustrative .dot {
+  background: #d98e04;
+  animation: none;
+}
+/* .is-loading: the page is still fetching its first live figures - a
+   neutral pill with a pulsing grey dot, replaced by the live, delayed,
+   cached or "No data available" state as soon as the fetch settles. */
+.data-status-banner.is-loading {
+  background: var(--bg-inset);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+.data-status-banner.is-loading .dot {
+  background: var(--text-muted);
+}
+/* .is-delayed: genuinely live data, just not real-time (e.g. pages/usa.html
+   once its EIA figures are connected - typically ~1 day behind). Same
+   amber background as .is-illustrative so it still reads as "not as fresh
+   as GB/Ireland", but the dot keeps pulsing (inherits .data-status-banner
+   .dot's animation above) rather than going static, since this is live
+   data actually flowing rather than no live source at all. */
+.data-status-banner.is-delayed {
+  background: color-mix(in srgb, #d98e04 16%, var(--bg-elevated));
+  border-color: rgba(217,142,4,.45);
+}
+.data-status-banner.is-delayed .dot {
+  background: #d98e04;
+}
+
+/* Per-chart "no live data" state - shown instead of a drawn chart. */
+.chart-wrap.has-error { background: var(--bg-inset); border-radius: 6px; }
+.chart-wrap.has-error canvas { visibility: hidden; }
+.chart-error-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+  padding: 0 1rem;
+  font-size: .82rem;
+  color: var(--text-muted);
+}
+
+/* Loading state for every chart while its data is on the way: a visible
+   skeleton block with a moving sheen, plus a small spinner and "Loading…"
+   label in the middle - so an empty chart area always reads as "working
+   on it", never as broken. (The old sheen was the same colour as the card
+   behind it inside .chart-card, so it was effectively invisible there.)
+   Removed by registerChart()/showChartError() in assets/app.js, or by a
+   page's own code, the moment the chart draws or fails. */
+.chart-wrap.is-loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--text-muted) 14%, transparent) 50%, transparent 100%),
+    color-mix(in srgb, var(--text-muted) 8%, transparent);
+  background-size: 200% 100%, 100% 100%;
+  animation: shimmer 1.3s ease-in-out infinite;
+  border-radius: 6px;
+}
+.chart-wrap.is-loading::after {
+  content: "Loading…";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding-left: 1.6rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background:
+    radial-gradient(circle closest-side, transparent 62%, var(--text-muted) 64%, var(--text-muted) 98%, transparent 100%) left center / 1.05rem 1.05rem no-repeat;
+  -webkit-mask: none;
+  pointer-events: none;
+  animation: loadingPulse 1.4s ease-in-out infinite;
+}
+/* Tiny sparkline slots in the headline stat cards: sheen only, no label. */
+.stat__spark.chart-wrap.is-loading::after { content: none; }
+@keyframes loadingPulse {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.theme-toggle svg { transition: transform .35s ease; }
+.theme-toggle[data-theme-active="dark"] svg {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .panel, .source-card { opacity: 1; }
+}
+
+/* ==========================================================================
+   Plug-in Solar section - hero graphics, sub-nav tiles, warning/gov-link
+   boxes, placement diagrams. Kept in its own block so it's easy to find/
+   maintain as one unit even though it's used across 8 pages.
+   ========================================================================== */
+
+/* Animated hero graphic: a sun with rotating rays behind a tilted panel,
+   used at the top of every plug-in-solar page. Pure CSS/SVG, no images. */
+.ps-hero-graphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: .75rem 0 .25rem;
+}
+.ps-hero-graphic svg { overflow: visible; }
+.ps-sun-rays {
+  transform-origin: center;
+  animation: ps-rotate 40s linear infinite;
+}
+@keyframes ps-rotate { to { transform: rotate(360deg); } }
+.ps-sun-core { animation: pulse 3.4s ease-in-out infinite; transform-origin: center; }
+.ps-panel-cell {
+  animation: ps-glint 5s ease-in-out infinite;
+}
+.ps-panel-cell:nth-child(2) { animation-delay: .3s; }
+.ps-panel-cell:nth-child(3) { animation-delay: .6s; }
+.ps-panel-cell:nth-child(4) { animation-delay: .9s; }
+@keyframes ps-glint {
+  0%, 85%, 100% { opacity: .55; }
+  92% { opacity: 1; }
+}
+.ps-flow-dot {
+  animation: ps-flow 2.6s linear infinite;
+  offset-rotate: 0deg;
+}
+@keyframes ps-flow {
+  0% { offset-distance: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* Cross-page sub-navigation: a row of tiles linking the 8 Plug-in Solar
+   pages, shown near the top of each one so the section reads as a unit. */
+.ps-subnav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: .6rem;
+  margin: 1.25rem 0;
+}
+.ps-subnav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  text-align: center;
+  padding: .75rem .5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  text-decoration: none;
+  font-size: .82rem;
+  font-weight: 600;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.ps-subnav a:hover, .ps-subnav a:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--solar);
+}
+.ps-subnav a[aria-current="page"] {
+  border-color: var(--solar);
+  background: color-mix(in srgb, var(--solar) 14%, var(--bg-elevated));
+}
+.ps-subnav a svg { width: 22px; height: 22px; color: var(--solar); }
+
+/* Warning callout - used for the multiple-kits / safety warnings. */
+.ps-warning {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  padding: .9rem 1rem;
+  margin: 1rem 0;
+  border: 1px solid #c9781f;
+  border-left-width: 5px;
+  border-radius: 8px;
+  background: color-mix(in srgb, #c9781f 10%, var(--bg-elevated));
+}
+.ps-warning svg { flex: none; width: 24px; height: 24px; color: #c9781f; margin-top: .1rem; }
+.ps-warning p { margin: 0; font-size: .92rem; }
+/* Bold text inside a warning box stays inline, mid-sentence or not - it's
+   just emphasis, not a heading, so it must never force a line break. (The
+   <p> here is always the second child, after the icon <svg>, so a rule
+   like ".ps-warning p:first-child" would silently never match - don't
+   reintroduce a first-child-based rule without checking that.) */
+.ps-warning strong { font-weight: 700; }
+
+/* Government-links box, appended to most plug-in-solar pages. */
+.ps-gov-links {
+  margin: 1.25rem 0;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+}
+.ps-gov-links h3 { margin: 0 0 .5rem; font-size: 1rem; }
+.ps-gov-links ul { margin: 0; padding-left: 1.1rem; font-size: .9rem; }
+.ps-gov-links li { margin-bottom: .35rem; }
+.ps-gov-links .crown { display: inline-block; margin-right: .3rem; }
+
+/* Nation-comparison table (England/Scotland/Wales/NI). */
+.ps-nation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: .75rem;
+  margin: 1rem 0;
+}
+.ps-nation-card {
+  padding: .85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.ps-nation-card h3 {
+  margin: 0 0 .4rem;
+  font-size: .95rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.ps-nation-card p { margin: 0; font-size: .85rem; color: var(--text-muted); }
+.ps-nation-card.is-limited { border-color: var(--band-bad); }
+.ps-nation-card.is-limited h3 { color: var(--band-bad); }
+
+/* Placement diagrams (orientation/window mounting illustrations). */
+.ps-placement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.ps-placement-card {
+  padding: .9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  text-align: center;
+}
+.ps-placement-card svg { width: 100%; max-width: 96px; height: auto; margin: 0 auto .5rem; }
+.ps-placement-card strong { display: block; font-size: .85rem; }
+.ps-placement-card span { display: block; font-size: .78rem; color: var(--text-muted); margin-top: .15rem; }
+.ps-placement-card .ps-eff { display:inline-block; margin-top:.4rem; padding:.15rem .5rem; border-radius:999px; background:var(--bg-inset); font-size:.75rem; font-weight:700; color: var(--solar-text); }
+.ps-placement-card.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; background: var(--bg-inset); }
+
+/* Step list (Registration page). */
+.ps-steps { list-style: none; margin: 1rem 0; padding: 0; counter-reset: ps-step; }
+.ps-steps li {
+  position: relative;
+  padding: .25rem 0 1rem 2.6rem;
+  border-left: 2px solid var(--border);
+  margin-left: 1rem;
+}
+.ps-steps li:last-child { border-color: transparent; padding-bottom: 0; }
+.ps-steps li::before {
+  counter-increment: ps-step;
+  content: counter(ps-step);
+  position: absolute;
+  left: -1.1rem;
+  top: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--solar);
+  color: #1a1400;
+  font-weight: 800;
+  font-size: .9rem;
+}
+
+/* Sun-hours seasonal bar strip used on the "What is it" and calculator
+   pages - animated fill-in on first view. */
+.ps-sunbar-wrap { margin: 1rem 0; }
+.ps-sunbar { display: flex; align-items: flex-end; gap: 3px; height: 90px; }
+.ps-sunbar > div {
+  flex: 1;
+  background: linear-gradient(180deg, var(--solar), color-mix(in srgb, var(--solar) 55%, transparent));
+  border-radius: 3px 3px 0 0;
+  animation: ps-grow .8s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes ps-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.ps-sunbar-labels { display: flex; gap: 3px; margin-top: .3rem; }
+.ps-sunbar-labels span { flex: 1; text-align: center; font-size: .68rem; color: var(--text-muted); }
+
+/* Results period tabs (Annual / Month / Day) on the Energy calculator. */
+.ps-tabs {
+  display: flex;
+  gap: .4rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.ps-tab-btn {
+  appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--text-muted);
+  padding: .6rem .9rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  transition: color .15s ease, border-color .15s ease;
+}
+.ps-tab-btn:hover { color: var(--text); }
+.ps-tab-btn[aria-selected="true"] {
+  color: var(--solar-text);
+  border-bottom-color: var(--solar);
+}
+.ps-tab-panel[hidden] { display: none; }
+.ps-tab-panel { animation: fadeIn .25s ease both; }
+
+@media (max-width: 640px) {
+  .ps-subnav { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
+  .ps-hero-graphic svg { width: 120px; }
+}
+
+/* Key for signed line charts (renderLineChart's opts.signed): amber above
+   the zero line, blue below - the same validated pair as the
+   interconnectors page, so "above/below the line" reads the same way on
+   every chart. Inserted automatically just above the chart. */
+:root { --signed-pos: #c47f00; --signed-neg: #2b6cb0; }
+[data-theme="dark"] { --signed-pos: #c4831f; --signed-neg: #4f8fd6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --signed-pos: #c4831f; --signed-neg: #4f8fd6; } }
+.signed-legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; font-size: .8rem; color: var(--text-muted); margin: 0 0 .4rem; }
+.signed-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.signed-legend__pos { background: var(--signed-pos); }
+.signed-legend__neg { background: var(--signed-neg); }
+
+/* Accessibility sweep (Oct 2026). A stat card's band and sparkline sit in
+   a second <dd> so the <dl> is valid (a <dl> group may only contain
+   <dt>/<dd>). display: contents keeps them as direct flex children of
+   .stat, so the layout is unchanged; the font reset stops them picking up
+   the big bold value styling of .stat dd. */
+.stat dd.stat__extra { display: contents; font-size: inherit; font-weight: inherit; font-variant-numeric: normal; }
+
+/* --solar-text: the solar yellow, deepened for use as text in light mode
+   (#e0a800 is only ~2:1 on white); dark mode keeps the bright yellow,
+   which is 7:1 on the dark surfaces. */
+:root { --solar-text: #8a6500; }
+[data-theme="dark"] { --solar-text: #e0a800; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --solar-text: #e0a800; } }
+/* A sparkline that failed shows a short message - don't fade it. */
+.stat__spark.chart-wrap.has-error { opacity: 1; }
