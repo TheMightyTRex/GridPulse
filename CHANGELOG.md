@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse11 - 5 November 2026
+
+- Added the Impact tracking script (Dave's code) to the head of every page, straight after Matomo. It loads `utt.impactcdn.com` and runs `transformLinks` and `trackImpression`. tools/apply_shell.py writes it, so it stays on every page when the shell is rebuilt.
+- Cache-busting version bumped to 20261105a.
+
 ## GridPulse10 - 1 November 2026
 
 - **Donuts and bar charts are solid colour.** The donuts (Replay today, and the donut in the downloaded snapshot) and every bar chart (the replay bars, the merit order, sun hours by month, the country comparisons) now fill each slice or bar with one flat colour instead of fading. Line charts, the last 24 hours stacked chart and the sparklines keep their fade.

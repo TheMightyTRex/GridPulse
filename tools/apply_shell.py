@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261101r"
+VERSION = "20261105a"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -232,6 +232,11 @@ MATOMO = """<!-- Matomo -->
 MATOMO_NOSCRIPT = """<!-- Matomo noscript -->
 <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="//www.gridpulse.info/stat/matomo.php?idsite=1&amp;rec=1" style="border:0;" alt="" /></p></noscript>
 <!-- End Matomo noscript -->"""
+# Impact affiliate tracking (Dave's code, November 2026), in <head> on every page.
+IMPACT = """<!-- Impact -->
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A8123239-1d4a-4d46-99c5-7f0dd0e3166e1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+<!-- End Impact -->"""
+IMPACT_BLOCK = re.compile(r'<!-- Impact -->.*?<!-- End Impact -->\n?', re.S)
 MATOMO_BLOCK = re.compile(r'<!-- Matomo -->.*?<!-- End Matomo Code -->', re.S)
 MATOMO_NS_BLOCK = re.compile(r'<!-- Matomo noscript -->.*?<!-- End Matomo noscript -->\n?', re.S)
 HEAD_BLOCK = re.compile(r'<!-- head:start.*?<!-- head:end -->\n?', re.S)
@@ -302,6 +307,8 @@ def main():
             new = MATOMO_BLOCK.sub(lambda m: MATOMO, new, count=1)
         else:
             new = new.replace("</head>", MATOMO + "\n</head>", 1)
+        new = IMPACT_BLOCK.sub("", new)
+        new = new.replace("</head>", IMPACT + "\n</head>", 1)
         new = MATOMO_NS_BLOCK.sub("", new)
         new = re.sub(r"(<body[^>]*>\n?)", lambda m: m.group(1) + MATOMO_NOSCRIPT + "\n", new, count=1)
         new = re.sub(r'<link rel="preload" as="style" href="https://fonts\.googleapis\.com/css2\?family=Archivo[^"]*" onload="[^"]*"><noscript><link href="[^"]*" rel="stylesheet"></noscript>|<link href="https://fonts\.googleapis\.com/css2\?family=Archivo[^"]*" rel="stylesheet">', lambda m: FONTS, new)
