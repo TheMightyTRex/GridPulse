@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261105a"
+VERSION = "20261108b"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -176,8 +176,8 @@ def build(page, base):
     out.append('    </div>')
     out.append('  </div>')
     out.append('</header>')
-    if page != "plugin-solar.html":
-        out.append(f'<aside class="preview-banner" aria-label="Site announcement"><span class="preview-banner__tag">New</span> <a href="{link_for(base, "plugin-solar.html")}">Read the plug-in solar guide</a></aside>')
+    # Paid placement (Dave's PrivadoVPN affiliate link), on every page. rel="sponsored" tells search engines it is an ad.
+    out.append('<aside class="preview-banner" aria-label="Advertisement"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></aside>')
     out.append(DISPLAY_PANEL)
     out.append('</div>')
     out.append('<!-- shell:end -->')

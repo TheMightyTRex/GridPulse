@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse12 - 8 November 2026
+
+**Records (checked 8 November 2026 against NESO)**
+- Solar: the record is now 15.4GW on 23 April 2026, 12.30pm to 1pm, as announced by NESO on 24 April 2026. The page said 15,427MW on 12 July 2026, from trade press. NESO's own reports do not show that figure, so it has gone, along with the "44% share" line and the "different dataset" note. Added the earlier 2026 high (14.4GW, 7 April 2026) and the previous record (14,023MW, 8 July 2025, NESO 2025 review). The chart now shows 2019, July 2025 and April 2026, all sourced (the unsourced "May 2020" bar has gone).
+- Wind: still 23,880MW on 25 March 2026 (confirmed by NESO and RenewableUK). The "1.30pm to 2pm" time has gone because no official source gives it.
+- Emissions: added NESO's zero-carbon record, 98.8% on 22 April 2026, 3.30pm to 4pm. The lowest carbon intensity (20g/kWh, 7 April 2026) still stands: NESO's monthly lows since then are higher.
+- Demand: NESO's Winter Outlook 2026/27 (October 2026) is out, so the early view line is replaced with its base case margin, 5.9GW (9.5%). The made-up "typical summer low" bar is replaced with a sourced figure: the lowest demand of 2025, 12,912MW on 25 May 2025 at 1.30pm (NESO 2025 review).
+- The renewables page now gives the same solar record and mentions the March 2026 wind record.
+
+**Plug-in solar**
+- Checked GOV.UK, Ofgem, legislation.gov.uk and the Northern Ireland, Scottish and Welsh government sites on 8 November 2026. Nothing has changed since 29 October: the Interim Product Specification is still version 2.0 (July 2026), Ofgem's only plug-in solar decision is still 11 August 2026, and Northern Ireland, Scotland and Wales have no plug-in solar rules yet. "Last checked" dates moved to 8 November 2026.
+
+**Banner**
+- The yellow banner on every page is now an advert: an "Ad" pill and "PrivadoVPN: Instantly protect your PC, phone, or tablet.", with PrivadoVPN linking to Dave's affiliate link. The link is marked rel="sponsored". It now shows on the plug-in solar page too.
+
+**Accessibility**
+- Wide tables that scroll sideways on a phone or at large text sizes can now be reached and scrolled with the keyboard.
+
+- Cache-busting version bumped to 20261108b.
+
 ## GridPulse11 - 5 November 2026
 
 - Added the Impact tracking script (Dave's code) to the head of every page, straight after Matomo. It loads `utt.impactcdn.com` and runs `transformLinks` and `trackImpression`. tools/apply_shell.py writes it, so it stays on every page when the shell is rebuilt.
