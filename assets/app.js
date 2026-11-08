@@ -3335,6 +3335,32 @@
     });
   }
 
+  /* ---------- Tables that scroll sideways ----------
+     On narrow screens (or with big text) wide tables scroll inside
+     themselves. A scrolling region must be reachable by keyboard, so a
+     table that actually overflows gets tabindex="0" and a name; it loses
+     them again when it fits. */
+  function initTableScroll() {
+    const check = () => {
+      document.querySelectorAll("main table").forEach((tbl) => {
+        if (tbl.closest(".area-table-scroll")) return;
+        const scrolls = tbl.scrollWidth > tbl.clientWidth + 1;
+        if (scrolls && !tbl.hasAttribute("tabindex")) {
+          tbl.setAttribute("tabindex", "0");
+          tbl.setAttribute("data-scroll-focus", "");
+          if (!tbl.hasAttribute("aria-label") && !tbl.querySelector("caption")) tbl.setAttribute("aria-label", "Table, scrolls sideways");
+        } else if (!scrolls && tbl.hasAttribute("data-scroll-focus")) {
+          tbl.removeAttribute("tabindex");
+          tbl.removeAttribute("data-scroll-focus");
+        }
+      });
+    };
+    check();
+    let t;
+    window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(check, 150); });
+    setTimeout(check, 1500);
+  }
+
   /* ---------- Scroll-reveal animation for panels/cards ---------- */
   function initReveal() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches || root.classList.contains("pref-calm");
@@ -4204,6 +4230,7 @@
     initPageTools();
     initTabs();
     initReveal();
+    initTableScroll();
     initCopyButtons();
     initIngestStatusPill();
     initStatRefreshAnim();
