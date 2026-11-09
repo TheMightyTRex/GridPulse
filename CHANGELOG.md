@@ -7,6 +7,7 @@ All notable changes to this project are documented here. Dates are when the chan
 - A "Report or check a problem" section at the bottom of the Gas and Power cuts pages. Gas: the National Gas Emergency Service (0800 111 999) and the four gas networks (Cadent, Northern Gas Networks, SGN, Wales & West Utilities), each with its own page for gas smells and supply problems. Electricity: 105 and the six network operators' power cut pages, plus powercut105.com to find your operator by postcode. All links checked on 9 November 2026.
 - The Power cuts page's "Who runs the network" section now points to that list instead of repeating it.
 - sql/schema.sql now lists the four tables added in GridPulse13 (gas_flow, gas_daily, power_cut, power_cut_count), for reference. The jobs still create them automatically.
+- Added google122e67112e88d290.html at the site root, so Google Search Console can confirm the site belongs to Dave.
 - Cache-busting version bumped to 20261109c.
 
 ## GridPulse13 - 9 November 2026
