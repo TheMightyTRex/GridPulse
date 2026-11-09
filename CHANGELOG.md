@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse15 - 9 November 2026 (not uploaded yet)
+
+- **The power cuts map is now a street map.** OpenStreetMap, drawn with Leaflet 1.9.4 (BSD licence, served from assets/vendor/leaflet), with the 14 network areas drawn over it. Pointing at an area highlights it and shows its name; selecting it zooms to the whole area. Areas with no live data are grey with a dashed edge.
+- Select a dot, or a cut in the "In view" list, to see its details beside the map: type, area, customers affected, when it started, when it is expected back, the operator and its reference, with a link to the operator's own page. The list shows the cuts in the part of the map in view.
+- "Whole of Great Britain" and "Zoom to an area" controls. Leaflet's own + and − buttons zoom in and out.
+- The map loads OpenStreetMap tiles for every visitor, with the credit OpenStreetMap asks for.
+- assets/maps/gb-dno.json (the old drawn map) is replaced by gb-dno-ll.json, the same NESO boundaries in latitude and longitude.
+- Cache-busting version bumped to 20261109e.
+
 ## GridPulse14 - 9 November 2026
 
 - A "Report or check a problem" section at the bottom of the Gas and Power cuts pages. Gas: the National Gas Emergency Service (0800 111 999) and the four gas networks (Cadent, Northern Gas Networks, SGN, Wales & West Utilities), each with its own page for gas smells and supply problems. Electricity: 105 and the six network operators' power cut pages, plus powercut105.com to find your operator by postcode. All links checked on 9 November 2026.
