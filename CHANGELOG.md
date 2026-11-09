@@ -2,14 +2,15 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
-## GridPulse15 - 9 November 2026 (not uploaded yet)
+## GridPulse15 - 9 November 2026
 
 - **The power cuts map is now a street map.** OpenStreetMap, drawn with Leaflet 1.9.4 (BSD licence, served from assets/vendor/leaflet), with the 14 network areas drawn over it. Pointing at an area highlights it and shows its name; selecting it zooms to the whole area. Areas with no live data are grey with a dashed edge.
 - Select a dot, or a cut in the "In view" list, to see its details beside the map: type, area, customers affected, when it started, when it is expected back, the operator and its reference, with a link to the operator's own page. The list shows the cuts in the part of the map in view.
 - "Whole of Great Britain" and "Zoom to an area" controls. Leaflet's own + and − buttons zoom in and out.
 - The map loads OpenStreetMap tiles for every visitor, with the credit OpenStreetMap asks for.
 - assets/maps/gb-dno.json (the old drawn map) is replaced by gb-dno-ll.json, the same NESO boundaries in latitude and longitude.
-- Cache-busting version bumped to 20261109e.
+- Power cuts update more often. Each scheduled run now fetches every operator instead of two, so each one updates every time GitHub runs the scheduler (about every 5 to 15 minutes) instead of every 10 to 60 minutes. Page loads still fetch at most one. The page itself loads no faster or slower.
+- Cache-busting version bumped to 20261109f.
 
 ## GridPulse14 - 9 November 2026
 

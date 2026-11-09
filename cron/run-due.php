@@ -81,7 +81,7 @@ usort($order, function ($a, $b) {
     return ($b === 'ENTSOE') <=> ($a === 'ENTSOE');
 });
 // Worst case = timeout x the most requests the source makes in one run.
-$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1, 'GAS' => 1, 'GASDAILY' => 1, 'POWERCUTS' => 4, 'INDEXNOW' => 1];
+$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1, 'GAS' => 1, 'GASDAILY' => 1, 'POWERCUTS' => 6, 'INDEXNOW' => 1];
 
 $lock = $pdo->prepare('SELECT GET_LOCK(?, 0)');
 $release = $pdo->prepare('SELECT RELEASE_LOCK(?)');
