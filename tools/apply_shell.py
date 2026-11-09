@@ -330,6 +330,9 @@ def head_block(path, base, text):
                 '<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">',
                 '<meta name="twitter:card" content="summary_large_image">',
                 structured_data(path, url, title, desc)]
+        if path.name == "index.html" and base == "root":
+            # Bing Webmaster Tools ownership check (Dave's code). Search Console uses google122e67112e88d290.html.
+            out.append('<meta name="msvalidate.01" content="1B46D77F8BA55A0A5007078591D260D7" />')
     else:
         out.append('<meta name="robots" content="noindex">')
     out.append('<!-- head:end -->')
