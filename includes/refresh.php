@@ -31,6 +31,7 @@ require_once __DIR__ . '/areas.php';
 require_once __DIR__ . '/flows_annual.php';
 require_once __DIR__ . '/gas.php';
 require_once __DIR__ . '/powercuts.php';
+require_once __DIR__ . '/indexnow.php';
 
 /**
  * Public entry point - called on every API request (see api/_bootstrap.php).
@@ -166,6 +167,10 @@ function ukgrid_refresh_schedule(array $config): array
     if (!isset($timeouts['GASDAILY'])) $timeouts['GASDAILY'] = 15;
     if (!isset($intervals['POWERCUTS'])) $intervals['POWERCUTS'] = 5;
     if (!isset($timeouts['POWERCUTS'])) $timeouts['POWERCUTS'] = 6;
+    // Added 9 November 2026: sends changed pages to IndexNow after each
+    // upload (includes/indexnow.php).
+    if (!isset($intervals['INDEXNOW'])) $intervals['INDEXNOW'] = 60;
+    if (!isset($timeouts['INDEXNOW'])) $timeouts['INDEXNOW'] = 10;
 
     return [$intervals, $timeouts];
 }
@@ -266,6 +271,9 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
         case 'POWERCUTS':
             // Two operators per run on a schedule, one on a page load.
             ukgrid_ingest_powercuts($pdo, $config, $timeoutSeconds, $scheduled ? 2 : 1);
+            break;
+        case 'INDEXNOW':
+            ukgrid_ingest_indexnow($pdo, $config, $timeoutSeconds);
             break;
         case 'NOTABLE_MOMENTS':
             // Pure re-aggregation of data already in this database (see

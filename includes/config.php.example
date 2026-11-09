@@ -354,4 +354,11 @@ return [
     'spen_key' => '',
     'enwl_key' => '',
   ],
+
+  // IndexNow (includes/indexnow.php): after each upload, changed pages are
+  // sent to Bing and the other IndexNow search engines. Set to false on any
+  // test copy of the site, so it never sends gridpulse.info addresses.
+  'indexnow' => [
+    'enabled' => true,
+  ],
 ];

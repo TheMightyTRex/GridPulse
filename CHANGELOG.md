@@ -10,6 +10,7 @@ All notable changes to this project are documented here. Dates are when the chan
 - Added google122e67112e88d290.html at the site root, so Google Search Console can confirm the site belongs to Dave.
 - Added BingSiteAuth.xml at the site root, so Bing Webmaster Tools can confirm the site belongs to Dave.
 - Added Bing's msvalidate.01 meta tag to the home page head (written by tools/apply_shell.py).
+- IndexNow is now automatic. A new hourly job (INDEXNOW, includes/indexnow.php) notices which pages in the sitemap have really changed since the last run and sends just those to Bing, Yandex, Seznam, Naver and Yep in one request. Version-number bumps alone do not count as a change. The first run only records the pages, since all 45 were sent by hand on 9 November 2026. config.php can turn it off ('indexnow' => ['enabled' => false]), which any test copy should do.
 - Cache-busting version bumped to 20261109c.
 
 ## GridPulse13 - 9 November 2026
