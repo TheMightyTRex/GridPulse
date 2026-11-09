@@ -17,17 +17,18 @@
 <meta property="og:title" content="Sources - Grid Pulse">
 <meta property="og:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
 <meta property="og:url" content="https://gridpulse.info/pages/data-sources.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261108b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261109b">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://gridpulse.info/#org","name":"Grid Pulse","url":"https://gridpulse.info/","logo":"https://gridpulse.info/assets/gridpulse-icon-512.png"},{"@type":"WebSite","@id":"https://gridpulse.info/#site","name":"Grid Pulse","url":"https://gridpulse.info/","inLanguage":"en-GB","publisher":{"@id":"https://gridpulse.info/#org"},"description":"Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."},{"@type":"WebPage","@id":"https://gridpulse.info/pages/data-sources.html#page","url":"https://gridpulse.info/pages/data-sources.html","name":"Sources","description":"Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.","inLanguage":"en-GB","isPartOf":{"@id":"https://gridpulse.info/#site"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://gridpulse.info/"},{"@type":"ListItem","position":2,"name":"Sources","item":"https://gridpulse.info/pages/data-sources.html"}]}}]}</script>
 <!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261108b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261108b">
+<link rel="stylesheet" href="../assets/style.css?v=20261109b">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261109b">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -83,6 +84,8 @@
               <ul aria-labelledby="navhead-gb-0">
                 <li><a href="../index.html"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
                 <li><a href="electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+                <li><a href="gas.html"><span class="nav-panel__name">Gas</span><span class="nav-panel__desc">Gas use and supply right now</span></a></li>
+                <li><a href="power-cuts.html"><span class="nav-panel__name">Power cuts</span><span class="nav-panel__desc">Live power cuts on a map</span></a></li>
               </ul>
             </div>
             <div class="nav-panel__col">
@@ -320,6 +323,34 @@
           <span>Updated twice weekly</span>
         </div>
         <p style="font-size:.9rem;color:var(--text-muted);">Used for: context and citation on the <a href="renewables-plans.html">2030 GB plans</a> page's grid connection queue section. Not wired into the live pipeline - it is a reference link, not a polled data source.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-nationalgas">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">NG</span>
+          <h2 id="src-nationalgas"><a href="https://data.nationalgas.com/">National Gas Transmission Data Portal</a></h2>
+        </div>
+        <p>The company that runs Great Britain's national gas network. Its Instantaneous Flow API gives gas use by type and supply by entry point every 2 minutes, published every 12 minutes. Its Published Data API gives each gas day's totals. National Gas asks to be acknowledged as the source.</p>
+        <div class="source-card__meta">
+          <span>JSON (REST)</span>
+          <span>2 min readings</span>
+          <span>Refreshed every 12 min</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the <a href="gas.html">Gas</a> page and the Gas right now card on the home page.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-dnos">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">PC</span>
+          <h2 id="src-dnos">Electricity network operators (power cuts)</h2>
+        </div>
+        <p>Live power cuts from the open data of <a href="https://connecteddata.nationalgrid.co.uk/dataset/live-power-cuts">National Grid Electricity Distribution</a> (Supported by NGED Open Data), <a href="https://ukpowernetworks.opendatasoft.com/">UK Power Networks</a> (CC BY 4.0), <a href="https://northernpowergrid.opendatasoft.com/">Northern Powergrid</a> (Supported by Northern Powergrid Open Data), <a href="https://data.ssen.co.uk/">SSEN</a> (CC BY 4.0), <a href="https://spenergynetworks.opendatasoft.com/">SP Energy Networks</a> and <a href="https://electricitynorthwest.opendatasoft.com/">Electricity North West</a> (both CC BY 4.0, shown once an API key is added). Area boundaries from <a href="https://www.neso.energy/data-portal/gis-boundaries-gb-dno-license-areas">NESO</a> (Supported by National Energy SO Open Data).</p>
+        <div class="source-card__meta">
+          <span>JSON / CSV</span>
+          <span>Each cut</span>
+          <span>Refreshed every 10 to 15 min</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the <a href="power-cuts.html">Power cuts</a> page.</p>
       </section>
     </div>
 
@@ -604,6 +635,6 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261108b"></script>
+<script src="../assets/app.js?v=20261109b"></script>
 </body>
 </html>

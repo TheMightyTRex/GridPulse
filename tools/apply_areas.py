@@ -97,8 +97,13 @@ def cards(code, flows):
     # This year on the right (Today and This year when there's no map).
     # On narrow screens the columns dissolve and the cards stack in reading
     # order: Today, Records, Borders, This year (CSS "order").
+    # Great Britain also has a live gas card (assets/gaspower.js).
+    gas = """      <section class="gp-card" data-gas-card aria-labelledby="gas-h">
+        <h2 id="gas-h" class="gp-card__h">Gas right now</h2>
+        <div data-gas-card-body><p class="area-empty">Loading…</p></div>
+      </section>"""
     left = [today] + ([borders] if flows else [year])
-    right = [records] + ([year] if flows else [])
+    right = [records] + ([gas] if code == "GB" else []) + ([year] if flows else [])
     col = lambda cards: '      <div class="gp-cards__col">\n' + "\n".join(c.replace("\n      ", "\n        ").replace("      <section", "        <section", 1) for c in cards) + "\n      </div>"
     return block("cards", '    <div class="gp-cards">\n' + col(left) + "\n" + col(right) + "\n    </div>")
 
@@ -185,6 +190,9 @@ def apply(path, code, poss, flows, europe):
     if "assets/areas.js" not in text:
         text = re.sub(r'(<script src="(?:\.\./)?assets/data\.js\?v=[0-9a-z]+"></script>)',
                       lambda mm: mm.group(1) + f'\n<script src="{prefix}assets/areas.js?v=0"></script>', text, count=1)
+    if is_gb and "assets/gaspower.js" not in text:
+        text = re.sub(r'(<script src="assets/areas\.js\?v=[0-9a-z]+"></script>)',
+                      lambda mm: mm.group(1) + '\n<script src="assets/gaspower.js?v=0"></script>', text, count=1)
     if is_gb and "assets/alerts.js" not in text:
         text = re.sub(r'(<script src="assets/areas\.js\?v=[0-9a-z]+"></script>)',
                       lambda mm: mm.group(1) + '\n<script src="assets/alerts.js?v=0"></script>', text, count=1)

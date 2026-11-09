@@ -1,0 +1,9 @@
+# Grid Pulse - every page may be crawled, by search engines and AI tools alike.
+User-agent: *
+Allow: /
+Disallow: /includes/
+Disallow: /cron/
+Disallow: /tools/
+Disallow: /docker/
+
+Sitemap: https://gridpulse.info/sitemap.xml

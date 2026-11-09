@@ -17,17 +17,18 @@
 <meta property="og:title" content="Grid Pulse - the live status of Great Britain's electricity grid">
 <meta property="og:description" content="A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.">
 <meta property="og:url" content="https://gridpulse.info/">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261108b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261109b">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://gridpulse.info/#org","name":"Grid Pulse","url":"https://gridpulse.info/","logo":"https://gridpulse.info/assets/gridpulse-icon-512.png"},{"@type":"WebSite","@id":"https://gridpulse.info/#site","name":"Grid Pulse","url":"https://gridpulse.info/","inLanguage":"en-GB","publisher":{"@id":"https://gridpulse.info/#org"},"description":"Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."},{"@type":"WebPage","@id":"https://gridpulse.info/#page","url":"https://gridpulse.info/","name":"Grid Pulse - the live status of Great Britain's electricity grid","description":"A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.","inLanguage":"en-GB","isPartOf":{"@id":"https://gridpulse.info/#site"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://gridpulse.info/"}]},"about":{"@id":"https://gridpulse.info/#data"}},{"@type":"Dataset","@id":"https://gridpulse.info/#data","name":"Grid Pulse - the live status of Great Britain's electricity grid","description":"A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.","url":"https://gridpulse.info/","isAccessibleForFree":true,"creator":{"@id":"https://gridpulse.info/#org"},"spatialCoverage":{"@type":"Place","name":"Great Britain"},"keywords":["electricity","power grid","energy","Great Britain"],"isBasedOn":"https://gridpulse.info/pages/data-sources.html"}]}</script>
 <!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261108b">
-<link rel="stylesheet" href="assets/design-c.css?v=20261108b">
+<link rel="stylesheet" href="assets/style.css?v=20261109b">
+<link rel="stylesheet" href="assets/design-c.css?v=20261109b">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- Matomo -->
 <script>
@@ -84,6 +85,8 @@
               <ul aria-labelledby="navhead-gb-0">
                 <li><a href="index.html" aria-current="page"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
                 <li><a href="pages/electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+                <li><a href="pages/gas.html"><span class="nav-panel__name">Gas</span><span class="nav-panel__desc">Gas use and supply right now</span></a></li>
+                <li><a href="pages/power-cuts.html"><span class="nav-panel__name">Power cuts</span><span class="nav-panel__desc">Live power cuts on a map</span></a></li>
               </ul>
             </div>
             <div class="nav-panel__col">
@@ -340,6 +343,10 @@
           <h2 id="recsum-h" class="gp-card__h">Records</h2>
           <div data-area-recsum-body><p class="area-empty">Loading…</p></div>
         </section>
+        <section class="gp-card" data-gas-card aria-labelledby="gas-h">
+          <h2 id="gas-h" class="gp-card__h">Gas right now</h2>
+          <div data-gas-card-body><p class="area-empty">Loading…</p></div>
+        </section>
         <section class="gp-card" data-area-year aria-labelledby="year-h">
           <h2 id="year-h" class="gp-card__h">This year so far</h2>
           <div data-area-year-body><p class="area-empty">Loading…</p></div>
@@ -391,10 +398,11 @@
   </div>
 </footer>
 
-<script src="assets/app.js?v=20261108b"></script>
-<script src="assets/data.js?v=20261108b"></script>
-<script src="assets/areas.js?v=20261108b"></script>
-<script src="assets/alerts.js?v=20261108b"></script>
+<script src="assets/app.js?v=20261109b"></script>
+<script src="assets/data.js?v=20261109b"></script>
+<script src="assets/areas.js?v=20261109b"></script>
+<script src="assets/gaspower.js?v=20261109b"></script>
+<script src="assets/alerts.js?v=20261109b"></script>
 <script>
 (function () {
 

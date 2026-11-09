@@ -342,4 +342,16 @@ return [
   // every 5 minutes, published ex-post - close to Australia's own pace, so
   // this reuses the same tight threshold.
   'semo_staleness_minutes' => 30,
+
+  // Live power cuts (pages/power-cuts.html, includes/powercuts.php).
+  // Four network operators publish them openly with no key. Two need a free
+  // account on their open data portal, then an API key from your account
+  // page. Paste each key here to add that operator's area to the map.
+  // Leave blank to show the area as "not covered".
+  //   SP Energy Networks:     https://spenergynetworks.opendatasoft.com
+  //   Electricity North West: https://electricitynorthwest.opendatasoft.com
+  'powercuts' => [
+    'spen_key' => '',
+    'enwl_key' => '',
+  ],
 ];

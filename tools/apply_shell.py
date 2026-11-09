@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261108b"
+VERSION = "20261109b"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -26,6 +26,8 @@ GROUPS = [
         ("Live now", [
             ("index.html", "Overview", "Live figures and the mix right now"),
             ("electricity-prices.html", "Prices", "Wholesale prices today"),
+            ("gas.html", "Gas", "Gas use and supply right now"),
+            ("power-cuts.html", "Power cuts", "Live power cuts on a map"),
         ]),
         ("By source", [
             ("renewables.html", "Renewables", "Wind, solar and hydro"),
@@ -243,6 +245,60 @@ HEAD_BLOCK = re.compile(r'<!-- head:start.*?<!-- head:end -->\n?', re.S)
 OLD_ICON = re.compile(r'<link rel="icon" href="[^"]*logo\.svg" type="image/svg\+xml">\n?')
 
 
+# Pages that show data, and the place each one covers. They get schema.org
+# Dataset markup so search engines and AI tools can tell what the page holds.
+DATA_PAGES = {
+    "index.html": "Great Britain", "ireland.html": "Ireland", "france.html": "France", "nl.html": "Netherlands",
+    "belgium.html": "Belgium", "norway.html": "Norway", "denmark.html": "Denmark", "germany.html": "Germany",
+    "spain.html": "Spain", "italy.html": "Italy", "sweden.html": "Sweden", "portugal.html": "Portugal",
+    "poland.html": "Poland", "usa.html": "United States", "canada.html": "Ontario, Canada", "australia.html": "Australia",
+    "eu.html": "Europe", "gas.html": "Great Britain", "power-cuts.html": "Great Britain",
+    "interconnectors.html": "Great Britain", "electricity-prices.html": "Great Britain", "history.html": "Great Britain",
+    "records.html": "Great Britain", "renewables.html": "Great Britain", "fossil-fuels.html": "Great Britain",
+    "nuclear-biomass.html": "Great Britain", "storage.html": "Great Britain", "price-history.html": "Great Britain",
+}
+
+
+def page_group(name):
+    """The menu group (label) a page sits under, for the breadcrumb markup."""
+    for _gid, label, cols in GROUPS:
+        for _h, links in cols:
+            if any(f == name for f, _t, _d in links):
+                return label
+    return None
+
+
+def structured_data(path, url, title, desc):
+    """schema.org JSON-LD for the page: who runs the site, the page itself,
+    where it sits, and (for data pages) what data it holds. Not shown on screen."""
+    import json as _json
+    name = re.sub(r"\s+-\s+Grid Pulse$", "", html.unescape(title)).strip()
+    d = html.unescape(desc)
+    org = {"@type": "Organization", "@id": SITE + "/#org", "name": "Grid Pulse", "url": SITE + "/",
+           "logo": SITE + "/assets/gridpulse-icon-512.png"}
+    site = {"@type": "WebSite", "@id": SITE + "/#site", "name": "Grid Pulse", "url": SITE + "/", "inLanguage": "en-GB",
+            "publisher": {"@id": SITE + "/#org"},
+            "description": "Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."}
+    crumbs = [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"}]
+    group = page_group(path.name)
+    if path.name != "index.html":
+        if group:
+            crumbs.append({"@type": "ListItem", "position": 2, "name": group})
+        crumbs.append({"@type": "ListItem", "position": len(crumbs) + 1, "name": name, "item": url})
+    page = {"@type": "WebPage", "@id": url + "#page", "url": url, "name": name, "description": d, "inLanguage": "en-GB",
+            "isPartOf": {"@id": SITE + "/#site"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": crumbs}}
+    graph = [org, site, page]
+    place = DATA_PAGES.get(path.name)
+    if place:
+        graph.append({"@type": "Dataset", "@id": url + "#data", "name": name, "description": d or name, "url": url,
+                      "isAccessibleForFree": True, "creator": {"@id": SITE + "/#org"},
+                      "spatialCoverage": {"@type": "Place", "name": place},
+                      "keywords": ["electricity", "power grid", "energy", place],
+                      "isBasedOn": SITE + "/pages/data-sources.html"})
+        page["about"] = {"@id": url + "#data"}
+    return '<script type="application/ld+json">' + _json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>"
+
+
 def head_block(path, base, text):
     """Icons, canonical address and share-card tags, built from the page's own title and description."""
     title = re.search(r'<title>(.*?)</title>', text, re.S)
@@ -272,7 +328,8 @@ def head_block(path, base, text):
                 '<meta property="og:image:width" content="1200">',
                 '<meta property="og:image:height" content="630">',
                 '<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">',
-                '<meta name="twitter:card" content="summary_large_image">']
+                '<meta name="twitter:card" content="summary_large_image">',
+                structured_data(path, url, title, desc)]
     else:
         out.append('<meta name="robots" content="noindex">')
     out.append('<!-- head:end -->')
@@ -320,6 +377,50 @@ def main():
             path.write_text(new, encoding="utf-8")
             changed += 1
     print(f"{changed} of {len(pages)} pages updated")
+    write_crawler_files(pages)
+
+
+# Pages that only make sense with a query (?area=...&date=...) are listed
+# once, at their plain address. Error pages are left out.
+def write_crawler_files(pages):
+    """sitemap.xml, robots.txt and llms.txt at the site root."""
+    import datetime
+    today = datetime.date.today().isoformat()
+    urls = []
+    for path in pages:
+        if path.parent.name == "errors":
+            continue
+        url = SITE + "/" if path.name == "index.html" and path.parent == ROOT else f"{SITE}/pages/{path.name}"
+        pri = "1.0" if path.name == "index.html" else ("0.8" if path.name in DATA_PAGES else "0.5")
+        urls.append(f"  <url><loc>{url}</loc><lastmod>{today}</lastmod><priority>{pri}</priority></url>")
+    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n", encoding="utf-8")
+    (ROOT / "robots.txt").write_text(
+        "# Grid Pulse - every page may be crawled, by search engines and AI tools alike.\n"
+        "User-agent: *\nAllow: /\nDisallow: /includes/\nDisallow: /cron/\nDisallow: /tools/\nDisallow: /docker/\n\n"
+        f"Sitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+    lines = ["# Grid Pulse", "",
+             "> Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is. Free, no sign-in.", "",
+             "Figures come from official sources: Elexon, NESO and the Carbon Intensity API (Great Britain), EirGrid (Ireland), the ENTSO-E Transparency Platform (European countries), the US EIA, IESO (Ontario), Open Electricity (Australia), National Gas Transmission (Great Britain gas) and the electricity network operators (power cuts). Each page names its sources and when hand-checked facts were last checked.", "",
+             "## Pages", ""]
+    for path in pages:
+        if path.parent.name == "errors":
+            continue
+        text = path.read_text(encoding="utf-8")
+        tm = re.search(r"<title>(.*?)</title>", text, re.S)
+        dm = re.search(r'<meta name="description" content="([^"]*)">', text)
+        name = re.sub(r"\s+-\s+Grid Pulse$", "", html.unescape(tm.group(1).strip())) if tm else path.name
+        url = SITE + "/" if path.name == "index.html" and path.parent == ROOT else f"{SITE}/pages/{path.name}"
+        lines.append(f"- [{name}]({url})" + (": " + html.unescape(dm.group(1)) if dm and dm.group(1) else ""))
+    lines += ["", "## Live data as JSON", "",
+              f"- {SITE}/api/now_all.php : every covered country right now",
+              f"- {SITE}/api/areas.php : the countries covered and their codes",
+              f"- {SITE}/api/day.php?area=GB : one country's day so far, or a past day with &date=YYYY-MM-DD",
+              f"- {SITE}/api/records.php?area=GB : records since this site started recording",
+              f"- {SITE}/api/flows.php?area=GB : flows across a country's borders today",
+              f"- {SITE}/api/gas.php : Great Britain's gas use and supply",
+              f"- {SITE}/api/power_cuts.php : live power cuts in Great Britain",
+              "", "Please credit Grid Pulse and the original source named on each page."]
+    (ROOT / "llms.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -251,3 +251,51 @@ function ukgrid_http_get_raw(string $url, int $timeoutSeconds = 20, array $extra
     }
     return (string) $body;
 }
+
+/**
+ * POSTs a JSON body and decodes the JSON reply. Same timeouts, deadline and
+ * logging as ukgrid_http_get_json(). Used for National Gas's Published Data
+ * API, which takes its query as a JSON body.
+ */
+function ukgrid_http_post_json(string $url, array $payload, int $timeoutSeconds = 20): ?array
+{
+    $safeUrl = ukgrid_redact_url($url);
+    $timeoutSeconds = ukgrid_http_cap_timeout($timeoutSeconds, $safeUrl);
+    if ($timeoutSeconds === 0) {
+        return null;
+    }
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => $timeoutSeconds,
+        CURLOPT_CONNECTTIMEOUT => min(8, $timeoutSeconds),
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_HTTPHEADER => ['Accept: application/json', 'Content-Type: application/json'],
+        CURLOPT_USERAGENT => 'GridPulse/1.0 (+https://gridpulse.info; contact via site data-sources page)',
+    ]);
+    $body = curl_exec($ch);
+    $errno = curl_errno($ch);
+    $error = curl_error($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $fail = null;
+    if ($errno !== 0) {
+        $fail = "HTTP error posting to {$safeUrl}: curl errno {$errno} - {$error}";
+    } elseif ($status < 200 || $status >= 300) {
+        $fail = "HTTP {$status} posting to {$safeUrl} - body starts: " . mb_substr((string) $body, 0, 300);
+    } else {
+        $data = json_decode((string) $body, true);
+        if (is_array($data)) {
+            return $data;
+        }
+        $fail = "non-JSON or empty response from {$safeUrl} - body starts: " . mb_substr((string) $body, 0, 300);
+    }
+    error_log('ukgrid: ' . $fail);
+    if (function_exists('ukgrid_file_log')) {
+        ukgrid_file_log($fail);
+    }
+    return null;
+}
