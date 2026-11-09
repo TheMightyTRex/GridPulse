@@ -29,6 +29,8 @@
 require_once __DIR__ . '/ingest.php';
 require_once __DIR__ . '/areas.php';
 require_once __DIR__ . '/flows_annual.php';
+require_once __DIR__ . '/gas.php';
+require_once __DIR__ . '/powercuts.php';
 
 /**
  * Public entry point - called on every API request (see api/_bootstrap.php).
@@ -155,6 +157,15 @@ function ukgrid_refresh_schedule(array $config): array
     // requests, so only the scheduler runs them (see cron/run-due.php).
     if (!isset($timeouts['FLOWS'])) $timeouts['FLOWS'] = 10;
     if (!isset($timeouts['ANNUAL'])) $timeouts['ANNUAL'] = 15;
+    // Added 9 November 2026: GB gas (National Gas) and live power cuts
+    // (the distribution network operators). See includes/gas.php and
+    // includes/powercuts.php.
+    if (!isset($intervals['GAS'])) $intervals['GAS'] = 12;
+    if (!isset($timeouts['GAS'])) $timeouts['GAS'] = 10;
+    if (!isset($intervals['GASDAILY'])) $intervals['GASDAILY'] = 360;
+    if (!isset($timeouts['GASDAILY'])) $timeouts['GASDAILY'] = 15;
+    if (!isset($intervals['POWERCUTS'])) $intervals['POWERCUTS'] = 5;
+    if (!isset($timeouts['POWERCUTS'])) $timeouts['POWERCUTS'] = 6;
 
     return [$intervals, $timeouts];
 }
@@ -245,6 +256,16 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
             break;
         case 'ANNUAL':
             ukgrid_ingest_annual($pdo, $config, $timeoutSeconds);
+            break;
+        case 'GAS':
+            ukgrid_ingest_gas($pdo, $config, $timeoutSeconds);
+            break;
+        case 'GASDAILY':
+            ukgrid_ingest_gas_daily($pdo, $config, $timeoutSeconds);
+            break;
+        case 'POWERCUTS':
+            // Two operators per run on a schedule, one on a page load.
+            ukgrid_ingest_powercuts($pdo, $config, $timeoutSeconds, $scheduled ? 2 : 1);
             break;
         case 'NOTABLE_MOMENTS':
             // Pure re-aggregation of data already in this database (see

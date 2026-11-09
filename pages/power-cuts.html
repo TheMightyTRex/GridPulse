@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power cuts in Great Britain - Grid Pulse</title>
+<meta name="description" content="Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.">
+<!-- head:start (written by tools/apply_shell.py) -->
+<link rel="icon" href="../assets/gridpulse-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="../assets/gridpulse-apple-touch-icon-180.png">
+<meta name="theme-color" content="#14181f">
+<script>(function(){var t="light";try{var p=JSON.parse(localStorage.getItem("grid-live-prefs")||"null");if(p&&p.theme){t=p.theme}else{var o=localStorage.getItem("grid-live-theme");if(o==="dark"||o==="light")t=o}}catch(e){}if(t!=="system")document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")})();</script>
+<link rel="canonical" href="https://gridpulse.info/pages/power-cuts.html">
+<meta property="og:site_name" content="Grid Pulse">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Power cuts in Great Britain - Grid Pulse">
+<meta property="og:description" content="Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.">
+<meta property="og:url" content="https://gridpulse.info/pages/power-cuts.html">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261109b">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://gridpulse.info/#org","name":"Grid Pulse","url":"https://gridpulse.info/","logo":"https://gridpulse.info/assets/gridpulse-icon-512.png"},{"@type":"WebSite","@id":"https://gridpulse.info/#site","name":"Grid Pulse","url":"https://gridpulse.info/","inLanguage":"en-GB","publisher":{"@id":"https://gridpulse.info/#org"},"description":"Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."},{"@type":"WebPage","@id":"https://gridpulse.info/pages/power-cuts.html#page","url":"https://gridpulse.info/pages/power-cuts.html","name":"Power cuts in Great Britain","description":"Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.","inLanguage":"en-GB","isPartOf":{"@id":"https://gridpulse.info/#site"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://gridpulse.info/"},{"@type":"ListItem","position":2,"name":"Great Britain"},{"@type":"ListItem","position":3,"name":"Power cuts in Great Britain","item":"https://gridpulse.info/pages/power-cuts.html"}]},"about":{"@id":"https://gridpulse.info/pages/power-cuts.html#data"}},{"@type":"Dataset","@id":"https://gridpulse.info/pages/power-cuts.html#data","name":"Power cuts in Great Britain","description":"Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.","url":"https://gridpulse.info/pages/power-cuts.html","isAccessibleForFree":true,"creator":{"@id":"https://gridpulse.info/#org"},"spatialCoverage":{"@type":"Place","name":"Great Britain"},"keywords":["electricity","power grid","energy","Great Britain"],"isBasedOn":"https://gridpulse.info/pages/data-sources.html"}]}</script>
+<!-- head:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=20261109b">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261109b">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//www.gridpulse.info/stat/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+<!-- Impact -->
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A8123239-1d4a-4d46-99c5-7f0dd0e3166e1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+<!-- End Impact -->
+</head>
+<body>
+<!-- Matomo noscript -->
+<noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="//www.gridpulse.info/stat/matomo.php?idsite=1&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Matomo noscript -->
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- shell:start (written by tools/apply_shell.py - edit the menu there, not here) -->
+<div class="site-head">
+<header class="site-header">
+  <div class="wrap site-header__bar">
+    <a class="brand ug-logo" href="../index.html" aria-label="Grid Pulse, home">
+      <svg class="brand__mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
+        <rect class="gp-bar" style="--i:0" x="4" y="19" width="4.6" height="10" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:1" x="11" y="16" width="4.6" height="16" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:2" x="18" y="9" width="4.6" height="30" rx="2.3" fill="#ffd54a"/>
+        <rect class="gp-bar" style="--i:3" x="25" y="18" width="4.6" height="12" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:4" x="32" y="13" width="4.6" height="22" rx="2.3" fill="#ffffff"/>
+        <rect class="gp-bar" style="--i:5" x="39" y="20" width="4.6" height="8" rx="2.3" fill="#ffffff"/>
+        <circle class="ug-ping" cx="45" cy="24" r="3" fill="#4fd18b"/>
+        <circle class="gp-node" cx="45" cy="24" r="3" fill="#4fd18b"/>
+      </svg>
+      <span class="brand__name" aria-hidden="true"><span class="brand__uk">Grid</span><span class="brand__tag ug-tag">Pulse</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul id="site-nav-list" data-nav-list>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-gb-btn" aria-expanded="false" aria-controls="navgroup-gb" data-nav-group data-active="true">
+            Great Britain
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--gb" id="navgroup-gb">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-0">Live now</p>
+              <ul aria-labelledby="navhead-gb-0">
+                <li><a href="../index.html"><span class="nav-panel__name">Overview</span><span class="nav-panel__desc">Live figures and the mix right now</span></a></li>
+                <li><a href="electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
+                <li><a href="gas.html"><span class="nav-panel__name">Gas</span><span class="nav-panel__desc">Gas use and supply right now</span></a></li>
+                <li><a href="power-cuts.html" aria-current="page"><span class="nav-panel__name">Power cuts</span><span class="nav-panel__desc">Live power cuts on a map</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-1">By source</p>
+              <ul aria-labelledby="navhead-gb-1">
+                <li><a href="renewables.html"><span class="nav-panel__name">Renewables</span><span class="nav-panel__desc">Wind, solar and hydro</span></a></li>
+                <li><a href="fossil-fuels.html"><span class="nav-panel__name">Fossil fuels</span><span class="nav-panel__desc">Gas, coal and oil</span></a></li>
+                <li><a href="nuclear-biomass.html"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
+                <li><a href="storage.html"><span class="nav-panel__name">Storage</span><span class="nav-panel__desc">Batteries and pumped hydro</span></a></li>
+                <li><a href="interconnectors.html"><span class="nav-panel__name">Interconnectors</span><span class="nav-panel__desc">Imports and exports by country</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-2">Over time</p>
+              <ul aria-labelledby="navhead-gb-2">
+                <li><a href="history.html"><span class="nav-panel__name">History</span><span class="nav-panel__desc">From the past day to the past decade</span></a></li>
+                <li><a href="price-history.html"><span class="nav-panel__name">Historic prices</span><span class="nav-panel__desc">Wholesale prices over the years</span></a></li>
+                <li><a href="renewables-plans.html"><span class="nav-panel__name">2030 plans</span><span class="nav-panel__desc">Clean Power 2030 targets and progress</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-europe-btn" aria-expanded="false" aria-controls="navgroup-europe" data-nav-group>
+            Europe
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--europe" id="navgroup-europe">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-0">Linked to Great Britain</p>
+              <ul aria-labelledby="navhead-europe-0">
+                <li><a href="ireland.html"><span class="nav-panel__name">Ireland</span></a></li>
+                <li><a href="france.html"><span class="nav-panel__name">France</span></a></li>
+                <li><a href="nl.html"><span class="nav-panel__name">Netherlands</span></a></li>
+                <li><a href="belgium.html"><span class="nav-panel__name">Belgium</span></a></li>
+                <li><a href="norway.html"><span class="nav-panel__name">Norway</span></a></li>
+                <li><a href="denmark.html"><span class="nav-panel__name">Denmark</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-1">Rest of Europe</p>
+              <ul aria-labelledby="navhead-europe-1">
+                <li><a href="germany.html"><span class="nav-panel__name">Germany</span></a></li>
+                <li><a href="spain.html"><span class="nav-panel__name">Spain</span></a></li>
+                <li><a href="italy.html"><span class="nav-panel__name">Italy</span></a></li>
+                <li><a href="sweden.html"><span class="nav-panel__name">Sweden</span></a></li>
+                <li><a href="portugal.html"><span class="nav-panel__name">Portugal</span></a></li>
+                <li><a href="poland.html"><span class="nav-panel__name">Poland</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-europe-2">Europe-wide</p>
+              <ul aria-labelledby="navhead-europe-2">
+                <li><a href="eu.html"><span class="nav-panel__name">Europe overview</span><span class="nav-panel__desc">Every country on one page</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-world-btn" aria-expanded="false" aria-controls="navgroup-world" data-nav-group>
+            Rest of the world
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--world" id="navgroup-world">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-0">Americas</p>
+              <ul aria-labelledby="navhead-world-0">
+                <li><a href="usa.html"><span class="nav-panel__name">USA</span></a></li>
+                <li><a href="canada.html"><span class="nav-panel__name">Canada</span></a></li>
+                <li><a href="south-america.html"><span class="nav-panel__name">South America</span></a></li>
+                <li><a href="americas-interconnects.html"><span class="nav-panel__name">Americas interconnectors</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-world-1">Asia-Pacific</p>
+              <ul aria-labelledby="navhead-world-1">
+                <li><a href="australia.html"><span class="nav-panel__name">Australia</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-group">
+          <button type="button" class="nav-group__toggle" id="navgroup-solar-btn" aria-expanded="false" aria-controls="navgroup-solar" data-nav-group>
+            Plug-in solar
+            <svg class="nav-group__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-group__menu nav-panel nav-panel--solar" id="navgroup-solar">
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-0">Get started</p>
+              <ul aria-labelledby="navhead-solar-0">
+                <li><a href="plugin-solar.html"><span class="nav-panel__name">What is plug-in solar</span></a></li>
+                <li><a href="plugin-solar-considerations.html"><span class="nav-panel__name">Considerations</span></a></li>
+                <li><a href="plugin-solar-calculator.html"><span class="nav-panel__name">Energy calculator</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-1">Fitting it</p>
+              <ul aria-labelledby="navhead-solar-1">
+                <li><a href="plugin-solar-safety.html"><span class="nav-panel__name">Safety</span></a></li>
+                <li><a href="plugin-solar-mounting.html"><span class="nav-panel__name">Mounting</span></a></li>
+                <li><a href="plugin-solar-battery.html"><span class="nav-panel__name">Battery power</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-solar-2">The rules</p>
+              <ul aria-labelledby="navhead-solar-2">
+                <li><a href="plugin-solar-registration.html"><span class="nav-panel__name">Registration</span></a></li>
+                <li><a href="plugin-solar-certification.html"><span class="nav-panel__name">Certification</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="nav-link"><a href="comparisons.html">Compare</a></li>
+        <li class="nav-link"><a href="data-sources.html">Sources</a></li>
+        <li class="nav-link"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+    <div class="header-controls">
+      <button type="button" class="display-btn" data-display-toggle aria-expanded="false" aria-controls="display-panel">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Display</span>
+      </button>
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-list">
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+        <span data-nav-toggle-label>Menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+<aside class="preview-banner" aria-label="Advertisement"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></aside>
+<div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
+  <h2 id="display-panel-heading">Display and accessibility</h2>
+  <fieldset><legend>Theme</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-theme" value="system"><span>Auto</span></label>
+      <label><input type="radio" name="pref-theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="pref-theme" value="dark"><span>Dark</span></label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Text size</legend>
+    <div class="seg">
+      <label><input type="radio" name="pref-size" value="100"><span>100%</span></label>
+      <label><input type="radio" name="pref-size" value="125"><span>125%</span></label>
+      <label><input type="radio" name="pref-size" value="150"><span>150%</span></label>
+      <label><input type="radio" name="pref-size" value="175"><span>175%</span></label>
+    </div>
+  </fieldset>
+  <label class="pref-switch"><span>Low-vision font<small>Atkinson Hyperlegible Next, designed for low vision</small></span><input type="checkbox" data-pref="readable"></label>
+  <label class="pref-switch"><span>High contrast</span><input type="checkbox" data-pref="hc"></label>
+  <label class="pref-switch"><span>Reduce motion<small>Stops the logo and loading animations</small></span><input type="checkbox" data-pref="calm"></label>
+  <label class="pref-switch"><span>Underline links</span><input type="checkbox" data-pref="underline"></label>
+  <label class="pref-switch"><span>Wider text spacing</span><input type="checkbox" data-pref="spacing"></label>
+  <div class="display-panel__foot"><button type="button" class="btn" data-pref-reset>Reset</button><button type="button" class="btn btn--primary" data-pref-done>Done</button></div>
+</div>
+</div>
+<!-- shell:end -->
+
+<main id="main">
+  <div class="wrap">
+    <section class="hero">
+      <h1>Power cuts in Great Britain</h1>
+      <p>Live power cuts from the companies that run the local electricity networks. If your power is off, call 105 for free or use your network operator's own page below. This page is for information only. No operator watches it.</p>
+    </section>
+    <div data-powercuts-page><p class="area-empty">Loading live data…</p></div>
+
+    <section class="panel" aria-labelledby="dno-h">
+      <h2 id="dno-h">Who runs the network where you live</h2>
+      <p>Great Britain has 14 electricity distribution areas, run by 6 companies. They own the poles, cables and substations that bring power to your home, whoever your energy supplier is. For a power cut, contact your network operator, not your supplier. Call <strong>105</strong> from any phone, free, and it puts you through to the right one.</p>
+      <ul class="dno-list">
+        <li><strong>National Grid Electricity Distribution</strong>: West Midlands, East Midlands, South Wales and South West England. <a href="https://powercuts.nationalgrid.co.uk/">Power cut map</a></li>
+        <li><strong>UK Power Networks</strong>: London, South East England and East England. <a href="https://www.ukpowernetworks.co.uk/power-cut/map">Power cut map</a></li>
+        <li><strong>Northern Powergrid</strong>: North East England and Yorkshire. <a href="https://www.northernpowergrid.com/power-cuts-map">Power cut map</a></li>
+        <li><strong>Electricity North West</strong>: North West England. <a href="https://www.enwl.co.uk/power-cuts/">Power cuts</a></li>
+        <li><strong>SP Energy Networks</strong>: Central and South Scotland, and North Wales, Merseyside and Cheshire. <a href="https://powercuts.spenergynetworks.co.uk/map">Power cut map</a></li>
+        <li><strong>Scottish and Southern Electricity Networks</strong>: North Scotland and Southern England. <a href="https://powertrack.ssen.co.uk/powertrack">Power Track</a></li>
+      </ul>
+      <p><a href="https://www.powercut105.com/">Find your network operator by postcode on powercut105.com</a>, run by the Energy Networks Association.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="pc-about-h">
+      <h2 id="pc-about-h">About these figures</h2>
+      <p>Each operator publishes its live power cuts as open data. This site checks each one every 10 to 15 minutes. Planned work only shows once it has started. Northern Ireland's network is run separately by NIE Networks and is not shown.</p>
+      <p class="area-note">Sources: the open data portals of <a href="https://connecteddata.nationalgrid.co.uk/dataset/live-power-cuts">National Grid Electricity Distribution</a>, <a href="https://ukpowernetworks.opendatasoft.com/">UK Power Networks</a>, <a href="https://northernpowergrid.opendatasoft.com/">Northern Powergrid</a>, <a href="https://data.ssen.co.uk/">SSEN</a>, <a href="https://spenergynetworks.opendatasoft.com/">SP Energy Networks</a> and <a href="https://electricitynorthwest.opendatasoft.com/">Electricity North West</a>. Area boundaries from <a href="https://www.neso.energy/data-portal/gis-boundaries-gb-dno-license-areas">NESO</a>. <span data-pc-credits></span></p>
+    </section>
+  </div>
+</main>
+
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-attribution">Power cut data comes from each network operator's open data, with each licence named at the end of the page. Supported by NGED Open Data. Supported by Northern Powergrid Open Data. Supported by National Energy SO Open Data. See <a href="data-sources.html">Sources</a>.</p>
+    <p style="margin-top:1rem;">© <span data-current-year></span> Grid Pulse <span class="badge">Not affiliated with any grid operator</span></p>
+  </div>
+</footer>
+
+<script src="../assets/app.js?v=20261109b"></script>
+<script src="../assets/gaspower.js?v=20261109b"></script>
+</body>
+</html>

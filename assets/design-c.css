@@ -933,3 +933,34 @@ html.pref-calm .gp-ping { opacity: 0; }
    (it was grey on black in light mode, and grey on white in dark mode). */
 .home-hero__pill .is-loading-text, .page-pill .is-loading-text,
 .gp-card--dark .is-loading-text, .panel.gp-dark .is-loading-text { color: inherit; }
+
+/* ---------- Gas and power cuts (assets/gaspower.js) ---------- */
+:root { --gas-ldz: #2f6fd6; --gas-power: #8a5a3c; --gas-ind: #7a5fd0; --gas-export: #c47f00; --gas-store: #13897f; --gas-ncs: #24618a; --gas-lng: #c2410c;
+  --cut: #c0392b; --cut-planned: #c47f00; --cut-edge: #ffffff; }
+[data-theme="dark"] { --gas-ldz: #5b8fe6; --gas-power: #b07a55; --gas-ind: #9c86e8; --gas-export: #e0a030; --gas-store: #2bb3a6; --gas-ncs: #4a90c2; --gas-lng: #ef6c3a;
+  --cut: #ff6b5b; --cut-planned: #f0b23c; --cut-edge: #14181f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gas-ldz: #5b8fe6; --gas-power: #b07a55; --gas-ind: #9c86e8; --gas-export: #e0a030; --gas-store: #2bb3a6; --gas-ncs: #4a90c2; --gas-lng: #ef6c3a;
+  --cut: #ff6b5b; --cut-planned: #f0b23c; --cut-edge: #14181f; } }
+.gas-split { display: flex; height: 22px; border-radius: 6px; overflow: hidden; gap: 2px; margin: .25rem 0 .5rem; }
+.gas-split > span { display: block; min-width: 3px; }
+.gas-sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+.gas-list strong small, .gas-unit { font-weight: 600; color: var(--text-muted); font-size: .8em; }
+.gp-card--dark .gas-list strong small, .gp-card--dark .gas-unit { color: var(--dark-muted); }
+.gas-cols { width: 100%; height: 220px; display: block; }
+.gas-grid { stroke: var(--border); stroke-width: 1; }
+.gas-axis { fill: var(--text-muted); font-size: 11px; }
+.gas-key i { display: inline-block; width: 14px; height: 10px; border-radius: 3px; margin-right: 6px; }
+.gas-table { margin-top: .75rem; }
+.gas-cols-2, .pc-cols { align-items: start; }
+.pc-map { width: 100%; max-width: 420px; height: auto; display: block; margin: 0 auto; }
+.pc-area { fill: var(--map-land); stroke: var(--map-edge); stroke-width: .8; }
+.pc-area--none { fill: url(#pc-hatch); }
+.pc-hatch-bg { fill: var(--panel); } .pc-hatch-line { stroke: var(--map-edge); stroke-width: 2; }
+.pc-dot { fill: var(--cut); fill-opacity: .85; stroke: var(--cut-edge); stroke-width: .8; }
+.pc-dot--planned { fill: var(--cut-planned); }
+.pc-key-cut, .pc-key-planned, .pc-key-none { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.pc-key-cut { background: var(--cut); } .pc-key-planned { background: var(--cut-planned); }
+.pc-key-none { border-radius: 2px; background: repeating-linear-gradient(45deg, var(--map-edge) 0 2px, var(--panel) 2px 5px); border: 1px solid var(--map-edge); }
+.dno-list { columns: 2 260px; padding-left: 0; list-style: none; }
+.dno-list li { break-inside: avoid; margin: 0 0 .6rem; }
+@media (max-width: 860px) { .gp-cards [data-gas-card] { order: 4; } .gp-cards [data-area-year] { order: 5; } }

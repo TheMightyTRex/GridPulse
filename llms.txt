@@ -1,0 +1,65 @@
+# Grid Pulse
+
+> Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is. Free, no sign-in.
+
+Figures come from official sources: Elexon, NESO and the Carbon Intensity API (Great Britain), EirGrid (Ireland), the ENTSO-E Transparency Platform (European countries), the US EIA, IESO (Ontario), Open Electricity (Australia), National Gas Transmission (Great Britain gas) and the electricity network operators (power cuts). Each page names its sources and when hand-checked facts were last checked.
+
+## Pages
+
+- [Grid Pulse - the live status of Great Britain's electricity grid](https://gridpulse.info/): A redesigned live dashboard for Great Britain's electricity grid, with dark mode and history from a day to a decade.
+- [About](https://gridpulse.info/pages/about.html): What Grid Pulse (formerly UK Grid: Live+) is, full credit to Kate Morley's original National Grid: Live, and why the figures on the two sites do not always match.
+- [Interconnections of the Americas](https://gridpulse.info/pages/americas-interconnects.html): How the electricity grids of North and South America connect to each other: the three US/Canada interconnections, Quebec's asynchronous HVDC ties, and the big cross-border hydro dams and DC ties of South America, with real capacity figures.
+- [Day archive](https://gridpulse.info/pages/archive.html): Every recorded day for one grid, shaded by renewable share, with links to each day.
+- [Australia - the live status of Australia's National Electricity Market](https://gridpulse.info/pages/australia.html): A live dashboard for Australia's National Electricity Market (NEM) - demand, spot price and generation mix, live from the Open Electricity API.
+- [Belgium - the live status of the Belgian electricity grid](https://gridpulse.info/pages/belgium.html): A live dashboard for Belgium's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Borders](https://gridpulse.info/pages/borders.html): Electricity across each of a country's borders today: the live flow and direction, energy in and out, and when each border was last updated.
+- [Canada - the live status of Ontario's electricity grid](https://gridpulse.info/pages/canada.html): A live dashboard for Ontario's electricity grid - demand and generation mix, live from IESO. Covers Ontario only, not all of Canada. Wholesale price, emissions and transfers are not available and are shown as not available rather than a placeholder.
+- [Comparisons](https://gridpulse.info/pages/comparisons.html): Compare tracked countries side by side, GB's own history against a prior period, or two of GB's generation categories against each other.
+- [Sources](https://gridpulse.info/pages/data-sources.html): Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.
+- [One day](https://gridpulse.info/pages/day.html): One day on one grid: generation by source, demand, price, net imports and any records set that day.
+- [Denmark (DK1) - the live status of western Denmark's electricity grid](https://gridpulse.info/pages/denmark.html): A live dashboard for western Denmark's (DK1) electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [About electricity prices](https://gridpulse.info/pages/electricity-prices.html): How the GB wholesale electricity price is calculated, how Contracts for Difference work, and why cheaper renewables do not automatically mean cheaper bills.
+- [EU countries: Live - a live snapshot of the EU member states this site tracks](https://gridpulse.info/pages/eu.html): A live snapshot summing demand, generation, day-ahead price and generation mix across the handful of EU member states this site tracks via ENTSO-E - not a full EU-27 total.
+- [Fossil fuels](https://gridpulse.info/pages/fossil-fuels.html): Detailed live and historical data for fossil fuels generation on Great Britain's electricity grid.
+- [France - the live status of the French electricity grid](https://gridpulse.info/pages/france.html): A live dashboard for France's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Gas in Great Britain](https://gridpulse.info/pages/gas.html): Great Britain's gas right now: how much is being used, by homes and businesses, power stations and industry, and where it comes from. Live from National Gas Transmission.
+- [Germany - the live status of the German electricity grid](https://gridpulse.info/pages/germany.html): A live dashboard for Germany's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [History](https://gridpulse.info/pages/history.html): Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.
+- [Interconnectors](https://gridpulse.info/pages/interconnectors.html): Detailed live and historical data for interconnectors generation on Great Britain's electricity grid.
+- [Ireland: Live - the live status of the all-island electricity system](https://gridpulse.info/pages/ireland.html): A live dashboard for the island of Ireland's Single Electricity Market, with generation mix, history and records.
+- [Italy - the live status of the Italian electricity grid](https://gridpulse.info/pages/italy.html): A live dashboard for Italy's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [Netherlands - the live status of the Dutch electricity grid](https://gridpulse.info/pages/nl.html): A live dashboard for the Netherlands' electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Norway (NO2) - the live status of southwest Norway's electricity grid](https://gridpulse.info/pages/norway.html): A live dashboard for southwest Norway's (NO2) electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Nuclear & biomass](https://gridpulse.info/pages/nuclear-biomass.html): Detailed live and historical data for nuclear & biomass generation on Great Britain's electricity grid.
+- [Plug-in solar and battery power](https://gridpulse.info/pages/plugin-solar-battery.html): Can you add a battery to plug-in solar? Plug-in batteries are not permitted under the current UK rules. What the rules say, what is still possible, and the safety standards to look for.
+- [Plug-in solar energy calculator](https://gridpulse.info/pages/plugin-solar-calculator.html): Estimate plug-in solar generation and savings by location, season, panel placement and household base load, month by month across the year, compared against Ofgem's price cap and Octopus's Flexible tariff, with an equipment-cost payback estimate.
+- [Plug-in solar certification](https://gridpulse.info/pages/plugin-solar-certification.html): How to check a plug-in solar kit is genuinely compliant: the ENA Type Test Register, how this differs from full MCS certification, and what CE/UKCA marking actually means.
+- [Plug-in solar: things to consider](https://gridpulse.info/pages/plugin-solar-considerations.html): Consumer unit types, extension leads, air-con and other high loads, ring final circuits, what happens in a power cut, panel oversizing, and best panel placement - the practical detail before you fit plug-in solar.
+- [Plug-in solar mounting rules](https://gridpulse.info/pages/plugin-solar-mounting.html): Where you are allowed to mount a plug-in solar panel - balcony, wall, roof, ground or fence - permitted development limits, planning permission triggers, and how England, Scotland, Wales and Northern Ireland differ.
+- [Plug-in solar registration](https://gridpulse.info/pages/plugin-solar-registration.html): How to notify your network operator when you fit a plug-in solar kit, what the one-device-per-household rule means, and what happens if you do not register.
+- [Plug-in solar safety](https://gridpulse.info/pages/plugin-solar-safety.html): What a compliant plug-in solar kit already builds in for safety, plus the practical checks worth doing yourself - fuse rating, anti-islanding, weatherproofing, and why you should never install more than one kit.
+- [What is plug-in solar?](https://gridpulse.info/pages/plugin-solar.html): Plug-in (balcony) solar became legal in Great Britain on 27 August 2026. What it is, how it differs from full rooftop solar, and where to find the safety, calculator, mounting and registration detail.
+- [Poland - the live status of the Polish electricity grid](https://gridpulse.info/pages/poland.html): A live dashboard for Poland's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [Portugal - the live status of the Portuguese electricity grid](https://gridpulse.info/pages/portugal.html): A live dashboard for Portugal's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [Power cuts in Great Britain](https://gridpulse.info/pages/power-cuts.html): Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.
+- [Historic prices](https://gridpulse.info/pages/price-history.html): Wholesale electricity price history for Great Britain, from the past day back to all available data, with the exact calendar period each chart covers.
+- [Records](https://gridpulse.info/pages/records.html): The highest and lowest figures for each grid: official records with sources, records since this site started recording, best of each year and the records broken most recently.
+- [UK renewables expansion plans](https://gridpulse.info/pages/renewables-plans.html): What the UK government's Clean Power 2030 Action Plan actually targets, how recent CfD auctions have gone, and whether the country is on track.
+- [Renewables](https://gridpulse.info/pages/renewables.html): Detailed live and historical data for renewables generation on Great Britain's electricity grid.
+- [South America](https://gridpulse.info/pages/south-america.html): Background on the electricity grids of Brazil, Argentina, Chile and Colombia - no live figures yet, but real sourced facts about each grid and where to find its real-time data.
+- [Spain - the live status of the Spanish electricity grid](https://gridpulse.info/pages/spain.html): A live dashboard for Spain's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [Storage](https://gridpulse.info/pages/storage.html): Detailed live and historical data for storage generation on Great Britain's electricity grid.
+- [Sweden - the live status of the Swedish electricity grid](https://gridpulse.info/pages/sweden.html): A live dashboard for Sweden's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
+- [USA - an overview of the US electricity grid](https://gridpulse.info/pages/usa.html): An overview of the US electricity grid's demand, generation, generation mix and history - live from the EIA (typically about a day behind). Wholesale price and emissions are not published by the EIA and are shown as not available rather than a placeholder.
+
+## Live data as JSON
+
+- https://gridpulse.info/api/now_all.php : every covered country right now
+- https://gridpulse.info/api/areas.php : the countries covered and their codes
+- https://gridpulse.info/api/day.php?area=GB : one country's day so far, or a past day with &date=YYYY-MM-DD
+- https://gridpulse.info/api/records.php?area=GB : records since this site started recording
+- https://gridpulse.info/api/flows.php?area=GB : flows across a country's borders today
+- https://gridpulse.info/api/gas.php : Great Britain's gas use and supply
+- https://gridpulse.info/api/power_cuts.php : live power cuts in Great Britain
+
+Please credit Grid Pulse and the original source named on each page.

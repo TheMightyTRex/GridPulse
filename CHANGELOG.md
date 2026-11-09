@@ -2,6 +2,28 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse13 - 9 November 2026
+
+**Gas in Great Britain (new page, pages/gas.html)**
+- Live gas use split into homes and businesses (the local gas networks), power stations, large industry, exports and storage, and supply split into the North Sea (UK and Norway), LNG ships, storage and pipelines from Europe. From National Gas Transmission's Instantaneous Flow API: 2-minute readings, published every 12 minutes, no key needed.
+- The last 24 hours as stacked charts, and the last month as daily columns (each gas day's actual totals from National Gas's Published Data API), with a table.
+- A "Gas right now" card on the Great Britain dashboard.
+- New jobs: GAS (every 12 minutes) and GASDAILY (every 6 hours). New tables gas_flow and gas_daily, created automatically. Two-minute readings are kept for 35 days.
+
+**Power cuts (new page, pages/power-cuts.html)**
+- Live power cuts on a map of Great Britain's 14 network areas, with planned work shown separately and bigger dots for more customers. A table by operator, the biggest cuts right now, customers affected over the last 24 hours, and who runs the network where you live, with each operator's own power cut page and 105.
+- From the open data of National Grid Electricity Distribution, UK Power Networks, Northern Powergrid and SSEN (no keys needed). SP Energy Networks and Electricity North West need a free API key each: add them to the new 'powercuts' section of config.php. Until then their areas are striped as "No live data".
+- Area boundaries from NESO, simplified. Each licence's attribution statement is on the page.
+- New job POWERCUTS (every 5 minutes, two operators each time). New tables power_cut and power_cut_count, created automatically.
+- Both pages are in the Great Britain menu, and both sources are on the Sources page.
+
+**Search engines and AI tools (nothing changes on screen)**
+- Every page now carries schema.org structured data: the site, the page, its place in the menu, and for pages with data, what the data covers.
+- New sitemap.xml, robots.txt (lets every crawler in, keeps out includes, cron, tools and docker) and llms.txt (a plain summary of the site, its pages and its JSON endpoints for AI tools). tools/apply_shell.py rebuilds all three.
+- An IndexNow key file at the site root, so new and changed pages can be sent to Bing and other IndexNow search engines.
+
+- Cache-busting version bumped to 20261109b.
+
 ## GridPulse12 - 8 November 2026
 
 **Records (checked 8 November 2026 against NESO)**
