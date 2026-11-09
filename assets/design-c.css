@@ -964,3 +964,5 @@ html.pref-calm .gp-ping { opacity: 0; }
 .dno-list { columns: 2 260px; padding-left: 0; list-style: none; }
 .dno-list li { break-inside: avoid; margin: 0 0 .6rem; }
 @media (max-width: 860px) { .gp-cards [data-gas-card] { order: 4; } .gp-cards [data-area-year] { order: 5; } }
+.dno-list--one { columns: auto; }
+.report-panel h3 { margin: 0 0 .5rem; }
