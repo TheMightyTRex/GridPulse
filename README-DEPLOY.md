@@ -198,6 +198,12 @@ Added for Grid Pulse in November 2026. Nothing to set up: the tables are created
 - The border maps are files in `assets/maps/` (one per country), built from Natural Earth by `tools/maps/build_maps.mjs` (`cd tools/maps`, `npm install`, `node build_maps.mjs`). Only needed if a country or border is added. Don't upload `tools/maps/node_modules`.
 - The shared sections on the country pages are written by `python3 tools/apply_areas.py` (run it after `tools/apply_shell.py`) and filled in by `assets/areas.js`.
 
+## Search engines (each release)
+
+- `python3 tools/apply_shell.py` rebuilds `sitemap.xml`, `robots.txt` and `llms.txt` and the structured data in every page. Upload them with the pages.
+- The IndexNow job (`includes/indexnow.php`) runs hourly. After an upload it sends just the pages that really changed to Bing and the other IndexNow search engines. A release that only changes the cache-busting version sends nothing. Its result shows in the ingest log as INDEXNOW.
+- Keep `f33267f25a6411679952364424607e41.txt` (the IndexNow key), `BingSiteAuth.xml` and `google122e67112e88d290.html` at the site root. On a test copy of the site, set `'indexnow' => ['enabled' => false]` in config.php.
+
 ## Security notes
 
 - `includes/.htaccess` blocks direct web access to the `includes/` folder. This is defence-in-depth - PHP files execute rather than serve as source anyway - but costs nothing to keep.
