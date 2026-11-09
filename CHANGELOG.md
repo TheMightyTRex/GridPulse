@@ -9,6 +9,7 @@ All notable changes to this project are documented here. Dates are when the chan
 - sql/schema.sql now lists the four tables added in GridPulse13 (gas_flow, gas_daily, power_cut, power_cut_count), for reference. The jobs still create them automatically.
 - Added google122e67112e88d290.html at the site root, so Google Search Console can confirm the site belongs to Dave.
 - Added BingSiteAuth.xml at the site root, so Bing Webmaster Tools can confirm the site belongs to Dave.
+- Added Bing's msvalidate.01 meta tag to the home page head (written by tools/apply_shell.py).
 - Cache-busting version bumped to 20261109c.
 
 ## GridPulse13 - 9 November 2026
