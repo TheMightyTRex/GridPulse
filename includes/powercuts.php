@@ -20,8 +20,9 @@
  *   ENWL  Electricity North West. Opendatasoft, CC BY 4.0. Needs a free API
  *         key in config.php ('powercuts' => ['enwl_key' => ...]).
  *
- * Job POWERCUTS runs every 5 minutes and fetches the two operators that were
- * fetched longest ago, so each one updates about every 10 to 15 minutes.
+ * Job POWERCUTS runs every 5 minutes. On a schedule it fetches every
+ * operator each time (the feeds are small); a page load fetches just the one
+ * fetched longest ago.
  * Each cut is stored with seen_at = the fetch time; the page shows the cuts
  * from each operator's latest fetch. Planned work that has not started yet
  * is left out.

@@ -269,8 +269,8 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
             ukgrid_ingest_gas_daily($pdo, $config, $timeoutSeconds);
             break;
         case 'POWERCUTS':
-            // Two operators per run on a schedule, one on a page load.
-            ukgrid_ingest_powercuts($pdo, $config, $timeoutSeconds, $scheduled ? 2 : 1);
+            // Every operator on a schedule (their feeds are small), one on a page load.
+            ukgrid_ingest_powercuts($pdo, $config, $timeoutSeconds, $scheduled ? 6 : 1);
             break;
         case 'INDEXNOW':
             ukgrid_ingest_indexnow($pdo, $config, $timeoutSeconds);

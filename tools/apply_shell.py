@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261109e"
+VERSION = "20261109f"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
