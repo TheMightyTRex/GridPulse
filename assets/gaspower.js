@@ -218,30 +218,135 @@
 
   async function getMap() {
     try {
-      const r = await fetch(ROOT + "assets/maps/gb-dno.json" + VER);
+      const r = await fetch(ROOT + "assets/maps/gb-dno-ll.json" + VER);
       return r.ok ? await r.json() : null;
     } catch (e) { return null; }
   }
 
-  function cutsMap(map, ops, cuts) {
-    const covered = {};
-    ops.forEach((o) => { covered[o.code] = o.covered && o.fetched_at; });
-    const P = map.proj;
-    const xy = (lat, lon) => [(lon - P.lon0) * P.c * P.k, (P.lat1 - lat) * P.k];
-    const regions = map.regions.map((r) => '<path d="' + r.d + '" class="' + (covered[r.dno] ? "pc-area" : "pc-area pc-area--none") + '"><title>' + esc(r.name + ": " + (covered[r.dno] ? "live data" : "no live data here")) + "</title></path>").join("");
-    const maxC = Math.max(1, ...cuts.map((c) => c.customers || 0));
-    const dots = cuts.filter((c) => c.lat != null).sort((a, b) => (b.customers || 0) - (a.customers || 0)).map((c) => {
-      const [x, y] = xy(c.lat, c.lon);
-      const r = 2.2 + Math.sqrt((c.customers || 0) / maxC) * 7;
-      return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r.toFixed(1) + '" class="' + (c.planned ? "pc-dot pc-dot--planned" : "pc-dot") + '"><title>' +
-        esc((c.planned ? "Planned work" : "Power cut") + (c.place ? ", " + c.place : "") + (c.customers != null ? ", " + whole(c.customers) + " customers" : "") + (c.etr ? ". Expected back " + when(c.etr) : "")) + "</title></circle>";
-    }).join("");
-    const shown = cuts.filter((c) => c.lat != null);
-    const unplanned = shown.filter((c) => !c.planned).length;
-    const aria = "Map of Great Britain's electricity network areas with " + unplanned + " power cuts and " + (shown.length - unplanned) + " planned work sites marked. Areas shaded with stripes have no live data.";
-    return '<svg class="pc-map" viewBox="0 0 ' + map.w + " " + map.h + '" role="img" aria-label="' + esc(aria) + '">' +
-      '<defs><pattern id="pc-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="pc-hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="pc-hatch-line"/></pattern></defs>' +
-      regions + dots + "</svg>";
+  /* The power cuts map: an OpenStreetMap street map (Leaflet, served from
+     assets/vendor/leaflet) with the 14 network areas drawn over it.
+     Pointing at an area highlights it; selecting it zooms to the whole
+     area. Select a dot, or a cut in the "In view" list, to see its
+     details. The list always shows the cuts in the part of the map in view. */
+  function cutsMapHtml(map) {
+    const opts = map.regions.slice().sort((a, b) => a.name.localeCompare(b.name)).map((r) => '<option value="' + r.id + '">' + esc(r.name) + "</option>").join("");
+    return '<div class="pc-tools" role="group" aria-label="Map controls">' +
+        '<button type="button" class="pc-btn pc-btn--text" data-z="reset">Whole of Great Britain</button>' +
+        '<label class="pc-jump">Zoom to <select data-pc-jump><option value="">an area…</option>' + opts + "</select></label>" +
+      "</div>" +
+      '<div class="pc-mapgrid"><div class="pc-mapbox"><div class="pc-street" data-pc-leaflet role="region" aria-label="Street map of Great Britain with the electricity network areas and power cuts. The list beside it gives every cut in view."><p class="area-empty">Loading the map…</p></div></div>' +
+      '<div class="pc-side"><div class="pc-detail" data-pc-detail aria-live="polite"></div>' +
+        '<h3 class="area-sub" data-pc-inview-h>In view</h3><ul class="pc-inview" data-pc-inview></ul></div></div>';
+  }
+
+  function cutDetail(c, opName) {
+    if (!c) return '<p class="area-note">Select an area to zoom in, then select a dot, or a cut in the list, to see its details.</p>';
+    const rows = [
+      ["Type", c.planned ? "Planned work" : "Power cut"],
+      ["Area", c.place || "Not given"],
+      ["Customers affected", c.customers != null ? whole(c.customers) : "Not given"],
+      ["Started", c.started ? when(c.started) : "Not given"],
+      ["Expected back", c.etr ? when(c.etr) : "Not given"],
+      ["Network operator", opName],
+      ["Reference", c.ref],
+    ];
+    return '<h3 class="area-sub">' + esc((c.planned ? "Planned work" : "Power cut") + (c.place ? " in " + c.place : "")) + "</h3>" +
+      '<dl class="pc-dl">' + rows.map((r) => "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>").join("") + "</dl>" +
+      '<p><a href="' + LINKS[c.dno] + '">Check this on ' + esc(opName) + "'s own page</a> for the latest.</p>";
+  }
+
+  function loadLeaflet() {
+    if (window.L) return Promise.resolve();
+    return new Promise((res, rej) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = ROOT + "assets/vendor/leaflet/leaflet.css" + VER;
+      document.head.appendChild(css);
+      const s = document.createElement("script");
+      s.src = ROOT + "assets/vendor/leaflet/leaflet.js" + VER;
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function initCutsMap(box, map, ops, cuts) {
+    const el = box.querySelector("[data-pc-leaflet]");
+    const detail = box.querySelector("[data-pc-detail]");
+    const inview = box.querySelector("[data-pc-inview]");
+    const inviewH = box.querySelector("[data-pc-inview-h]");
+    const opName = {}, covered = {};
+    ops.forEach((o) => { opName[o.code] = o.name; covered[o.code] = o.covered && o.fetched_at; });
+    const placed = cuts.filter((c) => c.lat != null).sort((a, b) => (b.customers || 0) - (a.customers || 0));
+    const maxC = Math.max(1, ...placed.map((c) => c.customers || 0));
+    detail.innerHTML = cutDetail(null);
+    try { await loadLeaflet(); } catch (e) {
+      el.innerHTML = '<p class="area-empty">The map could not be loaded. Every cut is still listed beside it.</p>';
+    }
+    const L = window.L;
+    const css = getComputedStyle(document.documentElement);
+    const tok = (n, fb) => css.getPropertyValue(n).trim() || fb;
+    let lmap = null, selected = null;
+    const markers = [];
+    const regionLayers = {};
+
+    function listInView() {
+      const b = lmap ? lmap.getBounds() : null;
+      const vis = b ? placed.filter((c) => b.contains([c.lat, c.lon])) : placed;
+      inviewH.textContent = vis.length ? "In view: " + vis.length + (vis.length === 1 ? " cut" : " cuts") : "In view";
+      inview.innerHTML = vis.length ? vis.slice(0, 80).map((c) => '<li><button type="button" class="pc-item' + (c === selected ? " is-selected" : "") + '" data-i="' + placed.indexOf(c) + '">' +
+        '<i class="' + (c.planned ? "pc-key-planned" : "pc-key-cut") + '" aria-hidden="true"></i><span>' + esc(c.place || c.ref) + " <small>(" + esc(c.dno) + ")</small></span><strong>" + (c.customers != null ? whole(c.customers) : "-") + "</strong></button></li>").join("") +
+        (vis.length > 80 ? '<li class="area-note">And ' + (vis.length - 80) + " more. Zoom in to see them.</li>" : "")
+        : '<li class="area-note">No power cuts in this part of the map.</li>';
+    }
+    function select(c, fly) {
+      selected = c;
+      detail.innerHTML = cutDetail(c, c ? opName[c.dno] : "");
+      markers.forEach((m) => m.setStyle({ weight: m._cut === c ? 3 : 1.5, color: m._cut === c ? tok("--text", "#14181f") : "#ffffff" }));
+      if (c && lmap && fly) lmap.setView([c.lat, c.lon], Math.max(lmap.getZoom(), 12));
+      listInView();
+    }
+    function zoomToRegion(id) {
+      if (regionLayers[id] && lmap) lmap.fitBounds(regionLayers[id].getBounds(), { padding: [12, 12] });
+    }
+
+    if (L) {
+      el.innerHTML = "";
+      lmap = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.25 });
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(lmap);
+      const all = [];
+      map.regions.forEach((r) => {
+        const live = covered[r.dno];
+        const base = { color: tok("--accent", "#0a6e5c"), weight: 1.5, opacity: 0.9, fillColor: live ? tok("--accent", "#0a6e5c") : "#7a7a7a", fillOpacity: live ? 0.06 : 0.22, dashArray: live ? null : "4 4" };
+        const layer = L.polygon(r.rings, base).addTo(lmap);
+        layer.bindTooltip(r.name + (live ? "" : ": no live data here"), { sticky: true });
+        layer.on("mouseover", () => layer.setStyle({ weight: 3.5, fillOpacity: live ? 0.22 : 0.32 }));
+        layer.on("mouseout", () => layer.setStyle(base));
+        layer.on("click", () => zoomToRegion(r.id));
+        regionLayers[r.id] = layer;
+        all.push(layer);
+      });
+      const gbBounds = L.featureGroup(all).getBounds();
+      lmap.fitBounds(gbBounds);
+      placed.forEach((c) => {
+        const m = L.circleMarker([c.lat, c.lon], {
+          radius: 4 + Math.sqrt((c.customers || 0) / maxC) * 11, weight: 1.5, color: "#ffffff", fillOpacity: 0.9,
+          fillColor: c.planned ? tok("--cut-planned", "#c47f00") : tok("--cut", "#c0392b"),
+        }).addTo(lmap);
+        m._cut = c;
+        m.bindTooltip((c.planned ? "Planned work" : "Power cut") + (c.place ? ", " + c.place : "") + (c.customers != null ? ", " + whole(c.customers) + " customers" : ""));
+        m.on("click", (ev) => { L.DomEvent.stopPropagation(ev); select(c, false); });
+        markers.push(m);
+      });
+      lmap.on("moveend", listInView);
+      box.querySelector('[data-z="reset"]').addEventListener("click", () => { lmap.fitBounds(gbBounds); box.querySelector("[data-pc-jump]").value = ""; });
+    }
+    box.querySelector("[data-pc-jump]").addEventListener("change", (ev) => { if (ev.target.value) zoomToRegion(ev.target.value); });
+    inview.addEventListener("click", (ev) => {
+      const b = ev.target.closest("button[data-i]");
+      if (b) select(placed[+b.getAttribute("data-i")], true);
+    });
+    listInView();
   }
 
   /** Total customers across covered operators, every 30 minutes, from each operator's latest count in that half hour. */
@@ -286,10 +391,11 @@
       '<div class="home-hero__card"><p>Plus ' + (cuts.length - unplanned.length) + " sites with planned work under way. Covers " + live.length + " of the 6 network operators" +
       (missing.length ? ": " + esc(missing.map((o) => o.name).join(" and ")) + " not included yet." : ".") + "</p></div></section>";
 
-    html += '<div class="gp-cols pc-cols">' +
-      '<section class="panel" aria-labelledby="pc-map-h"><h2 id="pc-map-h">Where they are</h2>' + (map ? cutsMap(map, ops, cuts) : '<p class="area-empty">The map could not be loaded.</p>') +
-      '<p class="gpmap-key"><span><i class="pc-key-cut"></i>Power cut</span><span><i class="pc-key-planned"></i>Planned work</span><span>Bigger = more customers</span><span><i class="pc-key-none"></i>No live data</span></p>' +
-      '<p class="area-note">Each dot is placed where the operator says the cut is. Select a dot to see the area and the expected restoration time.</p></section>';
+    html += '<div class="gp-cols pc-cols">';
+    const mapHtml = '<section class="panel pc-mappanel" aria-labelledby="pc-map-h" data-pc-mapbox><h2 id="pc-map-h">Where they are</h2>' + (map ? cutsMapHtml(map) : '<p class="area-empty">The map could not be loaded.</p>') +
+      '<p class="gpmap-key"><span><i class="pc-key-cut"></i>Power cut</span><span><i class="pc-key-planned"></i>Planned work</span><span>Bigger = more customers</span><span><i class="pc-key-none"></i>Dashed area: no live data</span></p>' +
+      '<p class="area-note">Point at an area to highlight it and select it to zoom in. Use + and − to zoom, and drag to move around. Each dot is placed where the operator says the cut is.</p></section>';
+    html = html.replace('<div class="gp-cols pc-cols">', mapHtml + '<div class="gp-cols pc-cols">');
 
     const opRows = ops.map((o) => {
       const ok = o.covered && o.fetched_at;
@@ -309,6 +415,8 @@
       '<div class="chart-wrap" style="height:220px;"><canvas id="pc-history" role="img" aria-label="Line chart of customers affected by power cuts over the last 24 hours"></canvas></div></section>';
 
     host.innerHTML = html;
+    const mapBox = host.querySelector("[data-pc-mapbox]");
+    if (map && mapBox) initCutsMap(mapBox, map, ops, cuts);
     const hs = historySeries(d.history || {});
     if (hs.values.length > 1 && GP.renderLineChart) {
       GP.renderLineChart(document.getElementById("pc-history"), { labels: hs.times.map(clock), times: hs.times, values: hs.values, unit: "" },
