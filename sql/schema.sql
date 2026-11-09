@@ -522,3 +522,45 @@ CREATE TABLE IF NOT EXISTS fetch_state (
   message TEXT NULL,
   PRIMARY KEY (job, item)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Great Britain gas from National Gas Transmission (includes/gas.php).
+-- Created automatically by the GAS and GASDAILY jobs; listed here for reference.
+CREATE TABLE IF NOT EXISTS gas_flow (
+  ts DATETIME NOT NULL COMMENT 'UTC',
+  item VARCHAR(16) NOT NULL,
+  mcm DECIMAL(9,3) NOT NULL COMMENT 'rate, mcm per day',
+  PRIMARY KEY (ts, item)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS gas_daily (
+  gas_day DATE NOT NULL,
+  item VARCHAR(16) NOT NULL,
+  mcm DECIMAL(9,3) NOT NULL COMMENT 'total for the gas day',
+  PRIMARY KEY (gas_day, item)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Live power cuts from the network operators (includes/powercuts.php).
+-- Created automatically by the POWERCUTS job; listed here for reference.
+CREATE TABLE IF NOT EXISTS power_cut (
+  dno VARCHAR(6) NOT NULL,
+  ref VARCHAR(40) NOT NULL,
+  planned TINYINT NOT NULL DEFAULT 0,
+  customers INT NULL,
+  lat DECIMAL(8,5) NULL,
+  lon DECIMAL(8,5) NULL,
+  place VARCHAR(80) NULL COMMENT 'postcode or area name as given',
+  started DATETIME NULL COMMENT 'UTC',
+  etr DATETIME NULL COMMENT 'estimated restoration, UTC',
+  seen_at DATETIME NOT NULL COMMENT 'UTC fetch time',
+  PRIMARY KEY (dno, ref),
+  KEY idx_seen (dno, seen_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS power_cut_count (
+  dno VARCHAR(6) NOT NULL,
+  ts DATETIME NOT NULL COMMENT 'UTC fetch time',
+  cuts INT NOT NULL,
+  planned INT NOT NULL,
+  customers INT NULL,
+  PRIMARY KEY (dno, ts)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
