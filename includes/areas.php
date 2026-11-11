@@ -162,9 +162,12 @@ function ukgrid_area_buckets(PDO $pdo, array $area, string $fromUtc, string $toU
             break;
 
         case 'entsoe':
+            $types = [];
             foreach ($q("SELECT {$bucketExpr} b, psr_type, AVG(mw) FROM readings_entsoe_generation WHERE {$range} AND country_code = :cc GROUP BY b, psr_type", ['cc' => $code]) as [$ts, $psr, $mw]) {
                 $add($ts, 'g', ukgrid_area_psr_group((string) $psr), $mw);
+                $types[$ts] = ($types[$ts] ?? 0) + 1;
             }
+            $usual = ukgrid_entsoe_usual_types($pdo, $code, $toUtc);
             if ($area['has_demand']) {
                 foreach ($q("SELECT {$bucketExpr} b, AVG(mw) FROM readings_entsoe_demand WHERE {$range} AND country_code = :cc GROUP BY b", ['cc' => $code]) as [$ts, $v]) $add($ts, 'demand', null, $v);
             }
@@ -173,6 +176,18 @@ function ukgrid_area_buckets(PDO $pdo, array $area, string $fromUtc, string $toU
             }
             foreach (ukgrid_area_flow_net($pdo, $code, $bucketExpr, $range, $p) as [$ts, $v]) {
                 $add($ts, 'imports', null, $v);
+            }
+            // Half-published readings: fewer than half the usual generation
+            // types, or generation under a fifth of demand. Germany had only
+            // offshore wind for over a day in November 2026, which made
+            // "100% renewable" and false records. Leave those half hours out
+            // (anywhere in the day, not just at the end).
+            foreach (array_keys($out) as $ts) {
+                $gen = array_sum(array_filter($out[$ts]['g'], function ($v) { return $v > 0; }));
+                $dem = $out[$ts]['demand'];
+                if (($usual > 0 && ($types[$ts] ?? 0) * 2 < $usual) || ($dem !== null && $dem > 0 && $gen < 0.2 * $dem)) {
+                    $out[$ts]['g'] = [];
+                }
             }
             break;
 
@@ -529,7 +544,11 @@ function ukgrid_compute_daily(PDO $pdo, array $config, int $timeoutSeconds = 10)
         try {
             $today = ukgrid_area_today($area);
             $yesterday = (new DateTimeImmutable($today))->modify('-1 day')->format('Y-m-d');
-            foreach ([$yesterday, $today] as $day) {
+            // The day before yesterday too: sources fill in late readings
+            // for up to a day, and a day summed from half-published readings
+            // (and any false records from it) gets corrected.
+            $dayBefore = (new DateTimeImmutable($today))->modify('-2 day')->format('Y-m-d');
+            foreach ([$dayBefore, $yesterday, $today] as $day) {
                 [$f, $t] = ukgrid_area_day_bounds($area, $day);
                 $s = ukgrid_area_day_summary($area, ukgrid_area_buckets($pdo, $area, $f, $t), $day);
                 if ($s) {

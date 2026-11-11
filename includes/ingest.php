@@ -1554,6 +1554,49 @@ function ukgrid_entsoe_country_latest_ts(PDO $pdo, string $countryCode): int
 }
 
 /**
+ * How many generation types $cc usually reports: the number of ENTSO-E
+ * psr types with a reading of 1 MW or more in the 14 days before $beforeTs
+ * (UTC, "Y-m-d H:i:s"). Used to spot half-published readings. In November
+ * 2026 Germany's feed had only offshore wind for over a day, and the site
+ * showed "100% renewable" from 0.7 GW of a 68 GW demand. A reading with
+ * fewer than half the usual types is treated as not complete yet.
+ */
+function ukgrid_entsoe_usual_types(PDO $pdo, string $cc, string $beforeTs): int
+{
+    static $cache = [];
+    $key = $cc . '|' . substr($beforeTs, 0, 13);
+    if (!isset($cache[$key])) {
+        $st = $pdo->prepare('SELECT COUNT(DISTINCT psr_type) FROM readings_entsoe_generation
+            WHERE country_code = :cc AND ts BETWEEN DATE_SUB(:t1, INTERVAL 14 DAY) AND :t2 AND mw >= 1');
+        $st->execute(['cc' => $cc, 't1' => $beforeTs, 't2' => $beforeTs]);
+        $cache[$key] = (int) $st->fetchColumn();
+    }
+    return $cache[$key];
+}
+
+/**
+ * Epoch time of $cc's latest COMPLETE generation reading in the last 24
+ * hours (at least half the usual types), or 0 if there is none. The fetch
+ * window for generation reaches back to this, so types a TSO publishes
+ * late get filled in, instead of the window following whichever single
+ * type arrived first.
+ */
+function ukgrid_entsoe_latest_complete_gen(PDO $pdo, string $cc): int
+{
+    $now = gmdate('Y-m-d H:i:s');
+    $usual = ukgrid_entsoe_usual_types($pdo, $cc, $now);
+    if ($usual === 0) {
+        return 0;
+    }
+    $st = $pdo->prepare('SELECT ts FROM readings_entsoe_generation
+        WHERE country_code = :cc AND ts BETWEEN DATE_SUB(:t1, INTERVAL 24 HOUR) AND :t2
+        GROUP BY ts HAVING COUNT(*) * 2 >= :need ORDER BY ts DESC LIMIT 1');
+    $st->execute(['cc' => $cc, 't1' => $now, 't2' => $now, 'need' => $usual]);
+    $ts = $st->fetchColumn();
+    return $ts ? (int) strtotime($ts . ' UTC') : 0;
+}
+
+/**
  * $skipFresherThanMinutes: if > 0, a country whose own data is already
  * newer than this many minutes is left out of this run entirely, rather
  * than always considering all 12 configured countries.
@@ -1661,6 +1704,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
 
     $rowsWritten = 0;
     $errors = [];
+    $notes = [];
     $isFirstRequest = true;
     $completedNormally = false;
 
@@ -1694,6 +1738,14 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
             $startTs = time() - 24 * 3600;
         }
         $periodStart = gmdate('YmdHi', $startTs);
+        // Generation can be "fresh" from one early type while the rest are
+        // missing, so its window reaches back to the latest complete
+        // reading instead (still capped at 24 hours).
+        $genStart = $startTs;
+        if (in_array('generation', $fetch, true)) {
+            $complete = ukgrid_entsoe_latest_complete_gen($pdo, $countryCode);
+            $genStart = min($startTs, $complete > 0 ? max(time() - 24 * 3600, $complete - 3600) : time() - 24 * 3600);
+        }
         ukgrid_entsoe_attempts_mark($countryCode);
 
         foreach ($fetch as $kind) {
@@ -1724,7 +1776,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
             } elseif ($kind === 'generation') {
                 $url = $base . '?securityToken=' . urlencode($token)
                     . '&documentType=A75&processType=A16&in_Domain=' . urlencode($domain)
-                    . '&periodStart=' . $periodStart . '&periodEnd=' . $periodEnd;
+                    . '&periodStart=' . gmdate('YmdHi', $genStart) . '&periodEnd=' . $periodEnd;
                 $valueField = 'quantity';
             } elseif ($kind === 'demand') {
                 $url = $base . '?securityToken=' . urlencode($token)
@@ -1747,6 +1799,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
             }
 
             $countryRows = 0;
+            $typesSeen = [];
             foreach ($parsed['points'] as $point) {
                 if ($kind === 'price') {
                     $priceStmt->execute(['ts' => $point['ts'], 'cc' => $countryCode, 'v' => $point['value']]);
@@ -1764,11 +1817,18 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
                         continue;
                     }
                     $psr = $point['psrType'] ?? 'UNK';
+                    $typesSeen[$psr] = true;
                     $genStmt->execute(['ts' => $point['ts'], 'cc' => $countryCode, 'psr' => $psr, 'v' => $point['value']]);
                 }
                 $countryRows++;
             }
             $rowsWritten += $countryRows;
+            if ($kind === 'generation') {
+                // Say how many generation types came back against the usual
+                // number, so a half-published feed shows up in the log.
+                $usual = ukgrid_entsoe_usual_types($pdo, $countryCode, gmdate('Y-m-d H:i:s'));
+                $notes[] = "{$countryCode}/generation: " . count($typesSeen) . ' of ' . $usual . ' usual types from ' . gmdate('j M H:i', $genStart) . ' UTC';
+            }
         }
     }
 
@@ -1781,7 +1841,7 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
         $countryNote = $onlyCountry . ' is not configured (domain/fetch missing) in entsoe_countries.';
         $status = 'ERROR';
     }
-    ukgrid_log_ingest('ENTSOE', $status, $rowsWritten, trim($countryNote . ' ' . implode('; ', $errors)));
+    ukgrid_log_ingest('ENTSOE', $status, $rowsWritten, trim($countryNote . ' ' . implode('; ', array_merge($notes, $errors))));
     return ['rows' => $rowsWritten, 'errors' => $errors];
 }
 

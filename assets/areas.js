@@ -235,7 +235,7 @@
     const n = day ? day.series.times.length : 0;
     if (!n) {
       if (shareEl) shareEl.textContent = "-";
-      if (sumEl) sumEl.textContent = "No readings for today yet. Figures appear here when the next reading arrives.";
+      if (sumEl) sumEl.textContent = "No complete readings for today yet. Figures appear here when the next complete reading arrives.";
       if (timeEl) timeEl.textContent = "-";
       return;
     }
