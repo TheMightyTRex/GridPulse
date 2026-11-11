@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse17 - 11 November 2026 (includes GridPulse16)
+
+**Search markup, after Bing Webmaster Tools picked up the JSON-LD and Open Graph tags**
+- Fixed an error in the breadcrumb markup: the menu-group step ("Great Britain", "Europe", "Rest of the world") had no address, which search engines treat as invalid. A group step is now only included when it has a page of its own (Europe, Plug-in solar), with that address. Every page was checked: no breadcrumb step is missing an address.
+- The organisation's logo is now a full image object with its size, and each page names its publisher, its share image and the date it was last built.
+- Data pages now point to the JSON behind them (for example api/day.php?area=FR), so search engines and AI tools can find the live data. Every data page's description is at least 50 characters.
+- Open Graph: added og:locale (en_GB) and og:image:type. Added X (Twitter) card title, description, image and image text, so shared links show properly there too.
+- After upload, the IndexNow job will send every page once, because every page's markup has changed.
+- Cache-busting version bumped to 20261111a.
+
 ## GridPulse16 - 11 November 2026
 
 - **Scheduled runs fit cron-job.org's 30-second limit.** With 'run_due_budget_seconds' => 25 in config.php, NESO, ANNUAL and POWERCUTS were always "left for next time", because each one's worst case (its timeout times its number of requests) was over 25 seconds, so they never ran. A job like that now runs with shorter timeouts, as long as each request still gets at least 4 seconds; otherwise it waits for the next call.

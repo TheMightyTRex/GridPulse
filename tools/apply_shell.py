@@ -8,13 +8,14 @@ Every page carries the same header between <!-- shell:start --> and
 script again: it rewrites that block in all 39 pages, sets the current
 page and section, and keeps the font link and cache-busting version in step.
 """
+import datetime
 import html
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261109f"
+VERSION = "20261111a"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -259,6 +260,18 @@ DATA_PAGES = {
 }
 
 
+# The JSON behind each data page, offered to search engines and AI tools.
+DATA_APIS = {
+    "index.html": "day.php?area=GB", "ireland.html": "day.php?area=IE", "france.html": "day.php?area=FR",
+    "nl.html": "day.php?area=NL", "belgium.html": "day.php?area=BE", "norway.html": "day.php?area=NO",
+    "denmark.html": "day.php?area=DK", "germany.html": "day.php?area=DE", "spain.html": "day.php?area=ES",
+    "italy.html": "day.php?area=IT", "sweden.html": "day.php?area=SE", "portugal.html": "day.php?area=PT",
+    "poland.html": "day.php?area=PL", "usa.html": "day.php?area=US", "canada.html": "day.php?area=CA",
+    "australia.html": "day.php?area=AU", "eu.html": "now_all.php", "gas.html": "gas.php",
+    "power-cuts.html": "power_cuts.php", "interconnectors.html": "flows.php?area=GB", "records.html": "records.php?area=GB",
+}
+
+
 def page_group(name):
     """The menu group (label) a page sits under, for the breadcrumb markup."""
     for _gid, label, cols in GROUPS:
@@ -275,26 +288,39 @@ def structured_data(path, url, title, desc):
     name = re.sub(r"\s+-\s+Grid Pulse$", "", html.unescape(title)).strip()
     d = html.unescape(desc)
     org = {"@type": "Organization", "@id": SITE + "/#org", "name": "Grid Pulse", "url": SITE + "/",
-           "logo": SITE + "/assets/gridpulse-icon-512.png"}
+           "logo": {"@type": "ImageObject", "url": SITE + "/assets/gridpulse-icon-512.png", "width": 512, "height": 512}}
     site = {"@type": "WebSite", "@id": SITE + "/#site", "name": "Grid Pulse", "url": SITE + "/", "inLanguage": "en-GB",
             "publisher": {"@id": SITE + "/#org"},
             "description": "Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."}
+    # Every breadcrumb step needs its own address, so a menu group is only
+    # included when it has a page of its own.
     crumbs = [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"}]
     group = page_group(path.name)
+    group_page = {"Europe": "eu.html", "Plug-in solar": "plugin-solar.html"}.get(group)
     if path.name != "index.html":
-        if group:
-            crumbs.append({"@type": "ListItem", "position": 2, "name": group})
+        if group_page and group_page != path.name:
+            crumbs.append({"@type": "ListItem", "position": 2, "name": group, "item": f"{SITE}/pages/{group_page}"})
         crumbs.append({"@type": "ListItem", "position": len(crumbs) + 1, "name": name, "item": url})
     page = {"@type": "WebPage", "@id": url + "#page", "url": url, "name": name, "description": d, "inLanguage": "en-GB",
-            "isPartOf": {"@id": SITE + "/#site"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": crumbs}}
+            "dateModified": datetime.date.today().isoformat(),
+            "primaryImageOfPage": {"@type": "ImageObject", "url": SITE + "/assets/gridpulse-social.png", "width": 1200, "height": 630},
+            "isPartOf": {"@id": SITE + "/#site"}, "publisher": {"@id": SITE + "/#org"}}
+    if len(crumbs) > 1:
+        page["breadcrumb"] = {"@type": "BreadcrumbList", "itemListElement": crumbs}
     graph = [org, site, page]
     place = DATA_PAGES.get(path.name)
     if place:
-        graph.append({"@type": "Dataset", "@id": url + "#data", "name": name, "description": d or name, "url": url,
-                      "isAccessibleForFree": True, "creator": {"@id": SITE + "/#org"},
-                      "spatialCoverage": {"@type": "Place", "name": place},
-                      "keywords": ["electricity", "power grid", "energy", place],
-                      "isBasedOn": SITE + "/pages/data-sources.html"})
+        ds = {"@type": "Dataset", "@id": url + "#data", "name": name,
+              "description": d if len(d) >= 50 else f"{name}: live and recent electricity data for {place}, from official sources, on Grid Pulse.",
+              "url": url, "isAccessibleForFree": True,
+              "creator": {"@id": SITE + "/#org"}, "publisher": {"@id": SITE + "/#org"},
+              "spatialCoverage": {"@type": "Place", "name": place},
+              "keywords": ["electricity", "power grid", "energy", place],
+              "isBasedOn": SITE + "/pages/data-sources.html", "dateModified": datetime.date.today().isoformat()}
+        api = DATA_APIS.get(path.name)
+        if api:
+            ds["distribution"] = [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{SITE}/api/{api}"}]
+        graph.append(ds)
         page["about"] = {"@id": url + "#data"}
     return '<script type="application/ld+json">' + _json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>"
 
@@ -328,7 +354,13 @@ def head_block(path, base, text):
                 '<meta property="og:image:width" content="1200">',
                 '<meta property="og:image:height" content="630">',
                 '<meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">',
+                '<meta property="og:image:type" content="image/png">',
+                '<meta property="og:locale" content="en_GB">',
                 '<meta name="twitter:card" content="summary_large_image">',
+                f'<meta name="twitter:title" content="{title}">',
+                f'<meta name="twitter:description" content="{desc}">' if desc else '',
+                f'<meta name="twitter:image" content="{SITE}/assets/gridpulse-social.png?v={VERSION}">',
+                '<meta name="twitter:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">',
                 structured_data(path, url, title, desc)]
         if path.name == "index.html" and base == "root":
             # Bing Webmaster Tools ownership check (Dave's code). Search Console uses google122e67112e88d290.html.
