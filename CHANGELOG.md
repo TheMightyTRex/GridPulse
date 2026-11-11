@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse18 - 11 November 2026
+
+**Shorter page titles, after Bing flagged six as longer than 70 characters**
+- Australia, Denmark, Norway, the Netherlands, Portugal and EU countries had titles over 70 characters, which search engines may cut short. All are now 70 or under.
+- The other European country pages now match: "France - live status of the French electricity grid - Grid Pulse" (the "the" before "live status" is gone).
+- The share titles (Open Graph and X) and llms.txt follow the page titles.
+
 ## GridPulse17 - 11 November 2026 (includes GridPulse16)
 
 **Search markup, after Bing Webmaster Tools picked up the JSON-LD and Open Graph tags**
