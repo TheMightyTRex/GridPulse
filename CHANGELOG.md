@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse23 - 12 November 2026
+
+**The yellow banner takes turns**
+- The banner now alternates, one per page load, between the PrivadoVPN ad ("Ad") and "New: Add a widget: Show live electricity figures on your own site, free." (linking to the widgets page). Nothing moves on screen. A small script in each page picks which to show before the page appears, counting page views in the browser's local storage. Without JavaScript or storage, the ad shows.
+- The banner's screen-reader label follows what it shows: "Advertisement" or "New on Grid Pulse".
+- Cache-busting version bumped to 20261112a.
+
 ## GridPulse22 - 11 November 2026
 
 **Front page back as it was**

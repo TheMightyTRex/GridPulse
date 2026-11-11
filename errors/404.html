@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v=20261111d">
-<link rel="stylesheet" href="/assets/design-c.css?v=20261111d">
+<link rel="stylesheet" href="/assets/style.css?v=20261112a">
+<link rel="stylesheet" href="/assets/design-c.css?v=20261112a">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -216,7 +216,8 @@
     </div>
   </div>
 </header>
-<aside class="preview-banner" aria-label="Advertisement"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></aside>
+<aside class="preview-banner" aria-label="Advertisement" data-banner-rotate><span class="preview-banner__item" data-banner="ad"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></span><span class="preview-banner__item" data-banner="new" hidden><span class="preview-banner__tag">New</span> <span><a href="/pages/widgets.html">Add a widget</a>: Show live electricity figures on your own site, free.</span></span></aside>
+<script>(function(){var b=document.querySelector("[data-banner-rotate]");if(!b)return;var n=0;try{n=(parseInt(localStorage.getItem("gp-banner")||"0",10)||0)+1;localStorage.setItem("gp-banner",String(n))}catch(e){return}if(n%2===0){b.querySelector('[data-banner="ad"]').hidden=true;b.querySelector('[data-banner="new"]').hidden=false;b.setAttribute("aria-label","New on Grid Pulse")}})();</script>
 <div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
   <h2 id="display-panel-heading">Display and accessibility</h2>
   <fieldset><legend>Theme</legend>
@@ -277,7 +278,7 @@
   </div>
 </footer>
 
-<script src="/assets/app.js?v=20261111d"></script>
+<script src="/assets/app.js?v=20261112a"></script>
 <script>
   (function () {
     var el = document.getElementById("error-path");

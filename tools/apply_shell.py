@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261111d"
+VERSION = "20261112a"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -187,13 +187,25 @@ def build(page, base):
     out.append('    </div>')
     out.append('  </div>')
     out.append('</header>')
-    # Paid placement (Dave's PrivadoVPN affiliate link), on every page. rel="sponsored" tells search engines it is an ad.
-    out.append('<aside class="preview-banner" aria-label="Advertisement"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></aside>')
+    # The yellow banner takes turns, one per page load: the paid placement
+    # (Dave's PrivadoVPN affiliate link; rel="sponsored" tells search
+    # engines it is an ad) and a "New" pointer to the widgets page. Without
+    # JavaScript (or browser storage) the ad shows.
+    out.append('<aside class="preview-banner" aria-label="Advertisement" data-banner-rotate>'
+               '<span class="preview-banner__item" data-banner="ad"><span class="preview-banner__tag">Ad</span> <span><a href="https://privadovpn.com/getprivadovpn/#a_aid=themightytrexuk" rel="sponsored noopener">PrivadoVPN</a>: Instantly protect your PC, phone, or tablet.</span></span>'
+               f'<span class="preview-banner__item" data-banner="new" hidden><span class="preview-banner__tag">New</span> <span><a href="{link_for(base, "widgets.html")}">Add a widget</a>: Show live electricity figures on your own site, free.</span></span>'
+               '</aside>')
+    out.append(BANNER_SCRIPT)
     out.append(DISPLAY_PANEL)
     out.append('</div>')
     out.append('<!-- shell:end -->')
     return "\n".join(out)
 
+
+# Picks which banner to show on this page load, before the page paints.
+BANNER_SCRIPT = ('<script>(function(){var b=document.querySelector("[data-banner-rotate]");if(!b)return;var n=0;'
+                 'try{n=(parseInt(localStorage.getItem("gp-banner")||"0",10)||0)+1;localStorage.setItem("gp-banner",String(n))}catch(e){return}'
+                 'if(n%2===0){b.querySelector(\'[data-banner="ad"]\').hidden=true;b.querySelector(\'[data-banner="new"]\').hidden=false;b.setAttribute("aria-label","New on Grid Pulse")}})();</script>')
 
 DISPLAY_PANEL = """<div id="display-panel" class="display-panel" role="dialog" aria-modal="false" aria-labelledby="display-panel-heading" hidden>
   <h2 id="display-panel-heading">Display and accessibility</h2>
