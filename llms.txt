@@ -47,6 +47,7 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - [Poland - live status of the Polish electricity grid](https://gridpulse.info/pages/poland.html): A live dashboard for Poland's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
 - [Portugal - live status of Portugal's electricity grid](https://gridpulse.info/pages/portugal.html): A live dashboard for Portugal's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
 - [Power cuts in Great Britain](https://gridpulse.info/pages/power-cuts.html): Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.
+- [UK power stations map, with live output](https://gridpulse.info/pages/power-stations.html): Every major power station in the UK on a map, from DESNZ's official list, with owner, fuel and capacity, and live planned output for the biggest from Elexon.
 - [Historic prices](https://gridpulse.info/pages/price-history.html): Wholesale electricity price history for Great Britain, from the past day back to all available data, with the exact calendar period each chart covers.
 - [Records](https://gridpulse.info/pages/records.html): The highest and lowest figures for each grid: official records with sources, records since this site started recording, best of each year and the records broken most recently.
 - [Carbon intensity by area in Great Britain](https://gridpulse.info/pages/regional-carbon.html): How clean electricity is right now in each of Great Britain's 14 network areas, on a map, with each area's mix and its forecast for the next 2 days.
@@ -71,6 +72,7 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - https://gridpulse.info/api/forecast.php : Great Britain's next 2 days (carbon intensity, demand, wind), and carbon intensity by area (?region=1-14)
 - https://gridpulse.info/api/frequency.php : Great Britain's grid frequency
 - https://gridpulse.info/api/balancing.php : NESO's daily balancing costs
+- https://gridpulse.info/api/stations.php : UK power stations (DESNZ DUKES 5.11) with live planned output for the biggest
 
 More detail: https://gridpulse.info/pages/data-access.html
 

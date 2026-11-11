@@ -1033,3 +1033,15 @@ html.pref-calm .gp-ping { opacity: 0; }
 @media (max-width: 860px) { .gp-cards [data-outlook-card] { order: 5; } .gp-cards [data-area-year] { order: 6; } }
 .bc-list small { display: block; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
 .bc-list li { align-items: flex-start; gap: 16px; }
+/* Power station map (assets/stations.js) */
+.ps-tools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 12px; }
+.ps-techs { display: flex; flex-wrap: wrap; gap: 6px 12px; border: 0; padding: 0; margin: 0; }
+.ps-techs legend { font-weight: 700; float: left; margin-right: 8px; }
+.ps-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; }
+.ps-chip i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+.ps-chip input { width: 18px; height: 18px; }
+.ps-min { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.ps-min select { font: inherit; min-height: 40px; padding: 4px 8px; border: 2px solid var(--btn-border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
+.ps-live { margin: .25rem 0; }
+.ps-live strong { font-size: 1.4rem; }
+.ps-livetag { display: inline-block; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--bg); font-weight: 700; font-size: .7rem; vertical-align: 1px; }

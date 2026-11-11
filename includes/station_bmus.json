@@ -1,0 +1,297 @@
+{
+ "_about": "Which Elexon BM units (Elexon IDs) make up each power station in DUKES 5.11 (DESNZ site code). Matched by name, fuel and capacity (the units' capacity within 80% to 125% of the station's), then checked by hand, leaving out doubtful matches. Only stations of 50 MW or more in Great Britain were matched. A station not listed here shows no live figure.",
+ "checked": "2026-11-11",
+ "stations": {
+  "GAS-000185": [
+   "T_SUTB-1"
+  ],
+  "GAS-000377": [
+   "T_SVRP-10",
+   "T_SVRP-20"
+  ],
+  "WON-001693": [
+   "T_DWEXW-1"
+  ],
+  "WON-001579": [
+   "T_AKGLW-2"
+  ],
+  "GAS-000197": [
+   "T_SEAB-1",
+   "T_SEAB-2"
+  ],
+  "NUC-000126": [
+   "T_HRTL-1",
+   "T_HRTL-2"
+  ],
+  "NUC-000132": [
+   "T_TORN-1",
+   "T_TORN-2"
+  ],
+  "NUC-000159": [
+   "T_SIZB-1",
+   "T_SIZB-2"
+  ],
+  "WON-000514": [
+   "T_FALGW-1"
+  ],
+  "WON-000560": [
+   "T_LCLTW-1"
+  ],
+  "WON-000949": [
+   "E_MOYEW-1"
+  ],
+  "HST-000128": [
+   "T_DINO-1",
+   "T_DINO-2",
+   "T_DINO-3",
+   "T_DINO-4",
+   "T_DINO-5",
+   "T_DINO-6"
+  ],
+  "BIO-001255": [
+   "E_LYNE1",
+   "E_LYNE2",
+   "E_LYNE3"
+  ],
+  "GAS-000376": [
+   "T_LAGA-1"
+  ],
+  "GAS-000941": [
+   "T_CARR-1",
+   "T_CARR-2"
+  ],
+  "WON-000261": [
+   "2__PENEC001"
+  ],
+  "WON-000279": [
+   "2__PENEC002"
+  ],
+  "WON-001175": [
+   "T_WISTW-2"
+  ],
+  "WON-000306": [
+   "E_BRDUW-1"
+  ],
+  "WON-001154": [
+   "T_CGTHW-1"
+  ],
+  "GAS-000178": [
+   "T_ROCK-1"
+  ],
+  "GAS-000222": [
+   "T_COSO-1"
+  ],
+  "GAS-000354": [
+   "T_MRWD-1"
+  ],
+  "WOF-000286": [
+   "T_BOWLW-1"
+  ],
+  "WOF-000505": [
+   "T_LNCSW-1",
+   "T_LNCSW-2"
+  ],
+  "WOF-000635": [
+   "T_WDNSO-1",
+   "T_WDNSO-2"
+  ],
+  "WOF-000743": [
+   "T_WTMSO-1"
+  ],
+  "WOF-001256": [
+   "T_RCBKO-1",
+   "T_RCBKO-2"
+  ],
+  "WON-001178": [
+   "T_BEINW-1"
+  ],
+  "WON-001617": [
+   "T_CUMHW-1"
+  ],
+  "GAS-000151": [
+   "T_LBAR-1"
+  ],
+  "GAS-000170": [
+   "E_KLYN-A-1"
+  ],
+  "GAS-000176": [
+   "T_DIDCB5",
+   "T_DIDCB6"
+  ],
+  "GAS-000212": [
+   "E_GYAR-1"
+  ],
+  "GAS-000375": [
+   "T_STAY-1",
+   "T_STAY-2",
+   "T_STAY-3",
+   "T_STAY-4"
+  ],
+  "GAS-000453": [
+   "T_PEMB-11",
+   "T_PEMB-21",
+   "T_PEMB-31",
+   "T_PEMB-41",
+   "T_PEMB-51"
+  ],
+  "OIL-000124": [
+   "E_COWE1",
+   "E_COWE2"
+  ],
+  "WOF-000504": [
+   "T_LARYW-1",
+   "T_LARYW-2",
+   "T_LARYW-3",
+   "T_LARYW-4"
+  ],
+  "WOF-000744": [
+   "T_HMGTO-1",
+   "T_HMGTO-2"
+  ],
+  "WOF-001258": [
+   "T_RMPNO-1",
+   "T_RMPNO-2"
+  ],
+  "WOF-001290": [
+   "T_TKNEW-1",
+   "T_TKNWW-1"
+  ],
+  "WOF-001278": [
+   "T_EAAO-1",
+   "T_EAAO-2"
+  ],
+  "WON-000396": [
+   "T_ARCHW-1"
+  ],
+  "WON-000412": [
+   "T_MKHLW-1"
+  ],
+  "WON-000471": [
+   "T_WHILW-2"
+  ],
+  "WON-000552": [
+   "T_HRSTW-1"
+  ],
+  "WON-000951": [
+   "T_BLLA-2"
+  ],
+  "WON-000967": [
+   "T_DRSLW-1"
+  ],
+  "WON-000977": [
+   "T_KLGLW-1"
+  ],
+  "WON-001650": [
+   "T_HAGHW-2",
+   "T_HAHAW-1"
+  ],
+  "GAS-000120": [
+   "T_PEHE-1"
+  ],
+  "GAS-000152": [
+   "T_MEDP-1"
+  ],
+  "GAS-000182": [
+   "E_BURGH-1"
+  ],
+  "GAS-000183": [
+   "E_CHICK-1"
+  ],
+  "GAS-001553": [
+   "T_KEAD-2"
+  ],
+  "HNF-000018": [
+   "M_CAS-CLU01"
+  ],
+  "HNF-000019": [
+   "M_SLOY-1",
+   "T_SLOY-2",
+   "T_SLOY-3",
+   "M_SLOY-4"
+  ],
+  "HNF-000023": [
+   "T_FASN-1",
+   "T_FASN-2",
+   "E_FASN-3",
+   "E_FASN-4"
+  ],
+  "HNF-000045": [
+   "T_ERRO-1",
+   "T_ERRO-2",
+   "T_ERRO-3"
+  ],
+  "HNF-000327": [
+   "T_GLNDO-1"
+  ],
+  "HST-000115": [
+   "T_FOYE-1",
+   "T_FOYE-2"
+  ],
+  "WOF-000406": [
+   "T_GRGBW-1",
+   "T_GRGBW-2",
+   "T_GRGBW-3"
+  ],
+  "WOF-001261": [
+   "T_BEATO-1",
+   "T_BEATO-2",
+   "T_BEATO-3",
+   "T_BEATO-4"
+  ],
+  "WON-000280": [
+   "T_HADHW-1"
+  ],
+  "WON-000420": [
+   "T_GRIFW-1",
+   "T_GRIFW-2"
+  ],
+  "WON-000758": [
+   "T_STRNW-1"
+  ],
+  "WON-001169": [
+   "T_BHLAW-1"
+  ],
+  "WON-001600": [
+   "T_VKNGW-1",
+   "T_VKNGW-2",
+   "T_VKNGW-3",
+   "T_VKNGW-4"
+  ],
+  "WON-000511": [
+   "E_BABAW-1"
+  ],
+  "WON-000640": [
+   "E_BRYBW-1"
+  ],
+  "WON-001265": [
+   "T_BLKWW-1"
+  ],
+  "GAS-000186": [
+   "T_EECL-1"
+  ],
+  "WOF-000405": [
+   "T_OMNDW-1"
+  ],
+  "WON-001148": [
+   "T_GLWSW-1"
+  ],
+  "GAS-000195": [
+   "T_DAMC-1"
+  ],
+  "GAS-000196": [
+   "E_SHOS-1"
+  ],
+  "GAS-000144": [
+   "E_PETEM1"
+  ],
+  "XXX-001525": [
+   "E_CROYD-2"
+  ],
+  "XXX-001526": [
+   "E_DERBY-1"
+  ],
+  "XXX-001527": [
+   "E_EXETR-2"
+  ]
+ }
+}

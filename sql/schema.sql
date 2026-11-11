@@ -603,3 +603,29 @@ CREATE TABLE IF NOT EXISTS balancing_daily (
   cost DECIMAL(14,2) NOT NULL COMMENT 'pounds',
   PRIMARY KEY (dt, item)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Power station map (includes/stations.php, November 2026). Created
+-- automatically on first use; listed here for reference.
+CREATE TABLE IF NOT EXISTS power_station (
+  code VARCHAR(16) NOT NULL COMMENT 'DESNZ site code',
+  company VARCHAR(120) NOT NULL,
+  site VARCHAR(120) NOT NULL,
+  tech VARCHAR(24) NOT NULL,
+  type VARCHAR(32) NULL,
+  fuel VARCHAR(40) NULL,
+  cap_mw DECIMAL(8,2) NULL,
+  conn VARCHAR(8) NULL,
+  country VARCHAR(20) NULL,
+  region VARCHAR(40) NULL,
+  lat DECIMAL(8,5) NOT NULL,
+  lon DECIMAL(8,5) NOT NULL,
+  year SMALLINT NULL,
+  PRIMARY KEY (code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS station_pn (
+  bmu VARCHAR(16) NOT NULL,
+  ts DATETIME NOT NULL COMMENT 'UTC, start of the half hour',
+  mw DECIMAL(8,1) NOT NULL COMMENT 'average planned output over the half hour',
+  PRIMARY KEY (bmu, ts)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

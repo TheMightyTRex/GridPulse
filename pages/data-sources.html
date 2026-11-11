@@ -18,7 +18,7 @@
 <meta property="og:title" content="Sources - Grid Pulse">
 <meta property="og:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
 <meta property="og:url" content="https://gridpulse.info/pages/data-sources.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111c">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111d">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -27,15 +27,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sources - Grid Pulse">
 <meta name="twitter:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
-<meta name="twitter:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111c">
+<meta name="twitter:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111d">
 <meta name="twitter:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://gridpulse.info/#org","name":"Grid Pulse","url":"https://gridpulse.info/","logo":{"@type":"ImageObject","url":"https://gridpulse.info/assets/gridpulse-icon-512.png","width":512,"height":512}},{"@type":"WebSite","@id":"https://gridpulse.info/#site","name":"Grid Pulse","url":"https://gridpulse.info/","inLanguage":"en-GB","publisher":{"@id":"https://gridpulse.info/#org"},"description":"Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."},{"@type":"WebPage","@id":"https://gridpulse.info/pages/data-sources.html#page","url":"https://gridpulse.info/pages/data-sources.html","name":"Sources","description":"Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.","inLanguage":"en-GB","dateModified":"2026-11-11","primaryImageOfPage":{"@type":"ImageObject","url":"https://gridpulse.info/assets/gridpulse-social.png","width":1200,"height":630},"isPartOf":{"@id":"https://gridpulse.info/#site"},"publisher":{"@id":"https://gridpulse.info/#org"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://gridpulse.info/"},{"@type":"ListItem","position":2,"name":"Sources","item":"https://gridpulse.info/pages/data-sources.html"}]}}]}</script>
 <!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261111c">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261111c">
+<link rel="stylesheet" href="../assets/style.css?v=20261111d">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261111d">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -112,6 +112,7 @@
                 <li><a href="nuclear-biomass.html"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
                 <li><a href="storage.html"><span class="nav-panel__name">Storage</span><span class="nav-panel__desc">Batteries and pumped hydro</span></a></li>
                 <li><a href="interconnectors.html"><span class="nav-panel__name">Interconnectors</span><span class="nav-panel__desc">Imports and exports by country</span></a></li>
+                <li><a href="power-stations.html"><span class="nav-panel__name">Power stations</span><span class="nav-panel__desc">Every major station on a map</span></a></li>
               </ul>
             </div>
             <div class="nav-panel__col">
@@ -344,6 +345,20 @@
           <span>Updated twice weekly</span>
         </div>
         <p style="font-size:.9rem;color:var(--text-muted);">Used for: context and citation on the <a href="renewables-plans.html">2030 GB plans</a> page's grid connection queue section. Not wired into the live pipeline - it is a reference link, not a polled data source.</p>
+      </section>
+
+      <section class="panel source-card" aria-labelledby="src-dukes">
+        <div class="source-card__head">
+          <span class="source-card__icon" aria-hidden="true">DE</span>
+          <h2 id="src-dukes"><a href="https://www.gov.uk/government/statistics/electricity-chapter-5-digest-of-united-kingdom-energy-statistics-dukes">DESNZ, DUKES table 5.11</a></h2>
+        </div>
+        <p>The Department for Energy Security and Net Zero's list of power stations run by the major power producers in the UK, with owner, technology, fuel, capacity, year opened and location. Published once a year in the Digest of UK Energy Statistics.</p>
+        <div class="source-card__meta">
+          <span>Spreadsheet</span>
+          <span>Yearly</span>
+          <span>Fetched weekly</span>
+        </div>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: the <a href="power-stations.html">power station map</a>. Live output for the biggest stations comes from Elexon's physical notifications. Contains public sector information licensed under the Open Government Licence v3.0.</p>
       </section>
 
       <section class="panel source-card" aria-labelledby="src-nationalgas">
@@ -656,6 +671,6 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261111c"></script>
+<script src="../assets/app.js?v=20261111d"></script>
 </body>
 </html>

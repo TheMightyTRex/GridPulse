@@ -32,6 +32,7 @@ require_once __DIR__ . '/flows_annual.php';
 require_once __DIR__ . '/gas.php';
 require_once __DIR__ . '/powercuts.php';
 require_once __DIR__ . '/outlook.php';
+require_once __DIR__ . '/stations.php';
 require_once __DIR__ . '/indexnow.php';
 
 /**
@@ -180,6 +181,12 @@ function ukgrid_refresh_schedule(array $config): array
     if (!isset($timeouts['FREQ'])) $timeouts['FREQ'] = 8;
     if (!isset($intervals['BALANCING'])) $intervals['BALANCING'] = 720;
     if (!isset($timeouts['BALANCING'])) $timeouts['BALANCING'] = 15;
+    // Power station map: live planned output every 30 minutes. The station
+    // list itself (STATIONS, a 1.2 MB spreadsheet) only runs from the
+    // scheduler, see cron/run-due.php.
+    if (!isset($intervals['STATIONSLIVE'])) $intervals['STATIONSLIVE'] = 30;
+    if (!isset($timeouts['STATIONSLIVE'])) $timeouts['STATIONSLIVE'] = 15;
+    if (!isset($timeouts['STATIONS'])) $timeouts['STATIONS'] = 30;
 
     return [$intervals, $timeouts];
 }
@@ -292,6 +299,12 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
             break;
         case 'BALANCING':
             ukgrid_ingest_balancing($pdo, $config, $timeoutSeconds);
+            break;
+        case 'STATIONS':
+            ukgrid_ingest_stations($pdo, $config, $timeoutSeconds);
+            break;
+        case 'STATIONSLIVE':
+            ukgrid_ingest_stations_live($pdo, $config, $timeoutSeconds);
             break;
         case 'NOTABLE_MOMENTS':
             // Pure re-aggregation of data already in this database (see
