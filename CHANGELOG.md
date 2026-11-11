@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse20 - 11 November 2026
+
+**New: plan ahead, carbon by area, frequency, balancing costs, widgets and open data** (ideas from a look at seven other GB grid sites)
+- **Best time to use power** (pages/best-time.html): pick your area, how long a task runs and when it must be done by, and it finds the start time with the lowest forecast carbon, compared with starting now. Uses the Carbon Intensity API's 48-hour forecast for Great Britain or any of the 14 network areas.
+- **Forecasts** (pages/forecast.html): carbon intensity, national demand and wind generation for the next 2 days, with the cleanest and dirtiest times called out.
+- **Carbon by area** (pages/regional-carbon.html): a map of the 14 network areas coloured by carbon intensity right now, a ranked list, each area's generation mix and its 2-day forecast.
+- **Frequency** (pages/frequency.html): the grid's frequency from Elexon's 15-second readings, the last hour and the last 24 hours, and what 50 Hz means. The 49.5 to 50.5 Hz limit is from NESO, last checked 11 November 2026.
+- **Balancing costs** (pages/balancing-costs.html): what NESO spends balancing the system, from its Daily Balancing Costs (BSUoS) data: last 30 days by type with NESO's own definitions, each day for 90 days and each month for a year. Only whole days are stored.
+- **"Coming up" card** on the GB dashboard: the cleanest half hour, the windiest time and the latest frequency.
+- **Widgets** (pages/widgets.html and embed/widget.html): a free live box for other sites, showing the renewable share for any country covered, or Great Britain's carbon intensity or frequency. Loads nothing from other sites and sets no cookies.
+- **Use our data** (pages/data-access.html): the JSON addresses, units and fair-use rules. llms.txt lists the new ones.
+- **Add to home screen:** a web app manifest (site.webmanifest) and its file type in .htaccess, so phones can install Grid Pulse like an app.
+- New jobs (includes/outlook.php): FORECAST every 30 minutes (3 requests), FREQ every 5 minutes (1 request), BALANCING every 12 hours (up to 4 requests). New tables, created automatically: ci_forecast, ci_region_mix, grid_forecast, grid_frequency, balancing_daily (also in sql/schema.sql). New APIs: api/forecast.php, api/frequency.php, api/balancing.php.
+- Menu: Great Britain gains Carbon by area, Frequency, a "Plan ahead" column (Best time to use power, Forecasts) and Balancing costs. Sources and About link to the widgets and data pages.
+- Frequency charts show 2 decimal places on the axis.
+- ENTSO-E log line: generation types received are now counted with the same 1 MW floor as the usual number, so it no longer says things like "9 of 8 usual types".
+- Cache-busting version bumped to 20261111c.
+
 ## GridPulse19 - 11 November 2026
 
 **Germany showed "100% renewable" from half-published data**

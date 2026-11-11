@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Grid Pulse widget</title>
+<!--
+  Grid Pulse embeddable widget. Shown inside an <iframe> on other sites:
+    embed/widget.html?show=renewable&area=GB&theme=auto
+  show:  renewable (any area code from api/areas.php), carbon (GB), frequency (GB)
+  theme: auto (follows the visitor's setting), light or dark
+  Data comes from this site's own API, so no outside requests are made.
+  It refreshes every 5 minutes. See pages/widgets.html.
+-->
+<style>
+  :root { --bg: #ffffff; --text: #14181f; --muted: #4a5361; --border: #d5d9df; --accent: #0a6e5c; --pill: #ffd54a; --pill-ink: #14181f; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #14181f; --text: #eceff3; --muted: #b7bfca; --border: #2c333d; --accent: #4fd18b; } }
+  :root[data-theme="dark"] { --bg: #14181f; --text: #eceff3; --muted: #b7bfca; --border: #2c333d; --accent: #4fd18b; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .w { height: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+  .w__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .w__big { font-size: 34px; font-weight: 800; line-height: 1.05; }
+  .w__big small { font-size: 15px; font-weight: 600; }
+  .w__lead { margin: 0; }
+  .w__bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; }
+  .w__bar i { display: block; height: 100%; background: var(--accent); }
+  a { color: var(--text); font-weight: 700; }
+  .brand { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .brand b { background: var(--pill); color: var(--pill-ink); border-radius: 4px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<div class="w" id="w" aria-live="polite"><p class="w__lead">Loading…</p></div>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var show = q.get("show") || "renewable";
+  var area = (q.get("area") || "GB").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+  var theme = q.get("theme");
+  if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme);
+  var base = location.pathname.replace(/embed\/widget\.html$/, "");
+  var el = document.getElementById("w");
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function clock(iso) {
+    var p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(new Date(iso));
+    var g = function (t) { var x = p.filter(function (y) { return y.type === t; })[0]; return x ? x.value : ""; };
+    return g("hour") + (g("minute") === "00" ? "" : "." + g("minute")) + g("dayPeriod").toLowerCase().replace(/[.\s]/g, "");
+  }
+  function card(label, big, lead, bar, link) {
+    el.innerHTML = '<div class="w__top"><span>' + esc(label) + '</span><a class="brand" href="' + esc(link) + '" target="_blank" rel="noopener">Grid <b>Pulse</b></a></div>' +
+      '<div class="w__big">' + big + '</div>' + (bar != null ? '<div class="w__bar" aria-hidden="true"><i style="width:' + Math.max(0, Math.min(100, bar)) + '%"></i></div>' : "") +
+      '<p class="w__lead">' + lead + '</p>';
+  }
+  function fail() { el.innerHTML = '<p class="w__lead">Live figures are not available right now. <a href="' + esc(location.origin + base) + '" target="_blank" rel="noopener">Grid Pulse</a></p>'; }
+  function get(path) { return fetch(base + "api/" + path).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  function load() {
+    var site = location.origin + base;
+    if (show === "carbon") {
+      get("forecast.php").then(function (d) {
+        var gb = d && d.ok && d.areas.filter(function (a) { return a.id === 18; })[0];
+        if (!gb) return fail();
+        card("Great Britain, " + clock(d.now), esc(gb.gco2) + ' <small>g CO₂/kWh</small>', "Carbon intensity right now: " + esc(gb.index) + ". Source: Carbon Intensity API.", null, site + "pages/best-time.html");
+      });
+    } else if (show === "frequency") {
+      get("frequency.php").then(function (d) {
+        if (!d || !d.ok || !d.latest) return fail();
+        card("Great Britain, " + clock(d.latest.ts), d.latest.hz.toFixed(3) + " <small>Hz</small>", "Grid frequency. Source: Elexon.", null, site + "pages/frequency.html");
+      });
+    } else {
+      get("now_all.php").then(function (d) {
+        var a = d && d.ok && d.areas.filter(function (x) { return x.code === area; })[0];
+        if (!a || a.renewable_share == null) return fail();
+        card(a.name + ", " + clock(a.ts), Math.round(a.renewable_share) + '<small>% renewable</small>', "Of the power made right now. Zero-carbon, including nuclear: " + Math.round(a.zero_carbon_share) + "%.", a.renewable_share, site + (a.page === "index.html" ? "" : a.page));
+      });
+    }
+  }
+  load();
+  setInterval(load, 300000);
+})();
+</script>
+</body>
+</html>

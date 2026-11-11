@@ -102,8 +102,13 @@ def cards(code, flows):
         <h2 id="gas-h" class="gp-card__h">Gas right now</h2>
         <div data-gas-card-body><p class="area-empty">Loading…</p></div>
       </section>"""
+    # And a "Coming up" card: the cleanest time, wind and frequency (assets/outlook.js).
+    outlook = """      <section class="gp-card" data-outlook-card aria-labelledby="outlook-h">
+        <h2 id="outlook-h" class="gp-card__h">Coming up</h2>
+        <div data-outlook-card-body><p class="area-empty">Loading…</p></div>
+      </section>"""
     left = [today] + ([borders] if flows else [year])
-    right = [records] + ([gas] if code == "GB" else []) + ([year] if flows else [])
+    right = [records] + ([gas, outlook] if code == "GB" else []) + ([year] if flows else [])
     col = lambda cards: '      <div class="gp-cards__col">\n' + "\n".join(c.replace("\n      ", "\n        ").replace("      <section", "        <section", 1) for c in cards) + "\n      </div>"
     return block("cards", '    <div class="gp-cards">\n' + col(left) + "\n" + col(right) + "\n    </div>")
 
@@ -193,6 +198,9 @@ def apply(path, code, poss, flows, europe):
     if is_gb and "assets/gaspower.js" not in text:
         text = re.sub(r'(<script src="assets/areas\.js\?v=[0-9a-z]+"></script>)',
                       lambda mm: mm.group(1) + '\n<script src="assets/gaspower.js?v=0"></script>', text, count=1)
+    if is_gb and "assets/outlook.js" not in text:
+        text = re.sub(r'(<script src="assets/gaspower\.js\?v=[0-9a-z]+"></script>)',
+                      lambda mm: mm.group(1) + '\n<script src="assets/outlook.js?v=0"></script>', text, count=1)
     if is_gb and "assets/alerts.js" not in text:
         text = re.sub(r'(<script src="assets/areas\.js\?v=[0-9a-z]+"></script>)',
                       lambda mm: mm.group(1) + '\n<script src="assets/alerts.js?v=0"></script>', text, count=1)

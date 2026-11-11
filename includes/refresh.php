@@ -31,6 +31,7 @@ require_once __DIR__ . '/areas.php';
 require_once __DIR__ . '/flows_annual.php';
 require_once __DIR__ . '/gas.php';
 require_once __DIR__ . '/powercuts.php';
+require_once __DIR__ . '/outlook.php';
 require_once __DIR__ . '/indexnow.php';
 
 /**
@@ -171,6 +172,14 @@ function ukgrid_refresh_schedule(array $config): array
     // upload (includes/indexnow.php).
     if (!isset($intervals['INDEXNOW'])) $intervals['INDEXNOW'] = 60;
     if (!isset($timeouts['INDEXNOW'])) $timeouts['INDEXNOW'] = 10;
+    // Added 11 November 2026: forecasts (carbon, demand, wind), grid
+    // frequency and balancing costs (includes/outlook.php).
+    if (!isset($intervals['FORECAST'])) $intervals['FORECAST'] = 30;
+    if (!isset($timeouts['FORECAST'])) $timeouts['FORECAST'] = 15;
+    if (!isset($intervals['FREQ'])) $intervals['FREQ'] = 5;
+    if (!isset($timeouts['FREQ'])) $timeouts['FREQ'] = 8;
+    if (!isset($intervals['BALANCING'])) $intervals['BALANCING'] = 720;
+    if (!isset($timeouts['BALANCING'])) $timeouts['BALANCING'] = 15;
 
     return [$intervals, $timeouts];
 }
@@ -274,6 +283,15 @@ function ukgrid_refresh_run_source(PDO $pdo, array $config, string $source, int 
             break;
         case 'INDEXNOW':
             ukgrid_ingest_indexnow($pdo, $config, $timeoutSeconds);
+            break;
+        case 'FORECAST':
+            ukgrid_ingest_forecast($pdo, $config, $timeoutSeconds);
+            break;
+        case 'FREQ':
+            ukgrid_ingest_frequency($pdo, $config, $timeoutSeconds);
+            break;
+        case 'BALANCING':
+            ukgrid_ingest_balancing($pdo, $config, $timeoutSeconds);
             break;
         case 'NOTABLE_MOMENTS':
             // Pure re-aggregation of data already in this database (see

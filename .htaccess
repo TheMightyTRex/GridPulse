@@ -49,3 +49,9 @@ ErrorDocument 503 /errors/503.html
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml
 </IfModule>
+
+# The web app manifest (site.webmanifest), so phones can add Grid Pulse to
+# the home screen. Some servers don't know this file type.
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+</IfModule>

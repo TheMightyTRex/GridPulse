@@ -5,17 +5,22 @@
   <url><loc>https://gridpulse.info/pages/americas-interconnects.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/archive.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/australia.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/balancing-costs.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/belgium.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/best-time.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/borders.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/canada.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/comparisons.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
+  <url><loc>https://gridpulse.info/pages/data-access.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/data-sources.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/day.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/denmark.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/electricity-prices.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/eu.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/forecast.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/fossil-fuels.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/france.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/frequency.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/gas.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/germany.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/history.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
@@ -38,6 +43,7 @@
   <url><loc>https://gridpulse.info/pages/power-cuts.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/price-history.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/records.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/regional-carbon.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/renewables-plans.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
   <url><loc>https://gridpulse.info/pages/renewables.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/south-america.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
@@ -45,4 +51,5 @@
   <url><loc>https://gridpulse.info/pages/storage.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/sweden.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://gridpulse.info/pages/usa.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://gridpulse.info/pages/widgets.html</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
 </urlset>

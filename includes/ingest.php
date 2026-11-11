@@ -1817,7 +1817,9 @@ function ukgrid_ingest_entsoe(PDO $pdo, array $config, int $timeoutSeconds = 25,
                         continue;
                     }
                     $psr = $point['psrType'] ?? 'UNK';
-                    $typesSeen[$psr] = true;
+                    if ((float) $point['value'] >= 1) {
+                        $typesSeen[$psr] = true; // same 1 MW floor as ukgrid_entsoe_usual_types()
+                    }
                     $genStmt->execute(['ts' => $point['ts'], 'cc' => $countryCode, 'psr' => $psr, 'v' => $point['value']]);
                 }
                 $countryRows++;
