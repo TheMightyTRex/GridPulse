@@ -42,6 +42,9 @@ if ($missing) {
 ukgrid_out('run-due: starting');
 
 @set_time_limit(120);
+// Keep going if the caller hangs up early (cron-job.org stops waiting after
+// 30 seconds), so a job is never cut off halfway.
+ignore_user_abort(true);
 $config = ukgrid_load_config();
 $pdo = ukgrid_db();
 $started = microtime(true);
@@ -88,10 +91,19 @@ $release = $pdo->prepare('SELECT RELEASE_LOCK(?)');
 $left = [];
 foreach ($order as $source) {
     $timeout = (int) ($timeouts[$source] ?? 10);
-    $cost = $timeout * ($worst[$source] ?? 2);
-    if (microtime(true) - $started + $cost > $budget) {
-        $left[] = $source;
-        continue;
+    $requests = $worst[$source] ?? 2;
+    $leftSecs = $budget - (microtime(true) - $started);
+    if ($timeout * $requests > $leftSecs) {
+        // Too slow at its usual timeout: run it with shorter timeouts if
+        // that still gives each request at least 4 seconds. Otherwise leave
+        // it for the next call. Without this, a short budget (cron-job.org
+        // allows 30 seconds) would mean NESO, ANNUAL and POWERCUTS never ran.
+        $shorter = (int) floor($leftSecs / $requests);
+        if ($shorter < 4) {
+            $left[] = $source;
+            continue;
+        }
+        $timeout = $shorter;
     }
     $lockName = 'ukgrid_refresh_' . $source;
     $lock->execute([$lockName]);
