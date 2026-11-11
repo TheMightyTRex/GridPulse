@@ -198,6 +198,10 @@ Added for Grid Pulse in November 2026. Nothing to set up: the tables are created
 - The border maps are files in `assets/maps/` (one per country), built from Natural Earth by `tools/maps/build_maps.mjs` (`cd tools/maps`, `npm install`, `node build_maps.mjs`). Only needed if a country or border is added. Don't upload `tools/maps/node_modules`.
 - The shared sections on the country pages are written by `python3 tools/apply_areas.py` (run it after `tools/apply_shell.py`) and filled in by `assets/areas.js`.
 
+## Outside scheduler (cron-job.org)
+
+GitHub's 5-minute schedule often runs only a few times a day, so cron-job.org also calls `https://gridpulse.info/cron/run-due.php?caller=cronjob` every 5 minutes, with the `X-Cron-Secret` header. It waits at most 30 seconds, so config.php sets `'run_due_budget_seconds' => 25` in the `'refresh'` section. Slow jobs then run with shorter timeouts rather than being skipped.
+
 ## Search engines (each release)
 
 - `python3 tools/apply_shell.py` rebuilds `sitemap.xml`, `robots.txt` and `llms.txt` and the structured data in every page. Upload them with the pages.

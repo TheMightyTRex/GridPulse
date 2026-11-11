@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse16 - 11 November 2026
+
+- **Scheduled runs fit cron-job.org's 30-second limit.** With 'run_due_budget_seconds' => 25 in config.php, NESO, ANNUAL and POWERCUTS were always "left for next time", because each one's worst case (its timeout times its number of requests) was over 25 seconds, so they never ran. A job like that now runs with shorter timeouts, as long as each request still gets at least 4 seconds; otherwise it waits for the next call.
+- cron/run-due.php keeps going if the caller hangs up early, so a job is never cut off halfway.
+- Only cron/run-due.php changed.
+
 ## GridPulse15 - 9 November 2026
 
 - **The power cuts map is now a street map.** OpenStreetMap, drawn with Leaflet 1.9.4 (BSD licence, served from assets/vendor/leaflet), with the 14 network areas drawn over it. Pointing at an area highlights it and shows its name; selecting it zooms to the whole area. Areas with no live data are grey with a dashed edge.
