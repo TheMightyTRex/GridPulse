@@ -489,6 +489,8 @@
   }
 
   function formatAxisValue(v, unit) {
+    // Frequency moves in hundredths of a hertz around 50, so it keeps 2 decimals.
+    if (unit && /Hz$/.test(unit)) return withUnit(v.toFixed(2), unit);
     const rounded = Math.abs(v) >= 100 ? Math.round(v) : Math.round(v * 10) / 10;
     return withUnit(rounded, unit);
   }

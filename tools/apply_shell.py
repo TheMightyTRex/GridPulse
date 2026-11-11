@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261111b"
+VERSION = "20261111c"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -29,6 +29,12 @@ GROUPS = [
             ("electricity-prices.html", "Prices", "Wholesale prices today"),
             ("gas.html", "Gas", "Gas use and supply right now"),
             ("power-cuts.html", "Power cuts", "Live power cuts on a map"),
+            ("regional-carbon.html", "Carbon by area", "How clean power is where you are"),
+            ("frequency.html", "Frequency", "The grid's 50 Hz, second by second"),
+        ]),
+        ("Plan ahead", [
+            ("best-time.html", "Best time to use power", "The cleanest time to run things"),
+            ("forecast.html", "Forecasts", "Carbon, demand and wind, next 2 days"),
         ]),
         ("By source", [
             ("renewables.html", "Renewables", "Wind, solar and hydro"),
@@ -41,6 +47,7 @@ GROUPS = [
             ("history.html", "History", "From the past day to the past decade"),
             ("price-history.html", "Historic prices", "Wholesale prices over the years"),
             ("renewables-plans.html", "2030 plans", "Clean Power 2030 targets and progress"),
+            ("balancing-costs.html", "Balancing costs", "What it costs to keep the grid balanced"),
         ]),
     ]),
     ("europe", "Europe", [
@@ -257,6 +264,8 @@ DATA_PAGES = {
     "interconnectors.html": "Great Britain", "electricity-prices.html": "Great Britain", "history.html": "Great Britain",
     "records.html": "Great Britain", "renewables.html": "Great Britain", "fossil-fuels.html": "Great Britain",
     "nuclear-biomass.html": "Great Britain", "storage.html": "Great Britain", "price-history.html": "Great Britain",
+    "forecast.html": "Great Britain", "best-time.html": "Great Britain", "regional-carbon.html": "Great Britain",
+    "frequency.html": "Great Britain", "balancing-costs.html": "Great Britain",
 }
 
 
@@ -269,6 +278,8 @@ DATA_APIS = {
     "poland.html": "day.php?area=PL", "usa.html": "day.php?area=US", "canada.html": "day.php?area=CA",
     "australia.html": "day.php?area=AU", "eu.html": "now_all.php", "gas.html": "gas.php",
     "power-cuts.html": "power_cuts.php", "interconnectors.html": "flows.php?area=GB", "records.html": "records.php?area=GB",
+    "forecast.html": "forecast.php", "best-time.html": "forecast.php", "regional-carbon.html": "forecast.php",
+    "frequency.html": "frequency.php", "balancing-costs.html": "balancing.php",
 }
 
 
@@ -336,6 +347,7 @@ def head_block(path, base, text):
            f'<link rel="icon" href="{a}assets/gridpulse-favicon.svg" type="image/svg+xml">',
            f'<link rel="icon" href="{a}assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">',
            f'<link rel="apple-touch-icon" href="{a}assets/gridpulse-apple-touch-icon-180.png">',
+           f'<link rel="manifest" href="{a}site.webmanifest">',
            '<meta name="theme-color" content="#14181f">',
            # Set the theme before the page paints: light unless the Display
            # panel says otherwise (assets/app.js applies the full settings).
@@ -454,7 +466,11 @@ def write_crawler_files(pages):
               f"- {SITE}/api/flows.php?area=GB : flows across a country's borders today",
               f"- {SITE}/api/gas.php : Great Britain's gas use and supply",
               f"- {SITE}/api/power_cuts.php : live power cuts in Great Britain",
-              "", "Please credit Grid Pulse and the original source named on each page."]
+              f"- {SITE}/api/forecast.php : Great Britain's next 2 days (carbon intensity, demand, wind), and carbon intensity by area (?region=1-14)",
+              f"- {SITE}/api/frequency.php : Great Britain's grid frequency",
+              f"- {SITE}/api/balancing.php : NESO's daily balancing costs",
+              "", f"More detail: {SITE}/pages/data-access.html", "",
+              "Please credit Grid Pulse and the original source named on each page."]
     (ROOT / "llms.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

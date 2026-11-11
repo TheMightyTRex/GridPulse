@@ -9,6 +9,7 @@
 <link rel="icon" href="../assets/gridpulse-favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/gridpulse-favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="../assets/gridpulse-apple-touch-icon-180.png">
+<link rel="manifest" href="../site.webmanifest">
 <meta name="theme-color" content="#14181f">
 <script>(function(){var t="light";try{var p=JSON.parse(localStorage.getItem("grid-live-prefs")||"null");if(p&&p.theme){t=p.theme}else{var o=localStorage.getItem("grid-live-theme");if(o==="dark"||o==="light")t=o}}catch(e){}if(t!=="system")document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")})();</script>
 <link rel="canonical" href="https://gridpulse.info/pages/data-sources.html">
@@ -17,7 +18,7 @@
 <meta property="og:title" content="Sources - Grid Pulse">
 <meta property="og:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
 <meta property="og:url" content="https://gridpulse.info/pages/data-sources.html">
-<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111b">
+<meta property="og:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
@@ -26,15 +27,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sources - Grid Pulse">
 <meta name="twitter:description" content="Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.">
-<meta name="twitter:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111b">
+<meta name="twitter:image" content="https://gridpulse.info/assets/gridpulse-social.png?v=20261111c">
 <meta name="twitter:image:alt" content="Grid Pulse logo with the line: Live electricity grids, from Great Britain to Europe and beyond.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://gridpulse.info/#org","name":"Grid Pulse","url":"https://gridpulse.info/","logo":{"@type":"ImageObject","url":"https://gridpulse.info/assets/gridpulse-icon-512.png","width":512,"height":512}},{"@type":"WebSite","@id":"https://gridpulse.info/#site","name":"Grid Pulse","url":"https://gridpulse.info/","inLanguage":"en-GB","publisher":{"@id":"https://gridpulse.info/#org"},"description":"Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is."},{"@type":"WebPage","@id":"https://gridpulse.info/pages/data-sources.html#page","url":"https://gridpulse.info/pages/data-sources.html","name":"Sources","description":"Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.","inLanguage":"en-GB","dateModified":"2026-11-11","primaryImageOfPage":{"@type":"ImageObject","url":"https://gridpulse.info/assets/gridpulse-social.png","width":1200,"height":630},"isPartOf":{"@id":"https://gridpulse.info/#site"},"publisher":{"@id":"https://gridpulse.info/#org"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://gridpulse.info/"},{"@type":"ListItem","position":2,"name":"Sources","item":"https://gridpulse.info/pages/data-sources.html"}]}}]}</script>
 <!-- head:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261111b">
-<link rel="stylesheet" href="../assets/design-c.css?v=20261111b">
+<link rel="stylesheet" href="../assets/style.css?v=20261111c">
+<link rel="stylesheet" href="../assets/design-c.css?v=20261111c">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -92,11 +93,20 @@
                 <li><a href="electricity-prices.html"><span class="nav-panel__name">Prices</span><span class="nav-panel__desc">Wholesale prices today</span></a></li>
                 <li><a href="gas.html"><span class="nav-panel__name">Gas</span><span class="nav-panel__desc">Gas use and supply right now</span></a></li>
                 <li><a href="power-cuts.html"><span class="nav-panel__name">Power cuts</span><span class="nav-panel__desc">Live power cuts on a map</span></a></li>
+                <li><a href="regional-carbon.html"><span class="nav-panel__name">Carbon by area</span><span class="nav-panel__desc">How clean power is where you are</span></a></li>
+                <li><a href="frequency.html"><span class="nav-panel__name">Frequency</span><span class="nav-panel__desc">The grid&#x27;s 50 Hz, second by second</span></a></li>
               </ul>
             </div>
             <div class="nav-panel__col">
-              <p class="nav-panel__heading" id="navhead-gb-1">By source</p>
+              <p class="nav-panel__heading" id="navhead-gb-1">Plan ahead</p>
               <ul aria-labelledby="navhead-gb-1">
+                <li><a href="best-time.html"><span class="nav-panel__name">Best time to use power</span><span class="nav-panel__desc">The cleanest time to run things</span></a></li>
+                <li><a href="forecast.html"><span class="nav-panel__name">Forecasts</span><span class="nav-panel__desc">Carbon, demand and wind, next 2 days</span></a></li>
+              </ul>
+            </div>
+            <div class="nav-panel__col">
+              <p class="nav-panel__heading" id="navhead-gb-2">By source</p>
+              <ul aria-labelledby="navhead-gb-2">
                 <li><a href="renewables.html"><span class="nav-panel__name">Renewables</span><span class="nav-panel__desc">Wind, solar and hydro</span></a></li>
                 <li><a href="fossil-fuels.html"><span class="nav-panel__name">Fossil fuels</span><span class="nav-panel__desc">Gas, coal and oil</span></a></li>
                 <li><a href="nuclear-biomass.html"><span class="nav-panel__name">Nuclear &amp; biomass</span><span class="nav-panel__desc">Output from each plant type</span></a></li>
@@ -105,11 +115,12 @@
               </ul>
             </div>
             <div class="nav-panel__col">
-              <p class="nav-panel__heading" id="navhead-gb-2">Over time</p>
-              <ul aria-labelledby="navhead-gb-2">
+              <p class="nav-panel__heading" id="navhead-gb-3">Over time</p>
+              <ul aria-labelledby="navhead-gb-3">
                 <li><a href="history.html"><span class="nav-panel__name">History</span><span class="nav-panel__desc">From the past day to the past decade</span></a></li>
                 <li><a href="price-history.html"><span class="nav-panel__name">Historic prices</span><span class="nav-panel__desc">Wholesale prices over the years</span></a></li>
                 <li><a href="renewables-plans.html"><span class="nav-panel__name">2030 plans</span><span class="nav-panel__desc">Clean Power 2030 targets and progress</span></a></li>
+                <li><a href="balancing-costs.html"><span class="nav-panel__name">Balancing costs</span><span class="nav-panel__desc">What it costs to keep the grid balanced</span></a></li>
               </ul>
             </div>
           </div>
@@ -267,6 +278,10 @@
         <span class="callout__icon" aria-hidden="true">i</span>
         <p>Canada, Australia and South America have also been added, but at different stages: Ontario (Canada) has a working live feed via IESO, and Australia's National Electricity Market has a working live feed via the Open Electricity API; Brazil, Argentina, Chile and Colombia are informational pages only, with no live data wired up yet. See the Canada, Australia and South America sections below.</p>
       </div>
+      <div class="callout">
+        <span class="callout__icon" aria-hidden="true">i</span>
+        <p>You can use Grid Pulse's figures too: see <a href="data-access.html">Use our data</a> for the JSON addresses, or <a href="widgets.html">Widgets</a> to show live figures on your own site.</p>
+      </div>
     </section>
 
     <section class="panel" aria-labelledby="uk-sources-heading" style="margin-bottom:1.25rem;">
@@ -285,7 +300,7 @@
           <span>5-30 min granularity</span>
           <span>Refreshed every 15 min</span>
         </div>
-        <p style="font-size:.9rem;color:var(--text-muted);">Used for: generation by fuel type, interconnector flows, pumped storage, market price.</p>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: generation by fuel type, interconnector flows, pumped storage, market price, <a href="frequency.html">grid frequency</a> (every 15 seconds, fetched every 5 minutes), and the national demand and wind <a href="forecast.html">forecasts</a>.</p>
         <p class="licence-note"><strong>Licence requirement:</strong> <a href="https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/">Elexon's licence</a> requires the following statement: Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
       </section>
 
@@ -300,7 +315,7 @@
           <span>30 min granularity</span>
           <span>Revised retrospectively</span>
         </div>
-        <p style="font-size:.9rem;color:var(--text-muted);">Used for: embedded solar and wind estimates, demand.</p>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: embedded solar and wind estimates, demand, and NESO's daily <a href="balancing-costs.html">balancing costs</a> (Daily Balancing Costs, BSUoS, fetched twice a day). NESO Open Data Licence: Supported by National Energy SO Open Data.</p>
       </section>
 
       <section class="panel source-card" aria-labelledby="src-carbon">
@@ -314,7 +329,7 @@
           <span>30 min granularity</span>
           <span>Refreshed every 30 min</span>
         </div>
-        <p style="font-size:.9rem;color:var(--text-muted);">Used for: emissions figures and historical carbon-intensity charts.</p>
+        <p style="font-size:.9rem;color:var(--text-muted);">Used for: emissions figures, historical carbon-intensity charts, and the 48-hour forecasts for Great Britain and its 14 network areas behind <a href="best-time.html">Best time to use power</a> and <a href="regional-carbon.html">Carbon by area</a> (fetched every 30 minutes). Licensed CC BY 4.0.</p>
       </section>
 
       <section class="panel source-card" aria-labelledby="src-tec">
@@ -641,6 +656,6 @@
   </div>
 </footer>
 
-<script src="../assets/app.js?v=20261111b"></script>
+<script src="../assets/app.js?v=20261111c"></script>
 </body>
 </html>

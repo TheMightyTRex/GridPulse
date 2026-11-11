@@ -564,3 +564,42 @@ CREATE TABLE IF NOT EXISTS power_cut_count (
   customers INT NULL,
   PRIMARY KEY (dno, ts)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Forecasts, grid frequency and balancing costs (includes/outlook.php,
+-- November 2026). Created automatically on first use; listed here for
+-- reference.
+CREATE TABLE IF NOT EXISTS ci_forecast (
+  ts DATETIME NOT NULL COMMENT 'UTC, start of the half hour',
+  region TINYINT UNSIGNED NOT NULL COMMENT 'Carbon Intensity API regionid: 1-14 network areas, 15 England, 16 Scotland, 17 Wales, 18 GB',
+  gco2 SMALLINT NULL,
+  idx VARCHAR(12) NULL,
+  PRIMARY KEY (ts, region)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ci_region_mix (
+  region TINYINT UNSIGNED NOT NULL,
+  ts DATETIME NOT NULL,
+  mix_json VARCHAR(600) NOT NULL,
+  PRIMARY KEY (region)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS grid_forecast (
+  ts DATETIME NOT NULL COMMENT 'UTC',
+  item VARCHAR(8) NOT NULL COMMENT 'nd = national demand, tsd = transmission system demand, wind = wind generation',
+  mw INT NOT NULL,
+  published DATETIME NULL,
+  PRIMARY KEY (ts, item)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS grid_frequency (
+  ts DATETIME NOT NULL COMMENT 'UTC',
+  hz DECIMAL(6,3) NOT NULL,
+  PRIMARY KEY (ts)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS balancing_daily (
+  dt DATE NOT NULL,
+  item VARCHAR(40) NOT NULL,
+  cost DECIMAL(14,2) NOT NULL COMMENT 'pounds',
+  PRIMARY KEY (dt, item)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,16 @@
+{
+  "name": "Grid Pulse",
+  "short_name": "Grid Pulse",
+  "description": "Live electricity grids, from Great Britain to Europe and beyond: where the power comes from right now, what it costs and how clean it is.",
+  "start_url": "/?source=home-screen",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#14181f",
+  "theme_color": "#14181f",
+  "lang": "en-GB",
+  "icons": [
+    { "src": "/assets/gridpulse-favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/gridpulse-icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/gridpulse-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

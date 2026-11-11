@@ -11,17 +11,22 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - [Interconnections of the Americas](https://gridpulse.info/pages/americas-interconnects.html): How the electricity grids of North and South America connect to each other: the three US/Canada interconnections, Quebec's asynchronous HVDC ties, and the big cross-border hydro dams and DC ties of South America, with real capacity figures.
 - [Day archive](https://gridpulse.info/pages/archive.html): Every recorded day for one grid, shaded by renewable share, with links to each day.
 - [Australia - live National Electricity Market status](https://gridpulse.info/pages/australia.html): A live dashboard for Australia's National Electricity Market (NEM) - demand, spot price and generation mix, live from the Open Electricity API.
+- [Cost of balancing the grid in Great Britain](https://gridpulse.info/pages/balancing-costs.html): What NESO spends each day keeping Great Britain's electricity system balanced: energy imbalance, reserve, frequency control and network constraints, from NESO's daily balancing costs data.
 - [Belgium - live status of the Belgian electricity grid](https://gridpulse.info/pages/belgium.html): A live dashboard for Belgium's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Best time to use electricity in Great Britain](https://gridpulse.info/pages/best-time.html): Find the cleanest time to run the washing machine, charge an electric car or charge a battery, from the 48-hour carbon intensity forecast for your part of Great Britain.
 - [Borders](https://gridpulse.info/pages/borders.html): Electricity across each of a country's borders today: the live flow and direction, energy in and out, and when each border was last updated.
 - [Canada - the live status of Ontario's electricity grid](https://gridpulse.info/pages/canada.html): A live dashboard for Ontario's electricity grid - demand and generation mix, live from IESO. Covers Ontario only, not all of Canada. Wholesale price, emissions and transfers are not available and are shown as not available rather than a placeholder.
 - [Comparisons](https://gridpulse.info/pages/comparisons.html): Compare tracked countries side by side, GB's own history against a prior period, or two of GB's generation categories against each other.
+- [Use Grid Pulse data: free JSON API](https://gridpulse.info/pages/data-access.html): Grid Pulse data as free JSON: live and recent electricity figures for Great Britain and the other countries covered, forecasts, frequency, balancing costs, gas and power cuts.
 - [Sources](https://gridpulse.info/pages/data-sources.html): Where Grid Pulse's data comes from, its licensing terms, and how it is kept up to date.
 - [One day](https://gridpulse.info/pages/day.html): One day on one grid: generation by source, demand, price, net imports and any records set that day.
 - [Denmark (DK1) - live status of western Denmark's grid](https://gridpulse.info/pages/denmark.html): A live dashboard for western Denmark's (DK1) electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
 - [About electricity prices](https://gridpulse.info/pages/electricity-prices.html): How the GB wholesale electricity price is calculated, how Contracts for Difference work, and why cheaper renewables do not automatically mean cheaper bills.
 - [EU countries - a live snapshot of EU electricity grids](https://gridpulse.info/pages/eu.html): A live snapshot summing demand, generation, day-ahead price and generation mix across the handful of EU member states this site tracks via ENTSO-E - not a full EU-27 total.
+- [Great Britain electricity forecast, next 2 days](https://gridpulse.info/pages/forecast.html): Forecasts for Great Britain's electricity over the next 2 days: carbon intensity every half hour, national demand and wind generation, from the Carbon Intensity API and Elexon.
 - [Fossil fuels](https://gridpulse.info/pages/fossil-fuels.html): Detailed live and historical data for fossil fuels generation on Great Britain's electricity grid.
 - [France - live status of the French electricity grid](https://gridpulse.info/pages/france.html): A live dashboard for France's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform, with history and records.
+- [Grid frequency in Great Britain, live](https://gridpulse.info/pages/frequency.html): Great Britain's grid frequency right now and over the last hour and day, from Elexon's 15-second readings, with what 50 Hz means and why it matters.
 - [Gas in Great Britain](https://gridpulse.info/pages/gas.html): Great Britain's gas right now: how much is being used, by homes and businesses, power stations and industry, and where it comes from. Live from National Gas Transmission.
 - [Germany - live status of the German electricity grid](https://gridpulse.info/pages/germany.html): A live dashboard for Germany's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
 - [History](https://gridpulse.info/pages/history.html): Demand, generation, price, emissions, transfers and the generation mix over time - from the past day to the past decade, with the current UK season, battery detail, and data you can copy.
@@ -44,6 +49,7 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - [Power cuts in Great Britain](https://gridpulse.info/pages/power-cuts.html): Live power cuts across Great Britain on a map, from the electricity network operators' own open data, with who runs the network where you live.
 - [Historic prices](https://gridpulse.info/pages/price-history.html): Wholesale electricity price history for Great Britain, from the past day back to all available data, with the exact calendar period each chart covers.
 - [Records](https://gridpulse.info/pages/records.html): The highest and lowest figures for each grid: official records with sources, records since this site started recording, best of each year and the records broken most recently.
+- [Carbon intensity by area in Great Britain](https://gridpulse.info/pages/regional-carbon.html): How clean electricity is right now in each of Great Britain's 14 network areas, on a map, with each area's mix and its forecast for the next 2 days.
 - [UK renewables expansion plans](https://gridpulse.info/pages/renewables-plans.html): What the UK government's Clean Power 2030 Action Plan actually targets, how recent CfD auctions have gone, and whether the country is on track.
 - [Renewables](https://gridpulse.info/pages/renewables.html): Detailed live and historical data for renewables generation on Great Britain's electricity grid.
 - [South America](https://gridpulse.info/pages/south-america.html): Background on the electricity grids of Brazil, Argentina, Chile and Colombia - no live figures yet, but real sourced facts about each grid and where to find its real-time data.
@@ -51,6 +57,7 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - [Storage](https://gridpulse.info/pages/storage.html): Detailed live and historical data for storage generation on Great Britain's electricity grid.
 - [Sweden - live status of the Swedish electricity grid](https://gridpulse.info/pages/sweden.html): A live dashboard for Sweden's electricity grid - demand, generation, day-ahead price and generation mix, live from the ENTSO-E Transparency Platform.
 - [USA - an overview of the US electricity grid](https://gridpulse.info/pages/usa.html): An overview of the US electricity grid's demand, generation, generation mix and history - live from the EIA (typically about a day behind). Wholesale price and emissions are not published by the EIA and are shown as not available rather than a placeholder.
+- [Free live electricity widgets for your site](https://gridpulse.info/pages/widgets.html): Free widgets that show live electricity figures on your own website: renewable share for any country Grid Pulse covers, carbon intensity and grid frequency for Great Britain.
 
 ## Live data as JSON
 
@@ -61,5 +68,10 @@ Figures come from official sources: Elexon, NESO and the Carbon Intensity API (G
 - https://gridpulse.info/api/flows.php?area=GB : flows across a country's borders today
 - https://gridpulse.info/api/gas.php : Great Britain's gas use and supply
 - https://gridpulse.info/api/power_cuts.php : live power cuts in Great Britain
+- https://gridpulse.info/api/forecast.php : Great Britain's next 2 days (carbon intensity, demand, wind), and carbon intensity by area (?region=1-14)
+- https://gridpulse.info/api/frequency.php : Great Britain's grid frequency
+- https://gridpulse.info/api/balancing.php : NESO's daily balancing costs
+
+More detail: https://gridpulse.info/pages/data-access.html
 
 Please credit Grid Pulse and the original source named on each page.
