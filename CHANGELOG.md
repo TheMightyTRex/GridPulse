@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse22 - 11 November 2026
+
+**Front page back as it was**
+- Removed the "Coming up" card from the GB dashboard (added in GridPulse20). The front page's content is the same as before GridPulse20; only the menu gains the new pages.
+- Links to the new pages from where they fit instead: the renewables page (wind forecast, carbon by area, best time to use power, and all balancing costs from the constraints section) and the storage page (grid frequency).
+
 ## GridPulse21 - 11 November 2026 (includes GridPulse20)
 
 **New: power station map** (pages/power-stations.html)

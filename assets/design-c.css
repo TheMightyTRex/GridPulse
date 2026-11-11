@@ -1030,7 +1030,6 @@ html.pref-calm .gp-ping { opacity: 0; }
 .wg-preview iframe { border: 0; max-width: 100%; }
 .wg-code-label { display: block; font-weight: 700; margin-bottom: 4px; }
 .wg-code { width: 100%; font: .85rem/1.4 ui-monospace, Menlo, Consolas, monospace; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
-@media (max-width: 860px) { .gp-cards [data-outlook-card] { order: 5; } .gp-cards [data-area-year] { order: 6; } }
 .bc-list small { display: block; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
 .bc-list li { align-items: flex-start; gap: 16px; }
 /* Power station map (assets/stations.js) */
