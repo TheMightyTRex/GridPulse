@@ -297,6 +297,8 @@ html.pref-calm .ug-ping { opacity: 0; animation: none !important; }
 html.is-scrolled .preview-banner:not(:focus-within) { max-height: 4px; padding-top: 0; padding-bottom: 0; }
 html.is-scrolled .preview-banner:not(:focus-within) > * { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .preview-banner, .preview-banner > * { transition: none; } }
+.preview-banner__item { display: inline-flex; justify-content: center; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.preview-banner__item[hidden] { display: none; }
 .preview-banner a { color: var(--brand-ink); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
 .preview-banner__tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--brand-ink); color: var(--brand); font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
 
