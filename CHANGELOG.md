@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse19 - 11 November 2026
+
+**Germany showed "100% renewable" from half-published data**
+- Since about 9am UTC on 10 November, ENTSO-E's feed for Germany has held only offshore wind (about 0.7 GW, against a demand of about 68 GW). The site treated that as the whole mix, so Germany showed 100% renewable and set false records on 10 November (highest renewable share, highest zero-carbon share, lowest fossil share).
+- Any ENTSO-E country's reading now counts only when it has at least half the generation types that country usually reports (over the last 14 days), and generation is at least a fifth of demand. Readings that fail are left out of "right now", the replay, today so far, the day's totals and records, anywhere in the day (not just at the end). The live figures show no mix instead of a wrong one.
+- Daily summaries are now recalculated for the last 3 days, not 2, so 10 November's false German records are corrected when this goes live.
+- Generation requests now reach back to the latest complete reading (up to 24 hours), so types a grid operator publishes late get filled in. Before, one early type made the country look up to date, and the rest were never fetched again.
+- The ENTSO-E log line now says how many generation types came back against the usual number (for example "DE/generation: 1 of 13 usual types"), so a half-published feed is easy to spot.
+- Empty state reworded: "No complete readings for today yet."
+- Cache-busting version bumped to 20261111b.
+
 ## GridPulse18 - 11 November 2026
 
 **Shorter page titles, after Bing flagged six as longer than 70 characters**

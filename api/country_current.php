@@ -190,7 +190,11 @@ if (in_array('generation', $fetchKinds, true)) {
         foreach ($coverage as $c) {
             $maxN = max($maxN, (int) $c['n']);
         }
-        $needN = max(1, (int) ceil($maxN * 0.75)); // "complete enough" - see above
+        // ...and at least half the types this country usually reports, so
+        // a feed that has been half-published for hours (every timestamp
+        // in the window incomplete) isn't used either.
+        $usualN = ukgrid_entsoe_usual_types($pdo, $countryCode, (string) $genLatest);
+        $needN = max(1, (int) ceil($maxN * 0.75), (int) ceil($usualN / 2)); // "complete enough" - see above
         foreach ($coverage as $c) { // newest first
             if ((int) $c['n'] >= $needN) {
                 $mixTs = $c['ts'];
@@ -227,6 +231,15 @@ if (in_array('generation', $fetchKinds, true)) {
         // (a TSO occasionally publishes a small negative for a type), so the
         // headline generation figure equals the donut's total.
         $generationMw = array_sum(array_filter($mix, function ($v) { return $v >= 0.5; }));
+        // A country never makes less than a fifth of its own demand from
+        // its own power stations, even the biggest importers here. Less than
+        // that means readings are missing, so show no mix rather than a
+        // wrong one.
+        if ($demandMw !== null && (float) $demandMw > 0 && $generationMw < 0.2 * (float) $demandMw) {
+            $mix = [];
+            $generationMw = null;
+            $mixTs = null;
+        }
     }
 }
 
