@@ -29,7 +29,7 @@ require_once __DIR__ . '/../includes/refresh.php';
 // from the same version before printing anything, so the reply can still be
 // a 500 (once a line has gone out, the status can't change).
 $missing = [];
-foreach (['ukgrid_refresh_schedule' => 'includes/refresh.php', 'ukgrid_ingest_battery' => 'includes/battery.php', 'ukgrid_http_set_deadline' => 'includes/http.php', 'ukgrid_ingest_gas' => 'includes/gas.php', 'ukgrid_ingest_powercuts' => 'includes/powercuts.php', 'ukgrid_ingest_indexnow' => 'includes/indexnow.php', 'ukgrid_http_post_json' => 'includes/http.php', 'ukgrid_ingest_forecast' => 'includes/outlook.php'] as $fn => $file) {
+foreach (['ukgrid_refresh_schedule' => 'includes/refresh.php', 'ukgrid_ingest_battery' => 'includes/battery.php', 'ukgrid_http_set_deadline' => 'includes/http.php', 'ukgrid_ingest_gas' => 'includes/gas.php', 'ukgrid_ingest_powercuts' => 'includes/powercuts.php', 'ukgrid_ingest_indexnow' => 'includes/indexnow.php', 'ukgrid_http_post_json' => 'includes/http.php', 'ukgrid_ingest_forecast' => 'includes/outlook.php', 'ukgrid_ingest_stations' => 'includes/stations.php'] as $fn => $file) {
     if (!function_exists($fn)) {
         $missing[$file] = true;
     }
@@ -67,6 +67,8 @@ if (!isset($intervals['NESO'])) $intervals['NESO'] = 30;
 // per call) - see includes/flows_annual.php.
 if (!isset($intervals['FLOWS'])) $intervals['FLOWS'] = 4;
 if (!isset($intervals['ANNUAL'])) $intervals['ANNUAL'] = 120;
+// The power station list (DUKES 5.11), once a week. See includes/stations.php.
+if (!isset($intervals['STATIONS'])) $intervals['STATIONS'] = 10080;
 
 $due = ukgrid_refresh_overdue($pdo, $intervals);
 ukgrid_file_log('run-due (' . $caller . '): ' . (count($due) ? implode(', ', array_keys($due)) . ' due' : 'nothing due'));
@@ -84,7 +86,7 @@ usort($order, function ($a, $b) {
     return ($b === 'ENTSOE') <=> ($a === 'ENTSOE');
 });
 // Worst case = timeout x the most requests the source makes in one run.
-$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1, 'GAS' => 1, 'GASDAILY' => 1, 'POWERCUTS' => 6, 'INDEXNOW' => 1, 'FORECAST' => 3, 'FREQ' => 1, 'BALANCING' => 4];
+$worst = ['ENTSOE' => 3, 'EIRGRID' => 4, 'NESO' => 3, 'ELEXON' => 4, 'BATTERY' => 3, 'EIA' => 2, 'OPENELECTRICITY' => 2, 'CARBON_INTENSITY' => 2, 'FLOWS' => 2, 'ANNUAL' => 2, 'DAILY' => 1, 'GAS' => 1, 'GASDAILY' => 1, 'POWERCUTS' => 6, 'INDEXNOW' => 1, 'FORECAST' => 3, 'FREQ' => 1, 'BALANCING' => 4, 'STATIONS' => 1, 'STATIONSLIVE' => 1];
 
 $lock = $pdo->prepare('SELECT GET_LOCK(?, 0)');
 $release = $pdo->prepare('SELECT RELEASE_LOCK(?)');

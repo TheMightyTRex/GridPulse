@@ -350,6 +350,11 @@ return [
   // Leave blank to show the area as "not covered".
   //   SP Energy Networks:     https://spenergynetworks.opendatasoft.com
   //   Electricity North West: https://electricitynorthwest.opendatasoft.com
+  // Power station map (includes/stations.php). DESNZ publishes a new DUKES
+  // table 5.11 each July at a new address: put it here, with its label.
+  // Leave both out to use the built-in May 2026 edition.
+  // 'stations' => ['dukes_url' => 'https://assets.publishing.service.gov.uk/...', 'dukes_edition' => 'DUKES 2027, table 5.11 (...)'],
+
   'powercuts' => [
     'spen_key' => '',
     'enwl_key' => '',

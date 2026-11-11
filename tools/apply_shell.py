@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "20261111c"
+VERSION = "20261111d"
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
 # Loaded normally, so text draws once in Archivo instead of jumping from a
 # fallback font. The preconnect lines in each page keep it quick.
@@ -42,6 +42,7 @@ GROUPS = [
             ("nuclear-biomass.html", "Nuclear & biomass", "Output from each plant type"),
             ("storage.html", "Storage", "Batteries and pumped hydro"),
             ("interconnectors.html", "Interconnectors", "Imports and exports by country"),
+            ("power-stations.html", "Power stations", "Every major station on a map"),
         ]),
         ("Over time", [
             ("history.html", "History", "From the past day to the past decade"),
@@ -265,7 +266,7 @@ DATA_PAGES = {
     "records.html": "Great Britain", "renewables.html": "Great Britain", "fossil-fuels.html": "Great Britain",
     "nuclear-biomass.html": "Great Britain", "storage.html": "Great Britain", "price-history.html": "Great Britain",
     "forecast.html": "Great Britain", "best-time.html": "Great Britain", "regional-carbon.html": "Great Britain",
-    "frequency.html": "Great Britain", "balancing-costs.html": "Great Britain",
+    "frequency.html": "Great Britain", "balancing-costs.html": "Great Britain", "power-stations.html": "United Kingdom",
 }
 
 
@@ -279,7 +280,7 @@ DATA_APIS = {
     "australia.html": "day.php?area=AU", "eu.html": "now_all.php", "gas.html": "gas.php",
     "power-cuts.html": "power_cuts.php", "interconnectors.html": "flows.php?area=GB", "records.html": "records.php?area=GB",
     "forecast.html": "forecast.php", "best-time.html": "forecast.php", "regional-carbon.html": "forecast.php",
-    "frequency.html": "frequency.php", "balancing-costs.html": "balancing.php",
+    "frequency.html": "frequency.php", "balancing-costs.html": "balancing.php", "power-stations.html": "stations.php",
 }
 
 
@@ -469,6 +470,7 @@ def write_crawler_files(pages):
               f"- {SITE}/api/forecast.php : Great Britain's next 2 days (carbon intensity, demand, wind), and carbon intensity by area (?region=1-14)",
               f"- {SITE}/api/frequency.php : Great Britain's grid frequency",
               f"- {SITE}/api/balancing.php : NESO's daily balancing costs",
+              f"- {SITE}/api/stations.php : UK power stations (DESNZ DUKES 5.11) with live planned output for the biggest",
               "", f"More detail: {SITE}/pages/data-access.html", "",
               "Please credit Grid Pulse and the original source named on each page."]
     (ROOT / "llms.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")

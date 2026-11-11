@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse21 - 11 November 2026 (includes GridPulse20)
+
+**New: power station map** (pages/power-stations.html)
+- Every major power producer station in the UK (about 1,360) on an OpenStreetMap street map, from DESNZ's official list (DUKES table 5.11, stations operating at the end of May 2026, Open Government Licence v3.0): owner, technology, fuel, capacity, year opened and connection. Filter by technology and size, and see every station in view in a list beside the map.
+- Live figures for 80 of the biggest stations in Great Britain: the output each plans to run at this half hour (Elexon physical notifications). Stations were matched to their Elexon BM units by name, fuel and capacity, then checked by hand, leaving out doubtful matches (includes/station_bmus.json, checked 11 November 2026). Stations not matched say so instead of showing a figure.
+- New jobs (includes/stations.php): STATIONS once a week from the scheduler only (downloads the 1.2 MB DESNZ spreadsheet, reads the "5.11 Full list" sheet and converts the grid references to latitude and longitude); STATIONSLIVE every 30 minutes (1 request). Needs PHP's zip extension (ZipArchive), which most hosts have; if not, the log says so. New tables: power_station, station_pn. New API: api/stations.php.
+- When DESNZ publishes next year's table (usually July), put its address in config.php: 'stations' => ['dukes_url' => ..., 'dukes_edition' => ...] (see config.php.example).
+- Menu: Great Britain, By source, Power stations. DESNZ added to Sources; stations.php added to Use our data and llms.txt.
+- Cache-busting version bumped to 20261111d.
+
 ## GridPulse20 - 11 November 2026
 
 **New: plan ahead, carbon by area, frequency, balancing costs, widgets and open data** (ideas from a look at seven other GB grid sites)
