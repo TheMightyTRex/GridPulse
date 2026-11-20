@@ -8,6 +8,18 @@
 # .htaccess. The paths start at the site root, so this assumes the site is
 # at the top of the domain (https://gridpulse.info/).
 
+# One address for every page: www.gridpulse.info sends visitors (and search
+# engines) to gridpulse.info with a permanent redirect. Without this every
+# page could be reached at two addresses, and Bing reported each page's
+# description as a duplicate. Matomo (/stat/) is left alone, because its
+# tracking code calls www.gridpulse.info/stat/ directly.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.gridpulse\.info$ [NC]
+  RewriteCond %{REQUEST_URI} !^/stat/
+  RewriteRule ^(.*)$ https://gridpulse.info/$1 [R=301,L]
+</IfModule>
+
 ErrorDocument 400 /errors/400.html
 ErrorDocument 401 /errors/401.html
 ErrorDocument 403 /errors/403.html

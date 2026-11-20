@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse24 - 20 November 2026
+
+**Duplicate and long page descriptions, after Bing flagged 51 pages**
+- www.gridpulse.info now redirects permanently to gridpulse.info (.htaccess). Before, every page could be reached at both addresses with the same description, which is the most likely reason Bing counted 51 duplicates (the descriptions in the pages themselves are all different). Matomo's /stat/ folder is left out of the redirect, because its tracking code uses the www address.
+- Shortened the 26 descriptions that were over 160 characters, so search results show them in full. Same meaning, plain English. The share-card (Open Graph and X) descriptions follow.
+
 ## GridPulse23 - 12 November 2026
 
 **The yellow banner takes turns**
