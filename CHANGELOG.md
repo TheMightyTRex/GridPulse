@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Dates are when the change was made, not necessarily when it was deployed. Where useful, entries reference the deployment zip version they came from (e.g. v57, v59).
 
+## GridPulse25 - 24 November 2026 (includes GridPulse24)
+
+**Canada page: "Ontario only" banner**
+- A banner near the top of the Canada page says it shows Ontario only, not the whole of Canada, and links to where the other provinces publish their figures.
+- Corrected the claim that Ontario is the only Canadian jurisdiction with a public real-time feed: Hydro-Québec, AESO (Alberta), SaskPower, NB Power and others also publish figures. The About section now lists each province's own source and the Canadian Centre for Energy Information's High-Frequency Electricity Data tool (a test version), last checked 24 November 2026.
+
 ## GridPulse24 - 20 November 2026
 
 **Duplicate and long page descriptions, after Bing flagged 51 pages**
